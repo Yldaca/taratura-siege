@@ -148,7 +148,12 @@ details.more>summary{font:600 13px/1.2 var(--font-body);letter-spacing:.08em;tex
 select.sel{text-overflow:ellipsis;min-height:44px;padding:6px 10px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:2px}
 .txt-in{width:100%;min-height:48px;padding:8px 10px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:2px;font:500 16px var(--font-body)}
 .two-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.two-in label{display:flex;flex-direction:column;gap:4px;min-width:0}
+.two-in label,.two-in .kit-f{display:flex;flex-direction:column;gap:6px;min-width:0}
+.kit-f select.sel{width:100%}
+.tag.soft{background:transparent;color:var(--ink-2);border:1px solid var(--line)}
+.goal-t{font-size:15px;color:var(--ink-2);margin-top:-4px}
+.hv{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:12px}
+@media (max-width:400px){.stp.wide button,.stp.wide button.b1{flex-basis:44px;font-size:20px}}
 
 .btn{min-height:48px;padding:0 16px;border:1px solid var(--ink);background:transparent;color:var(--ink);font:600 14px/1.1 var(--font-body);letter-spacing:.06em;text-transform:uppercase;border-radius:2px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center}
 .btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
@@ -412,14 +417,12 @@ button:focus-visible,summary:focus-visible,select:focus-visible,a:focus-visible,
   <main id="view"></main>
 </div>
 <div class="toast" id="toast" role="status" hidden></div>
-<datalist id="dl-op"></datalist>
-<datalist id="dl-wep"></datalist>
 <script>
 (function(){
 'use strict';
 
 /* ---------- dati fissi ---------- */
-var BASE={h:75,v:50,ads1:11,ads25:11,cap:'concava'};
+var BASE={h:75,v:50,ads1:11,ads25:11,ads35:11,ads8:11,cap:'concava'};
 var TOL=1,MAXR=4,MIN_T=5,MIN_ADV=4;
 var WT={hit:0.4,trk:0.2,swi:0.2,pre:0.2,rec:0.2};
 /* Ogni round pesa solo gli esercizi che contiene: i round vecchi col pre-aim e senza rinculo restano confrontabili. */
@@ -432,95 +435,172 @@ function comps(r){
   return o;
 }
 function cnt(n,s,p){return n+' '+(n===1?s:p);}
-var SAY_H=function(a,b){return 'Hai superato la testa '+cnt(a,'volta','volte')+' e sei rimasto corto '+cnt(b,'volta','volte')+'.';};
-var SAY_V=function(a,b){return 'Sei finito sopra la testa '+cnt(a,'volta','volte')+' e sotto la testa '+cnt(b,'volta','volte')+'.';};
+var SAY=function(a,b){return 'Sei andato oltre la testa '+cnt(a,'volta','volte')+' e ti sei fermato prima '+cnt(b,'volta','volte')+'.';};
+/* Si lavora solo sui mirini: il percorso tara 1.0x, 2.5x e 3.5x, l'8.0x si calcola da quei tre.
+   Orizzontale e verticale restano solo come dati da scrivere, non entrano nei calcoli. */
+var OPT_IDS=['ads1','ads25','ads35','ads8'];
+var PATH_KEYS=['ads1','ads25','ads35'];
+var OTHER_KEYS=['h','v'];
+var SENS_KEYS=OPT_IDS.concat(OTHER_KEYS);
+var PERS_KEYS=['ads8','h','v'];
+var ZOOM={ads1:1,ads25:2.5,ads35:3.5,ads8:8};
+var OPTIC={ads1:'1.0x',ads25:'2.5x',ads35:'3.5x',ads8:'8.0x'};
+var KEY_NAME={ads1:'Mirino 1.0x',ads25:'Mirino 2.5x',ads35:'Mirino 3.5x',ads8:'Mirino 8.0x',h:'Orizzontale',v:'Verticale'};
+var SHORT={ads1:'1.0x',ads25:'2.5x',ads35:'3.5x',ads8:'8.0x',h:'Orizz.',v:'Vert.'};
+var FLK_LBL={la:'Oltre la testa',lb:'Prima della testa',sa:'Oltre',sb:'Prima',
+  ha:'Hai girato troppo: il colpo è finito dall\'altra parte della testa.',
+  hb:'Hai girato troppo poco: il colpo è rimasto dal lato da cui partivi.',
+  up:'sei andato oltre la testa',down:'ti sei fermato prima',say:SAY};
+function optDef(k){
+  return Object.assign({id:k,name:KEY_NAME[k],tab:KEY_NAME[k],kind:'num',mode:'ads',optic:OPTIC[k],init:null,intro:''},FLK_LBL);
+}
+function withIntro(d,init,intro){d.init=init;d.intro=intro;return d;}
 var STAGES=[
-  {id:'h',name:'Sensibilità orizzontale',tab:'Orizzontale',kind:'num',mode:'hip',optic:null,init:75,
-   la:'Superate',lb:'Corte',sa:'Sup.',sb:'Cor.',ha:'Il mirino va oltre la testa.',hb:'Il mirino si ferma prima della testa.',
-   up:'hai superato la testa',down:'sei rimasto corto',say:SAY_H,
-   intro:'Primo round: parti dai valori che hai adesso.'},
-  {id:'v',name:'Sensibilità verticale',tab:'Verticale',kind:'num',mode:'hip',optic:null,init:50,
-   la:'Troppo in alto',lb:'Troppo in basso',sa:'Alto',sb:'Basso',ha:'Il mirino finisce sopra la testa.',hb:'Il mirino finisce sotto la testa.',
-   up:'sei finito sopra la testa',down:'sei finito sotto la testa',say:SAY_V,
-   intro:'Ora la verticale. Cambia solo questo numero.'},
-  {id:'ads1',name:'Mirino 1.0x',tab:'Mirino 1.0x',kind:'num',mode:'ads',optic:'1.0x',init:11,
-   la:'Superate',lb:'Corte',sa:'Sup.',sb:'Cor.',ha:'Il mirino va oltre la testa.',hb:'Il mirino si ferma prima della testa.',
-   up:'hai superato la testa',down:'sei rimasto corto',say:SAY_H,
-   intro:'Ora il mirino 1.0x. Cambia solo questo numero.'},
-  {id:'ads25',name:'Mirino 2.5x',tab:'Mirino 2.5x',kind:'num',mode:'ads',optic:'2.5x',init:null,
-   la:'Superate',lb:'Corte',sa:'Sup.',sb:'Cor.',ha:'Il mirino va oltre la testa.',hb:'Il mirino si ferma prima della testa.',
-   up:'hai superato la testa',down:'sei rimasto corto',say:SAY_H,
-   intro:'Ora il mirino 2.5x. Parte poco sotto l\'1.0x.'},
-  {id:'cap',name:'Cappetta stick destro',tab:'Cappetta',kind:'cap',mode:'ads',optic:null,init:null,
-   la:'Superate',lb:'Corte',sa:'Sup.',sb:'Cor.',ha:'Il mirino va oltre la testa.',hb:'Il mirino si ferma prima della testa.',
-   up:'',down:'',say:SAY_H,
-   intro:'Ultima fase: monta la cappetta Convesso alto. I numeri restano quelli trovati.'}
+  withIntro(optDef('ads1'),11,'Primo round. Se nel gioco hai già un numero per il mirino 1.0x, scrivilo nel riquadro "Sensibilità che usi ora" e parti da lì.'),
+  withIntro(optDef('ads25'),null,'Ora il mirino 2.5x: ti serve un\'arma con un\'ottica 2.5x. Cambia solo questo numero.'),
+  withIntro(optDef('ads35'),null,'Ora il mirino 3.5x: ti serve un\'arma con un\'ottica 3.5x. Cambia solo questo numero.'),
+  Object.assign({id:'cap',name:'Cappetta stick destro',tab:'Cappetta',kind:'cap',mode:'ads',optic:'1.0x',init:null,
+    intro:'Ultima fase: monta la cappetta Convesso alto sullo stick destro. I numeri dei mirini restano quelli trovati.'},FLK_LBL,{up:'',down:''})
 ];
 var STAGE_IDS=STAGES.map(function(s){return s.id;});
-var SENS_KEYS=['h','v','ads1','ads25'];
 var NS=STAGES.length;
+function defFor(k){var i=STAGE_IDS.indexOf(k);return i>-1?STAGES[i]:optDef(OPT_IDS.indexOf(k)>-1?k:'ads1');}
 var CAPS=[{id:'standard',name:'Normale'},{id:'concava',name:'Concavo alto'},{id:'bassa',name:'Convesso basso'},{id:'convessa',name:'Convesso alto'}];
 var CURVES=[{id:'lineare',name:'Lineare'},{id:'veloce',name:'Veloce'},{id:'precisa',name:'Precisa'},{id:'stabile',name:'Stabile'},{id:'digitale',name:'Digitale'},{id:'dinamica',name:'Dinamica'}];
 var GEAR0={rcap:'concava',rc:'precisa',rm:2,rd:5,lcap:'standard',lc:'lineare',lm:0,ld:5};
-/* Tutte le grandezze delle ottiche del gioco. L'1.0x e il 2.5x li trova il percorso; gli altri si calcolano da quei due e puoi correggerli a mano. */
-var OPT_Z=[1,2.5,3.5,8];
-function optKey(z){return z.toFixed(1);}
-function optLbl(z){return (z===Math.round(z)?z+'.0':String(z))+'x';}
-var OPT_KEYS=OPT_Z.map(optKey);
-var OPT_MAIN={'1.0':'ads1','2.5':'ads25'};
-function optFit(a1,a25){
-  var b=(a1-a25)/0.6,a=a1-b;
+/* Mirini a zoom diverso: stessa velocità di rotazione a parità di zoom, cioè valore = a + b / zoom.
+   Con due o più mirini noti trovo a e b con i minimi quadrati e calcolo gli altri. */
+function optFit(pts){
+  pts=pts.filter(function(p){return p[1]!==null&&p[1]!==undefined&&isFinite(p[1]);});
+  if(pts.length<2){var c0=pts.length?pts[0][1]:BASE.ads1;return function(){return clampV(Math.round(c0));};}
+  var xs=pts.map(function(p){return 1/p[0];}),ys=pts.map(function(p){return p[1];});
+  var mx=mean(xs),my=mean(ys),sxx=0,sxy=0;
+  xs.forEach(function(x,i){sxx+=(x-mx)*(x-mx);sxy+=(x-mx)*(ys[i]-my);});
+  var b=sxx?sxy/sxx:0,a=my-b*mx;
   return function(z){return clampV(Math.round(a+b/z));};
 }
-function opticVals(vals){
-  var f=optFit(vals.ads1,vals.ads25),o={};
-  OPT_Z.forEach(function(z){
-    var k=optKey(z);
-    o[k]=OPT_MAIN[k]?vals[OPT_MAIN[k]]:(state.optx[k]!==undefined?state.optx[k]:f(z));
-  });
-  return o;
+function optPts(vals,keys){return (keys||PATH_KEYS).map(function(k){return [ZOOM[k],vals[k]];});}
+
+/* Operatori e armi, dalle pagine operatori di Ubisoft (stagione Y11S3 Split Fire, ultimo arrivato Noor).
+   [nome, armi principali, armi secondarie] */
+var ATK=[
+  ['Striker','M4|M249|SR-25','5.7 USG|ITA12S'],['Sledge','L85A2|M590A1','P226 Mk 25|Reaper MK2'],
+  ['Thatcher','AR33|L85A2|M590A1|PMR90A2','P226 Mk 25'],['Ash','G36C|R4-C','5.7 USG|M45 MEUSOC'],
+  ['Thermite','556xi|M1014','5.7 USG|M45 MEUSOC|ITA12S'],['Twitch','F2|417','P9|LFP586'],
+  ['Montagne','Le Roc Shield','P9|LFP586'],['Glaz','OTs-03','PMM|Gonne-6|Bearing 9'],
+  ['Fuze','AK-12|6P41','PMM|GSh-18'],['Blitz','G52-Tactical Shield','P12'],
+  ['IQ','AUG A2|552 Commando','P12'],['Buck','C8-SFW|CAMRS','Mk1 9mm'],
+  ['Blackbeard','Mk17 CQB|SR-25','D-50'],['Capitão','PARA-308|M249|PMR90A2','PRB92|Gonne-6'],
+  ['Hibana','Type-89|SuperNova|PMR90A2','P229|Bearing 9'],['Jackal','C7E|PDW9|ITA12L','USP40|ITA12S'],
+  ['Ying','T-95 LSW|SIX12','Q-929|Reaper MK2'],['Zofia','LMG-E|M762','RG15'],
+  ['Dokkaebi','Mk 14 EBR|BOSG.12.2|XK23','SMG-12|C75 Auto|Gonne-6'],['Lion','V308|417|SG-CQB','LFP586|P9'],
+  ['Finka','Spear .308|6P41|SASG-12','PMM|GSh-18'],['Maverick','AR-15.50|M4','1911 TACOPS|C75 Auto|Reaper MK2'],
+  ['Nomad','AK-74M|ARX200','PRB92'],['Gridlock','F90|M249 SAW','Super Shorty|SDP 9mm'],
+  ['Nøkk','FMG-9|SIX12 SD|PMR90A2','5.7 USG|D-50'],['Amaru','G8A1|SuperNova','SMG-11|ITA12S|Gonne-6'],
+  ['Kali','CSRX 300','SPSMG9|C75 Auto|P226 Mk 25'],['Iana','ARX200|G36C','Mk1 9mm|Gonne-6'],
+  ['Ace','AK-12|M1014','P9'],['Zero','SC3000K|MP7','5.7 USG|Gonne-6'],
+  ['Flores','AR33|SR-25','GSh-18'],['Osa','556xi|PDW9','PMM'],
+  ['Sens','POF9|417','SDP 9mm'],['Grim','552 Commando|SG-CQB','P229|Bailiff 410'],
+  ['Brava','PARA-308|CAMRS','USP40|Super Shorty'],['Ram','R4-C|LMG-E','Mk1 9mm'],
+  ['Deimos','AK-74M|M590A1','.44 Vendetta'],['Rauora','417|M249','Reaper MK2|GSh-18'],
+  ['Solid Snake','F2|PMR90A2','TACIT .45']
+];
+var DEF=[
+  ['Sentry','Commando 9|M870|TCSG12','C75 Auto|Super Shorty'],['Smoke','FMG-9|M590A1','P226 Mk 25|SMG-11'],
+  ['Mute','MP5K|M590A1','P226 Mk 25|SMG-11'],['Castle','UMP45|M1014','5.7 USG|Super Shorty|M45 MEUSOC'],
+  ['Pulse','UMP45|M1014','5.7 USG|M45 MEUSOC|Reaper MK2'],['Doc','MP5|P90|SG-CQB','P9|LFP586|Bailiff 410'],
+  ['Rook','MP5|P90|SG-CQB','P9|LFP586|Reaper MK2'],['Kapkan','9x19VSN|SASG-12','PMM|GSh-18'],
+  ['Tachanka','DP27|9x19VSN','PMM|GSh-18|Bearing 9'],['Jäger','416-C Carbine|M870','P12|P-10C'],
+  ['Bandit','MP7|M870','P12|Keratos .357'],['Frost','9mm C1|Super 90','Mk1 9mm|ITA12S'],
+  ['Valkyrie','MPX|SPAS-12','D-50'],['Caveira','M12|SPAS-15','Luison'],
+  ['Echo','MP5SD|SuperNova','P229|Bearing 9'],['Mira','Vector .45 ACP|ITA12L','USP40|ITA12S'],
+  ['Lesion','SIX12 SD|T-5 SMG','Q-929'],['Ela','Scorpion EVO 3 A1|FO-12','RG15'],
+  ['Vigil','K1A|BOSG.12.2','C75 Auto|SMG-12'],['Alibi','Mx4 Storm|ACS12','Keratos .357|Bailiff 410'],
+  ['Maestro','ALDA 5.56|ACS12','Keratos .357|Bailiff 410'],['Clash','CCE Shield MK2','P-10C|SPSMG9|Super Shorty'],
+  ['Kaid','AUG A3|TCSG12','.44 Mag Semi-Auto|LFP586'],['Mozzie','Commando 9|P10 RONI','SDP 9mm|Super Shorty'],
+  ['Warden','M590A1|MPX','P-10C|SMG-12'],['Goyo','Vector .45 ACP|TCSG12','P229'],
+  ['Wamai','AUG A2|MP5K','Keratos .357|P12|Super Shorty'],['Oryx','T-5 SMG|SPAS-12','Bailiff 410|USP40|Reaper MK2'],
+  ['Melusi','MP5|Super 90','RG15|ITA12S'],['Aruni','P10 RONI|Mk 14 EBR','PRB92'],
+  ['Thunderbird','Spear .308|SPAS-15','Bearing 9|Q-929|ITA12S'],['Thorn','UZK50GI|M870','1911 TACOPS|C75 Auto'],
+  ['Azami','9x19VSN|ACS12','D-50'],['Solis','P90|ITA12L','SMG-11'],
+  ['Fenrir','MP7|SASG-12','5.7 USG'],['Tubarão','MPX|AR-15.50','P226 Mk 25'],
+  ['Skopós','PCX-33','P229'],['Denari','Scorpion EVO 3 A1|FMG-9','Glaive-12|P226 Mk 25'],
+  ['Noor','Commando 9|ALDA 5.56','1911 TACOPS|Bailiff 410']
+];
+function mkRoster(list,side){return list.map(function(x){return {name:x[0],side:side,pri:x[1].split('|'),sec:x[2].split('|')};});}
+var ROSTER=mkRoster(ATK,'a').concat(mkRoster(DEF,'d'));
+function fold(s){
+  var t=String(s===undefined||s===null?'':s);
+  try{t=t.normalize('NFD');}catch(e){}
+  return t.replace(/[̀-ͯ]/g,'').replace(/[øØ]/g,'o').toLowerCase().replace(/\s+/g,' ').trim();
 }
-var OPS=['Ash','Thermite','Sledge','Thatcher','Twitch','Zofia','Ace','Iana','Buck','Hibana','Jackal','Nomad','Finka','Lion','Maverick','Kali','Amaru','Gridlock','Blitz','Montagne','Fuze','Glaz','Capitão','Dokkaebi','Ying','Nøkk','Osa','Flores','Zero','Sens','Grim','Brava','Ram','Jäger','Bandit','Mute','Smoke','Rook','Doc','Castle','Pulse','Valkyrie','Caveira','Echo','Mira','Lesion','Ela','Vigil','Maestro','Alibi','Clash','Kaid','Mozzie','Warden','Goyo','Wamai','Oryx','Melusi','Aruni','Thunderbird','Thorn','Azami','Solis','Fenrir','Tubarão'];
-var WEPS=['R4-C','ARX200','AK-12','552 Commando','Type-89','C8-SFW','F2','AR33','M4','416-C Carbine','Spear .308','Commando 9','M762','AUG A2','G36C','L85A2','Para-308','C7E','F90','M870','SG-CQB','Vector .45 ACP','MP5','MP7','UMP45','P90','SMG-11','MP5K','9x19VSN','MPX','Scorpion EVO 3 A1','T-5 SMG','M249','LMG-E','6P41','G8A1','AUG A3','K1A','Bearing 9','FMG-9'];
+function opInfo(name){
+  var f=fold(name);
+  if(!f)return null;
+  for(var i=0;i<ROSTER.length;i++){if(fold(ROSTER[i].name)===f)return ROSTER[i];}
+  return null;
+}
+function opWeps(info){return info?info.pri.concat(info.sec):[];}
+function canonWep(info,w){
+  var f=fold(w),L=opWeps(info);
+  for(var i=0;i<L.length;i++){if(fold(L[i])===f)return L[i];}
+  return null;
+}
 function nameOf(list,id){for(var i=0;i<list.length;i++){if(list[i].id===id)return list[i].name;}return String(id);}
 function capName(id){return nameOf(CAPS,id);}
 function stageById(id){return STAGES[STAGE_IDS.indexOf(id)];}
 function fv(id,v){return id==='cap'?capName(v):String(v);}
 
-/* I quattro allenamenti. "with" mostra i numeri che stai usando in quel momento, "how" li ripete nelle istruzioni. */
-function adsLine(u,def){
-  var o=(def&&def.mode==='ads')?(def.optic||'1.0x'):'1.0x';
-  return 'mirino '+o+' a '+(o==='2.5x'?u.ads25:u.ads1);
-}
+/* I quattro esercizi, tutti con L2 premuto: si tarano solo i mirini.
+   "chips" mostra i numeri che stai usando, "how" sono i passi, "goal" dice cosa allena. */
+function optKeyOf(def){return (def&&OPT_IDS.indexOf(def.id)>-1)?def.id:'ads1';}
+function adsLine(u,def){var k=optKeyOf(def);return 'mirino '+OPTIC[k]+' a '+u[k];}
 var DRILLS=[
-  {id:'trk',name:'Tracking',short:'Trk',mins:4,ask:'Quanto sei rimasto sulla testa?',
-   kind:'rate',hintLo:'1 = quasi sempre fuori',hintHi:'5 = quasi sempre sopra',
-   chips:function(u){return ['orizzontale '+u.h,'verticale '+u.v,'senza L2'];},
-   how:function(u){return ['Poligono di tiro, bersaglio che si sposta di lato.','Senza L2, tieni il mirino sulla testa mentre cammina.','30 secondi sì e 5 di pausa, fino alla fine del tempo.'];},
+  {id:'trk',name:'Tracking',short:'Trk',mins:4,kind:'rate',
+   goal:'Allena a seguire un nemico che si muove senza perderlo.',
+   ask:'Per quanto tempo il mirino è rimasto sulla testa?',
+   hint:'1 quasi mai · 2 un quarto del tempo · 3 metà · 4 tre quarti · 5 quasi sempre',
+   chips:function(u,def){return [adsLine(u,def),'L2 sempre premuto','bersaglio che cammina'];},
+   how:function(u,def){return [
+     'Nel poligono di tiro metti un bersaglio che cammina di lato, a circa 10 metri.',
+     'Tieni premuto L2 per tutto l\'esercizio: guardi dal '+adsLine(u,def)+'.',
+     'Metti il centro del mirino sulla testa e seguila mentre il bersaglio va avanti e indietro. Non sparare: muovi lo stick piano, senza scatti.',
+     'Lavora 30 secondi e riposa 5, finché il timer arriva a zero.'];},
    q:'rainbow six siege tracking aim training controller'},
-  {id:'flk',name:'Flick',short:'Flick',mins:5,ask:null,
-   kind:'ab',
-   chips:function(u,def){return def?(def.mode==='ads'?[adsLine(u,def),'L2 sempre premuto']:['orizzontale '+u.h,'verticale '+u.v,'mai L2']):['orizzontale '+u.h,'verticale '+u.v];},
-   how:function(u,def){
-     var m=(def&&def.mode==='ads')
-       ?('Tieni L2 premuto dall\'inizio alla fine, con il '+adsLine(u,def)+': giri già mirando, non premi L2 dopo aver girato.')
-       :'Niente L2, mai: giri la visuale e spari dall\'anca. Serve a tarare la sensibilità senza mirino.';
-     return [m,'Parti col mirino lontano dal bersaglio, giri di colpo e ti fermi sulla testa.','Un colpo solo, torni al centro e rifai. In tutto 20 colpi.'];},
+  {id:'flk',name:'Flick',short:'Flick',mins:5,kind:'ab',ask:null,
+   goal:'È l\'esercizio che decide il numero: dice se ti giri troppo o troppo poco.',
+   chips:function(u,def){return [adsLine(u,def),'L2 premuto dall\'inizio','20 colpi'];},
+   how:function(u,def){return [
+     'Bersaglio fermo a circa 10 metri. Premi L2 e tienilo premuto fino alla fine: ti giri già mirando, non premi L2 dopo esserti girato.',
+     'Sposta il mirino di lato finché il bersaglio è al bordo dello schermo.',
+     'Con un solo movimento deciso porta il mirino sulla testa e spara un colpo appena ti fermi. Non correggere prima di sparare.',
+     'Guarda dove è finito il colpo: oltre la testa, prima della testa o in testa. Ripeti alternando destra e sinistra, 20 colpi in tutto.'];},
    q:'rainbow six siege flick aim training controller'},
-  {id:'swi',name:'Transizioni',short:'Trans',mins:3,ask:'Quanti passaggi netti su 10?',
-   kind:'n10',hint:'Netto = arrivi sulla testa e spari senza correggere.',
-   chips:function(u,def){return [adsLine(u,def),'due bersagli','L2 premuto'];},
-   how:function(u,def){return ['Due bersagli a media distanza, distanti fra loro, con L2 premuto.','Testa del primo, spari, passi di colpo alla testa del secondo e spari.','Conta i passaggi in cui sei finito sulla testa senza aggiustare. Fai 10 passaggi.'];},
+  {id:'swi',name:'Transizioni',short:'Trans',mins:3,kind:'n10',
+   goal:'Allena a passare da un nemico all\'altro senza perdere tempo.',
+   ask:'Quanti passaggi netti su 10?',
+   hint:'Netto: il colpo sul nuovo bersaglio va in testa senza aggiustare il mirino.',
+   chips:function(u,def){return [adsLine(u,def),'L2 sempre premuto','due bersagli'];},
+   how:function(u,def){return [
+     'Due bersagli fermi a circa 10 metri, distanti tra loro circa mezzo schermo quando hai L2 premuto.',
+     'Tieni premuto L2 per tutto l\'esercizio. Mira alla testa del primo e spara un colpo.',
+     'Con un solo movimento passa alla testa del secondo e spara subito: questo è un passaggio.',
+     'Torna al primo e continua avanti e indietro: 10 passaggi in tutto.'];},
    q:'rainbow six siege target switching aim training'},
-  {id:'rec',name:'Rinculo',short:'Rinc',mins:3,ask:'Colpi dentro il bersaglio',
-   kind:'mag',
-   chips:function(u,def){return [adsLine(u,def),'bersaglio a cerchi','caricatore intero'];},
-   how:function(u){return ['Poligono di tiro, bersaglio a cerchi a media distanza. Con L2, mirino sul centro.','Svuota tutto il caricatore senza mollare il grilletto, accompagnando lo stick giù.','Guarda i fori: quanti sono dentro il bersaglio, dove è arrivato il più alto e da che parte tira il gruppo.'];},
+  {id:'rec',name:'Rinculo',short:'Rinc',mins:3,kind:'mag',
+   goal:'Allena a tenere il mirino fermo mentre spari a raffica.',
+   ask:'Quanti fori sono dentro il bersaglio?',
+   chips:function(u,def){return [adsLine(u,def),'L2 sempre premuto','caricatore intero'];},
+   how:function(u,def){return [
+     'Bersaglio a cerchi a circa 15 metri. Usa l\'arma che usi in partita e sceglila qui sotto.',
+     'Premi L2 e metti il centro del mirino al centro del bersaglio.',
+     'Tieni premuto R2 finché il caricatore è vuoto. Mentre spari tira lo stick destro verso il basso, e un po\' di lato se l\'arma tira di lato, per restare al centro.',
+     'Non ricaricare: conta i fori dentro il bersaglio e guarda dov\'è arrivato quello più in alto.'];},
    q:'rainbow six siege recoil control console tips'}
 ];
 var DRILL_IDS=DRILLS.map(function(d){return d.id;});
 var RING=['Centro','1° anello','2° anello','3° anello','Fuori'];
-var DRIFT=[[-1,'A sinistra'],[0,'Dritto'],[1,'A destra']];
+var DRIFT=[[-1,'A sinistra'],[0,'Al centro'],[1,'A destra']];
 function driftName(d){return d===null||d===undefined?null:DRIFT[d+1][1];}
 var ND=DRILLS.length;
 
@@ -561,14 +641,16 @@ function normGear(g){
 function normSetup(s){
   if(!s||typeof s!=='object')return null;
   var o=normGear(s);
-  SENS_KEYS.forEach(function(k){if(s[k]!==undefined)o[k]=clampInt(s[k],1,100);});
+  SENS_KEYS.forEach(function(k){if(s[k]!==undefined&&s[k]!==null)o[k]=clampInt(s[k],1,100);});
+  /* i round vecchi avevano 3.5x e 8.0x calcolati dentro optx */
   if(s.optx&&typeof s.optx==='object'){
-    o.optx={};
-    OPT_KEYS.forEach(function(k){if(s.optx[k]!==undefined)o.optx[k]=clampInt(s.optx[k],1,100);});
+    if(o.ads35===undefined&&s.optx['3.5']!==undefined)o.ads35=clampInt(s.optx['3.5'],1,100);
+    if(o.ads8===undefined&&s.optx['8.0']!==undefined)o.ads8=clampInt(s.optx['8.0'],1,100);
   }
   return o;
 }
-function defaultState(){return {v:3,rev:0,rounds:[],locks:{},manual:{},gear:normGear(null),carry:{},kit:{op:'',wep:'',mag:30},optx:{},seen:0};}
+function canonOp(x){var i=opInfo(x);return i?i.name:txt(x);}
+function defaultState(){return {v:4,rev:0,rounds:[],locks:{},manual:{},gear:normGear(null),carry:{},kit:{op:'',wep:'',mag:30},seen:0};}
 function normalize(r){
   var s=defaultState();
   try{
@@ -578,7 +660,9 @@ function normalize(r){
     if(Array.isArray(o.rounds)){
       o.rounds.forEach(function(x){
         if(!x||typeof x!=='object')return;
-        var st=x.stage;
+        var st=x.stage,foc=x.focus,legacy=!!x.legacy;
+        /* orizzontale e verticale non sono più fasi: i loro round restano come storico */
+        if(st==='h'||st==='v'){foc=st;st='free';legacy=true;}
         if(STAGE_IDS.indexOf(st)<0&&st!=='free')return;
         var a=clampInt(x.a,0,20),b=clampInt(x.b,0,20-a);
         var val=(st==='cap')?(CAPS.some(function(c){return c.id===x.value;})?x.value:'convessa'):(st==='free'?null:clampInt(x.value,1,100));
@@ -588,9 +672,9 @@ function normalize(r){
           drift:(x.drift===null||x.drift===undefined)?null:clampInt(x.drift,-1,1),
           recN:clampInt(x.recN===undefined?10:x.recN,1,120),
           rec:(x.rec===null||x.rec===undefined)?null:clampInt(x.rec,0,clampInt(x.recN===undefined?10:x.recN,1,120)),
-          op:txt(x.op),wep:txt(x.wep),at:String(x.at||''),
+          op:canonOp(x.op),wep:txt(x.wep),at:String(x.at||''),legacy:legacy,
           day:/^\d{4}-\d{2}-\d{2}$/.test(String(x.day||''))?x.day:parseAt(x.at),ts:Number(x.ts)||0,
-          setup:normSetup(x.setup),focus:(SENS_KEYS.indexOf(x.focus)>-1?x.focus:null)});
+          setup:normSetup(x.setup),focus:(SENS_KEYS.indexOf(foc)>-1?foc:null)});
       });
     }
     if(o.locks&&typeof o.locks==='object'){
@@ -601,10 +685,8 @@ function normalize(r){
     if(o.carry&&typeof o.carry==='object'){
       SENS_KEYS.forEach(function(k){if(o.carry[k]!==undefined)s.carry[k]=clampInt(o.carry[k],1,100);});
     }
-    if(o.kit&&typeof o.kit==='object'){s.kit={op:txt(o.kit.op),wep:txt(o.kit.wep),mag:clampInt(o.kit.mag===undefined?30:o.kit.mag,1,120)};}
-    if(o.optx&&typeof o.optx==='object'){
-      OPT_KEYS.forEach(function(k){if(!OPT_MAIN[k]&&o.optx[k]!==undefined)s.optx[k]=clampInt(o.optx[k],1,100);});
-    }
+    if(o.kit&&typeof o.kit==='object'){s.kit={op:canonOp(o.kit.op),wep:txt(o.kit.wep),mag:clampInt(o.kit.mag===undefined?30:o.kit.mag,1,120)};}
+    if(o.optx&&typeof o.optx==='object'&&s.carry.ads8===undefined&&o.optx['8.0']!==undefined)s.carry.ads8=clampInt(o.optx['8.0'],1,100);
   }catch(e){}
   return s;
 }
@@ -630,9 +712,9 @@ var calMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1),calDay=d
 var openD={'d-setup':true},demoPaused=false;
 try{demoPaused=window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
 function draftKey(){return LSD+(me?'-'+me.id:'');}
-function blankDraft(){return {sig:state.rounds.length,trk:null,a:null,b:null,swi:null,rec:null,ring:null,drift:null,mag:state.kit.mag||30,sens:{},focus:null,op:state.kit.op,wep:state.kit.wep};}
+function blankDraft(){return {sig:state.rounds.length,trk:null,a:null,b:null,swi:null,rec:null,ring:null,drift:null,mag:state.kit.mag||30,sens:{},focus:null,op:state.kit.op,wep:state.kit.wep,opFree:false,wepFree:false};}
 function loadDraft(){
-  try{var j=JSON.parse(localStorage.getItem(draftKey()));if(j&&j.sig===state.rounds.length){if(!j.sens)j.sens={};if(j.rec===undefined)j.rec=null;if(j.swi===undefined)j.swi=null;if(j.ring===undefined)j.ring=null;if(j.drift===undefined)j.drift=null;if(!j.mag)j.mag=state.kit.mag||30;if(j.op===undefined)j.op=state.kit.op;if(j.wep===undefined)j.wep=state.kit.wep;return j;}}catch(e){}
+  try{var j=JSON.parse(localStorage.getItem(draftKey()));if(j&&j.sig===state.rounds.length){if(!j.sens)j.sens={};if(j.rec===undefined)j.rec=null;if(j.swi===undefined)j.swi=null;if(j.ring===undefined)j.ring=null;if(j.drift===undefined)j.drift=null;if(!j.mag)j.mag=state.kit.mag||30;if(j.op===undefined)j.op=state.kit.op;if(j.wep===undefined)j.wep=state.kit.wep;if(!j.opFree)j.opFree=false;if(!j.wepFree)j.wepFree=false;if(OPT_IDS.indexOf(j.focus)<0)j.focus=null;return j;}}catch(e){}
   return blankDraft();
 }
 function saveDraft(){try{localStorage.setItem(draftKey(),JSON.stringify(draft));}catch(e){}}
@@ -823,7 +905,7 @@ function rScore(r){
   return w?100*v/w:0;
 }
 function deco(r,i){
-  return {n:i+1,stage:r.stage,value:r.value,a:r.a,b:r.b,trk:r.trk,pre:r.pre,swi:r.swi,rec:r.rec,recN:r.recN,ring:r.ring,drift:r.drift,op:r.op,wep:r.wep,
+  return {n:i+1,stage:r.stage,value:r.value,legacy:r.legacy,a:r.a,b:r.b,trk:r.trk,pre:r.pre,swi:r.swi,rec:r.rec,recN:r.recN,ring:r.ring,drift:r.drift,op:r.op,wep:r.wep,
     at:r.at,day:r.day,ts:r.ts,setup:r.setup,focus:r.focus,
     d:r.a-r.b,hits:20-r.a-r.b,bal:Math.abs(r.a-r.b)<=TOL,score:rScore(r)};
 }
@@ -903,7 +985,9 @@ function computePlan(){
       res=solveCap(rounds,ref,T,state.manual.cap||null);
       st.ref=ref;st.T=T;st.delta=res.delta;st.score=res.score;st.tested=res.tested;
     }else{
-      st.start=(def.id==='ads25')?clampV(vals.ads1-2):def.init;
+      if(def.id==='ads25')st.start=clampV(vals.ads1-2);
+      else if(def.id==='ads35')st.start=optFit(optPts(vals,['ads1','ads25']))(3.5);
+      else st.start=def.init;
       res=solveNum(st.start,rounds,state.locks[def.id]);
       st.lo=res.lo;st.hi=res.hi;
       if(res.done&&res.reason==='confirmed'){
@@ -916,11 +1000,14 @@ function computePlan(){
     else{st.status='active';if(cur<0)cur=i;}
     if(st.status==='done')vals[def.id]=st.final;
     else if(st.status==='active')vals[def.id]=st.next;
+    else if(def.kind==='num')vals[def.id]=st.start;
     prevDone=prevDone&&res.done;
     stages.push(st);
   });
   var finished=(cur<0);
-  if(finished){SENS_KEYS.forEach(function(k){if(state.carry[k]!==undefined)vals[k]=state.carry[k];});}
+  if(finished){PATH_KEYS.forEach(function(k){if(state.carry[k]!==undefined)vals[k]=state.carry[k];});}
+  vals.ads8=(state.carry.ads8!==undefined)?state.carry.ads8:optFit(optPts(vals))(8);
+  OTHER_KEYS.forEach(function(k){if(state.carry[k]!==undefined)vals[k]=state.carry[k];});
   return {stages:stages,cur:(finished?NS:cur),vals:vals,finished:finished,T:Math.max(MIN_T,noise.length?mean(noise):0)};
 }
 function explain(st){
@@ -1109,7 +1196,7 @@ function demoTrk(){
 function demoFlk(vert){
   var P=vert
     ?[{dx:0,dy:34,l:'Mirino troppo in alto',c:'bad'},{dx:0,dy:-30,l:'Mirino troppo in basso',c:'bad'},{dx:0,dy:0,l:'Sulla testa',c:'ok'}]
-    :[{dx:-26,dy:0,l:'Superata',c:'bad'},{dx:30,dy:0,l:'Corta',c:'bad'},{dx:0,dy:0,l:'Sulla testa',c:'ok'}];
+    :[{dx:-26,dy:0,l:'Oltre la testa',c:'bad'},{dx:30,dy:0,l:'Prima della testa',c:'bad'},{dx:0,dy:0,l:'In testa',c:'ok'}];
   var N=P.length,L=1/N,dur=(N*3)+'s';
   var s0=vert?'0 70':'112 0';
   var pts=[],ft=[],labels='',hits='';
@@ -1127,7 +1214,7 @@ function demoFlk(vert){
   var fl={v:'0;0;1;0;0',k:[0,0.17*L,0.19*L,0.22*L,1]};
   var world='<g><g>'+mv(pts.map(function(p){return p[1];}).join(';'),pts.map(function(p){return p[0];}),dur)+wallBits()+
     '<g transform="translate('+CX+' '+CY+')">'+target(hitG)+'</g></g></g>';
-  return scene(0.6,'Tre flick: uno oltre la testa, uno corto e uno centrato',world+cross()+gun(fl,dur)+labels);
+  return scene(0.6,'Tre flick: uno oltre la testa, uno che si ferma prima e uno in testa',world+cross()+gun(fl,dur)+labels);
 }
 function demoPre(){
   var dur='6s';
@@ -1190,7 +1277,7 @@ function demoSwi(){
 function demoHtml(D,def){
   var svg,q=D.q;
   if(D.id==='trk')svg=demoTrk();
-  else if(D.id==='flk')svg=demoFlk(def&&def.id==='v');
+  else if(D.id==='flk')svg=demoFlk(false);
   else if(D.id==='swi')svg=demoSwi();
   else svg=demoRec();
   return '<figure class="demo">'+svg+
@@ -1213,8 +1300,8 @@ function applyDemo(){
 /* Incrocio i round del periodo scelto: punteggio, sensibilità usate, operatore e arma. Una differenza conta solo se supera la soglia di rumore e se i due gruppi hanno almeno 2 round. */
 var anP='all',anFrom='',anTo='',anTrend=null,anTrendI=0;
 function cmpDay(a,b){return a.day<b.day?-1:(a.day>b.day?1:a.n-b.n);}
-function comboKey(s){return SENS_KEYS.map(function(k){return s[k];}).join('/');}
-function comboLabel(s){return s.h+'/'+s.v+' · '+s.ads1+'/'+s.ads25;}
+function comboKey(s){return OPT_IDS.map(function(k){return (s[k]===undefined||s[k]===null)?'–':s[k];}).join('/');}
+function comboLabel(s){return comboKey(s);}
 function kitLabel(r){
   var o=txt(r.op),w=txt(r.wep);
   if(!o&&!w)return null;
@@ -1279,7 +1366,7 @@ function analyze(P){
     A.best={c:b,weak:!el.length,restAvg:ra,diff:b.score-ra,late:separated(b.rs,rest)};
   }
 
-  SENS_KEYS.forEach(function(k){
+  OPT_IDS.forEach(function(k){
     var items=groupBy(ss,function(r){return r.setup[k];}).map(function(it){
       it.v=Number(it.key);
       var fr=it.rs.filter(function(r){return r.focus===k;});
@@ -1436,7 +1523,7 @@ function stpHtml(act,k,val,opts){
 }
 function usedSens(P){
   var o={};
-  SENS_KEYS.forEach(function(k){o[k]=(draft.sens[k]!==undefined)?draft.sens[k]:P.vals[k];});
+  SENS_KEYS.forEach(function(k){o[k]=(PATH_KEYS.indexOf(k)>-1&&draft.sens[k]!==undefined)?draft.sens[k]:P.vals[k];});
   return o;
 }
 function selHtml(key,list,val,label){
@@ -1447,44 +1534,60 @@ function gnHtml(key,val,label,signed){
   return '<div class="fs-row"><span class="l">'+esc(label)+'</span>'+
     stpHtml('gearn',key,val,{fmt:function(v){return (signed&&v>0?'+':'')+v+(signed?'':'%');}})+'</div>';
 }
+function optHtml(v,cur){return '<option value="'+esc(v)+'"'+(v===cur?' selected':'')+'>'+esc(v)+'</option>';}
 function kitHtml(){
-  return '<div class="two-in"><label><span class="lbl">Operatore</span><input class="txt-in" list="dl-op" data-act="kit" data-k="op" value="'+esc(draft.op||'')+'" placeholder="es. Ash" autocomplete="off"></label>'+
-    '<label><span class="lbl">Arma</span><input class="txt-in" list="dl-wep" data-act="kit" data-k="wep" value="'+esc(draft.wep||'')+'" placeholder="es. R4-C" autocomplete="off"></label></div>';
-}
-function opticsHtml(P){
-  var u=usedSens(P),o=opticVals(Object.assign({},P.vals,u)),rows='',own=0;
-  OPT_Z.forEach(function(z){
-    var k=optKey(z);
-    if(OPT_MAIN[k]){
-      rows+='<div class="fs-row"><span class="l">'+optLbl(z)+'</span><span class="opt-v">'+o[k]+'</span></div>';
-    }else{
-      if(state.optx[k]!==undefined)own++;
-      rows+='<div class="fs-row"><span class="l">'+optLbl(z)+(state.optx[k]!==undefined?'<span class="tag">tuo</span>':'')+'</span>'+stpHtml('optx',k,o[k],{})+'</div>';
-    }
-  });
-  var body='<div class="setup-b"><p class="note">L\'1.0x e il 2.5x arrivano dal percorso. Gli altri li calcolo da quei due e puoi correggerli. Se un\'ottica non c\'è nel tuo menù, salta la riga.</p>'+
-    '<div class="fs">'+rows+'</div>'+
-    (own?'<button class="btn ghost" data-act="optxreset" type="button">Ricalcola tutti</button>':'')+'</div>';
-  return det('d-opt','more','<span>Tutti i mirini del gioco</span><span class="sm">'+o['1.0']+' → '+o['12.0']+'</span>',body);
+  var op=draft.op||'',info=opInfo(op),opFree=!!draft.opFree||(!!op&&!info),wep=draft.wep||'';
+  var cur=info?info.name:'';
+  function grp(side,label){
+    return '<optgroup label="'+label+'">'+ROSTER.filter(function(r){return r.side===side;}).map(function(r){return r.name;})
+      .sort(function(a,b){return fold(a)<fold(b)?-1:1;}).map(function(n){return optHtml(n,cur);}).join('')+'</optgroup>';
+  }
+  var opSel='<select class="sel" id="k-op" data-act="kitop" aria-label="Operatore">'+
+    '<option value=""'+(!info&&!opFree?' selected':'')+'>Scegli l\'operatore</option>'+grp('a','Attaccanti')+grp('d','Difensori')+
+    '<option value="__other"'+(opFree?' selected':'')+'>Altro: lo scrivo io</option></select>';
+  var opTxt=opFree?'<input class="txt-in" data-act="kit" data-k="op" value="'+esc(op)+'" placeholder="Nome operatore" autocomplete="off" aria-label="Nome operatore">':'';
+  var wepCtl;
+  if(info){
+    var known=canonWep(info,wep),free=!!draft.wepFree||(!!wep&&!known);
+    wepCtl='<select class="sel" id="k-wep" data-act="kitwep" aria-label="Arma">'+
+      (!known&&!free?'<option value="" selected>Scegli l\'arma</option>':'')+
+      '<optgroup label="Principali">'+info.pri.map(function(w){return optHtml(w,known);}).join('')+'</optgroup>'+
+      '<optgroup label="Secondarie">'+info.sec.map(function(w){return optHtml(w,known);}).join('')+'</optgroup>'+
+      '<option value="__other"'+(free?' selected':'')+'>Altra: la scrivo io</option></select>'+
+      (free?'<input class="txt-in" data-act="kit" data-k="wep" value="'+esc(wep)+'" placeholder="Nome arma" autocomplete="off" aria-label="Nome arma">':'');
+  }else if(opFree){
+    wepCtl='<input class="txt-in" data-act="kit" data-k="wep" value="'+esc(wep)+'" placeholder="Nome arma" autocomplete="off" aria-label="Nome arma">';
+  }else{
+    wepCtl='<select class="sel" id="k-wep" disabled aria-label="Arma"><option>Prima scegli l\'operatore</option></select>';
+  }
+  return '<div class="two-in kit"><div class="kit-f"><span class="lbl">Operatore</span>'+opSel+opTxt+'</div>'+
+    '<div class="kit-f"><span class="lbl">Arma</span>'+wepCtl+'</div></div>';
 }
 function setupHtml(P,activeId){
   var u=usedSens(P),g=state.gear,chg=[];
-  SENS_KEYS.forEach(function(k){if(u[k]!==P.vals[k])chg.push(k);});
+  PATH_KEYS.forEach(function(k){if(u[k]!==P.vals[k])chg.push(k);});
   var warn=[];
   var others=chg.filter(function(k){return k!==activeId;});
-  if(others.length)warn.push('Hai cambiato anche '+others.map(function(k){return stageById(k).tab;}).join(', ')+': il risultato sarà meno chiaro.');
-  if(activeId==='cap'&&g.rcap!=='convessa')warn.push('La cappetta montata non è la convessa del test.');
+  if(others.length)warn.push('Hai cambiato anche '+others.map(function(k){return KEY_NAME[k];}).join(', ')+': il risultato sarà meno chiaro.');
+  if(activeId==='cap'&&g.rcap!=='convessa')warn.push('La cappetta montata non è la Convesso alto del test.');
   if(P.finished&&g.rcap!==P.vals.cap)warn.push('Cappetta diversa da quella scelta ('+capName(P.vals.cap)+').');
-  var sum='<span>Sensibilità che usi ora</span><span class="sm">'+u.h+'/'+u.v+' · '+u.ads1+'/'+u.ads25+'</span>';
+  var sum='<span>Sensibilità che usi ora</span><span class="sm">'+OPT_IDS.map(function(k){return u[k];}).join(' · ')+'</span>';
   var gear=det('d-gear','more','Cappette, curve e deadzone','<div class="setup-b">'+
     '<div class="fs"><div class="lbl">Stick destro</div>'+selHtml('rcap',CAPS,g.rcap,'Cappetta')+selHtml('rc',CURVES,g.rc,'Curva')+gnHtml('rm',g.rm,'Regolazione',true)+gnHtml('rd',g.rd,'Deadzone',false)+'</div>'+
     '<div class="fs"><div class="lbl">Stick sinistro</div>'+selHtml('lcap',CAPS,g.lcap,'Cappetta')+selHtml('lc',CURVES,g.lc,'Curva')+gnHtml('lm',g.lm,'Regolazione',true)+gnHtml('ld',g.ld,'Deadzone',false)+'</div></div>');
-  var body='<div class="setup-b"><p class="note">Qui dentro metti i numeri che hai davvero nel gioco adesso. Si salvano con il round.</p>'+
-    '<div class="sens-grid">'+SENS_KEYS.map(function(k){
-      return '<div class="field"><div class="lbl">'+esc(stageById(k).name)+(chg.indexOf(k)>-1?'<span class="tag">cambiato</span>':'')+'</div>'+stpHtml('sens',k,u[k],{five:true})+'</div>';
-    }).join('')+'</div>'+kitHtml()+
+  function field(k){
+    var tag=(chg.indexOf(k)>-1)?'<span class="tag">cambiato</span>':'';
+    if(k==='ads8')tag=(state.carry.ads8===undefined)?'<span class="tag soft">calcolato</span>':'<span class="tag">tuo</span>';
+    return '<div class="field"><div class="lbl">'+esc(KEY_NAME[k])+tag+'</div>'+stpHtml('sens',k,u[k],{five:true})+'</div>';
+  }
+  var hv='<div class="hv"><div class="lbl">Orizzontale e verticale</div><p class="hint">Solo da segnare: non le taro, il lavoro è tutto sui mirini.</p>'+
+    '<div class="sens-grid">'+OTHER_KEYS.map(function(k){return '<div class="field"><div class="lbl">'+esc(KEY_NAME[k])+'</div>'+stpHtml('sens',k,u[k],{five:true})+'</div>';}).join('')+'</div></div>';
+  var body='<div class="setup-b"><p class="note">Scrivi qui i numeri che hai davvero nel gioco adesso: si salvano con il round.</p>'+
+    '<div class="sens-grid">'+OPT_IDS.map(field).join('')+'</div>'+
+    (state.carry.ads8!==undefined?'<button class="btn ghost" data-act="ads8reset" type="button">Ricalcola l\'8.0x dagli altri mirini</button>'
+      :'<p class="hint">L\'8.0x lo calcolo dagli altri mirini. Se nel gioco hai un numero diverso, correggilo qui.</p>')+
     warn.map(function(w){return '<p class="warn-t">'+esc(w)+'</p>';}).join('')+
-    (chg.length?'<button class="btn ghost" data-act="sensreset" type="button">Rimetti i valori consigliati</button>':'')+opticsHtml(P)+gear+'</div>';
+    (chg.length?'<button class="btn ghost" data-act="sensreset" type="button">Rimetti i valori consigliati</button>':'')+hv+gear+'</div>';
   return det('d-setup','card setup',sum,body);
 }
 function rateHtml(key,val){
@@ -1492,10 +1595,11 @@ function rateHtml(key,val){
   for(var n=1;n<=5;n++)b+='<button type="button" data-act="rate" data-k="'+key+'" data-v="'+n+'" aria-pressed="'+(val===n)+'">'+n+'</button>';
   return '<div class="seg">'+b+'</div>';
 }
+function curFocus(){return OPT_IDS.indexOf(draft.focus)>-1?draft.focus:'ads1';}
 function focusHtml(){
-  var f=draft.focus||'h';
-  return '<div class="field"><div class="ask">Che numero stai provando?</div><div class="seg four">'+
-    SENS_KEYS.map(function(k){return '<button type="button" data-act="focus" data-s="'+k+'" aria-pressed="'+(f===k)+'">'+esc(stageById(k).tab)+'</button>';}).join('')+'</div></div>';
+  var f=curFocus();
+  return '<div class="field"><div class="ask">Quale mirino stai provando?</div><div class="seg four">'+
+    OPT_IDS.map(function(k){return '<button type="button" data-act="focus" data-s="'+k+'" aria-pressed="'+(f===k)+'">'+esc(OPTIC[k])+'</button>';}).join('')+'</div></div>';
 }
 function drillDone(D){
   if(D.id==='flk')return draft.a!==null&&draft.b!==null;
@@ -1505,28 +1609,29 @@ function drillCard(P,used,def,maint){
   var D=DRILLS[dstep],body='';
   if(D.kind==='rate'){
     body='<div class="field"><div class="ask">'+esc(D.ask)+'</div>'+rateHtml('trk',draft.trk)+
-      '<p class="hint">'+esc(D.hintLo)+' · '+esc(D.hintHi)+'</p></div>';
+      '<p class="hint">'+esc(D.hint)+'</p></div>';
   }else if(D.kind==='n10'){
     body='<div class="field"><div class="ask">'+esc(D.ask)+'</div>'+stpHtml('num','swi',draft.swi,{wide:true,big:true,five:true})+
       '<p class="hint">'+esc(D.hint)+'</p></div>';
   }else if(D.kind==='mag'){
-    body='<div class="field"><div class="ask">Colpi del caricatore</div>'+stpHtml('num','mag',draft.mag,{wide:true,five:true})+
-      '<p class="hint">Quanti colpi ha il caricatore dell\'arma che stai usando.</p></div>'+
+    body='<div class="field"><div class="ask">Con che operatore e arma?</div>'+kitHtml()+'</div>'+
+      '<div class="field"><div class="ask">Colpi del caricatore</div>'+stpHtml('num','mag',draft.mag,{wide:true,five:true})+
+      '<p class="hint">Quanti colpi ha il caricatore pieno: li vedi nel contatore delle munizioni.</p></div>'+
       '<div class="field"><div class="ask">'+esc(D.ask)+'</div>'+stpHtml('num','rec',draft.rec,{wide:true,big:true,five:true})+
-      '<p class="hint">Fori rimasti dentro il bersaglio, sul caricatore intero.</p></div>'+
+      '<p class="hint">Conta i fori dentro il cerchio più grande, su tutto il caricatore.</p></div>'+
       (draft.rec===null?'':'<p class="res">'+draft.rec+' su '+draft.mag+'</p>')+
-      '<div class="field"><div class="ask">Il foro più in alto dov\'è arrivato?</div><div class="seg">'+
+      '<div class="field"><div class="ask">Dov\'è arrivato il foro più in alto?</div><div class="seg">'+
       RING.map(function(x,i){return '<button type="button" data-act="ring" data-v="'+i+'" aria-pressed="'+(draft.ring===i)+'">'+esc(x)+'</button>';}).join('')+
-      '</div><p class="hint">Parti mirando al centro: l\'anello del foro più alto dice quanto ti è salito il mirino.</p></div>'+
-      '<div class="field"><div class="ask">Il gruppo di fori tira…</div><div class="seg">'+
+      '</div><p class="hint">Hai iniziato dal centro: più è lontano, più il mirino ti è salito.</p></div>'+
+      '<div class="field"><div class="ask">Da che parte vanno i fori?</div><div class="seg">'+
       DRIFT.map(function(x){return '<button type="button" data-act="drift" data-v="'+x[0]+'" aria-pressed="'+(draft.drift===x[0])+'">'+esc(x[1])+'</button>';}).join('')+
-      '</div><p class="hint">Queste due non entrano nel punteggio: servono a darti il consiglio giusto. Puoi saltarle.</p></div>';
+      '</div><p class="hint">Il foro più alto entra nel calcolo della sensibilità, la direzione è un promemoria. Puoi saltarle.</p></div>';
   }else if(D.kind==='ab'){
     var hits=(draft.a===null)?null:20-draft.a-draft.b;
     body=(maint?focusHtml():'')+
-      '<div class="field"><div class="ask">'+esc(def.la)+' su 20 colpi</div>'+stpHtml('num','a',draft.a,{wide:true,big:true})+'<p class="hint">'+esc(def.ha)+'</p></div>'+
-      '<div class="field"><div class="ask">'+esc(def.lb)+' su 20 colpi</div>'+stpHtml('num','b',draft.b,{wide:true,big:true})+'<p class="hint">'+esc(def.hb)+'</p></div>'+
-      (hits===null?'':'<p class="res">Sulla testa: '+hits+' su 20</p>');
+      '<div class="field"><div class="ask">'+esc(def.la)+': quante volte su 20?</div>'+stpHtml('num','a',draft.a,{wide:true,big:true})+'<p class="hint">'+esc(def.ha)+'</p></div>'+
+      '<div class="field"><div class="ask">'+esc(def.lb)+': quante volte su 20?</div>'+stpHtml('num','b',draft.b,{wide:true,big:true})+'<p class="hint">'+esc(def.hb)+'</p></div>'+
+      (hits===null?'':'<p class="res">In testa: '+hits+' su 20</p>');
   }
   var dots=DRILLS.map(function(X,i){
     return '<button type="button" data-act="dstep" data-i="'+i+'"'+(i===dstep?' aria-current="step"':'')+' class="'+(drillDone(X)?'ok':'')+'" aria-label="Allenamento '+(i+1)+': '+esc(X.name)+(drillDone(X)?', fatto':'')+'">'+esc(X.short)+(drillDone(X)?' ✓':'')+'</button>';
@@ -1537,6 +1642,7 @@ function drillCard(P,used,def,maint){
   return '<section class="card">'+
     '<div class="steps-h"><span class="dr-n">Allenamento '+(dstep+1)+' di '+ND+'</span><div class="dots">'+dots+'</div></div>'+
     '<div class="dr-h"><h2>'+esc(D.name)+'</h2><span class="note">'+D.mins+' minuti</span></div>'+
+    '<p class="goal-t">'+esc(D.goal)+'</p>'+
     '<div class="with">'+D.chips(used,def).map(function(c){return '<span>'+esc(c)+'</span>';}).join('')+'</div>'+
     demoHtml(D,def)+
     '<ol class="how num">'+D.how(used,def).map(function(h){return '<li>'+esc(h)+'</li>';}).join('')+'</ol>'+
@@ -1547,32 +1653,39 @@ function drillCard(P,used,def,maint){
 }
 function welcome(){
   return '<section class="card"><h2>Benvenuto</h2>'+
-    '<p class="lead">Ti aiuto a trovare le sensibilità giuste, un numero per volta.</p>'+
-    '<ol class="how num"><li>Ti dico un numero da mettere nel gioco.</li><li>Fai 15 minuti di riscaldamento guidato.</li><li>Scrivi i risultati: io calcolo il numero dopo.</li></ol>'+
+    '<p class="lead">Ti aiuto a trovare la sensibilità giusta per ogni mirino, un numero per volta.</p>'+
+    '<ol class="how num"><li>Ti dico un numero da mettere nel gioco.</li><li>Fai 15 minuti di esercizi nel poligono di tiro, sempre con L2 premuto.</li><li>Scrivi i risultati: io calcolo il numero da provare dopo.</li></ol>'+
     '<p class="note">Bastano 2-3 sere a settimana. Puoi fermarti quando vuoi: i dati restano.</p>'+
     '<button class="btn pri big block" data-act="start" type="button">Inizia</button></section>';
+}
+function valRows(P,skip){
+  var L=OPT_IDS.filter(function(k){return k!==skip;}).map(function(k){return [KEY_NAME[k]+(k==='ads8'&&state.carry.ads8===undefined?' (calcolato)':''),String(P.vals[k])];});
+  if(skip!=='cap')L.push(['Cappetta stick destro',capName(P.vals.cap)]);
+  return L.map(function(x){return '<div class="o"><span>'+esc(x[0])+'</span><span class="v">'+esc(x[1])+'</span></div>';}).join('');
 }
 function renderToday(P){
   ensureDraft();
   if(!state.seen&&!state.rounds.length)return welcome();
   var maint=P.finished;
   var st=maint?null:P.stages[P.cur];
-  var def=maint?stageById(draft.focus||'h'):st.def;
+  var def=maint?defFor(curFocus()):st.def;
   var used=usedSens(P);
   var round=state.rounds.length+1,plate;
   if(maint){
     plate='<div class="card plate"><header class="plate-h"><span class="r-no">Round '+round+'</span><span class="r-meta">Mantenimento</span></header><div class="plate-b">'+
       '<div class="lbl">I tuoi numeri</div>'+
-      '<div class="final-vals">'+STAGES.map(function(d){return '<div class="o"><span>'+esc(d.name)+'</span><span class="v">'+esc(fv(d.id,P.vals[d.id]))+'</span></div>';}).join('')+'</div>'+
+      '<div class="final-vals">'+valRows(P,null)+'</div>'+
       '<p class="why">Continua a registrare le sessioni: nei Consigli trovi cosa ritoccare.</p></div></div>';
   }else{
-    var d0=st.def,val=(d0.kind==='cap')?capName('convessa'):st.next;
+    var d0=st.def,u0=usedSens(P);
+    /* primo round di un mirino: si parte dal numero che hai scritto nel riquadro, se l'hai cambiato */
+    var val=(d0.kind==='cap')?capName('convessa'):((!st.rounds.length&&draft.sens[d0.id]!==undefined)?draft.sens[d0.id]:st.next);
     var why=explain(st);
     if(!why){
       var pv=(P.cur>0)?P.stages[P.cur-1]:null;
       why=(pv?('Fase "'+pv.def.tab+'" chiusa a '+fv(pv.def.id,pv.final)+'. '):'')+d0.intro;
     }
-    var was=(d0.kind==='cap')?('cappetta attualmente usata: '+capName(state.gear.rcap)):(st.rounds.length?('ultimo provato: '+st.rounds[st.rounds.length-1].value):('sensibilità attualmente usata: '+BASE[d0.id]));
+    var was=(d0.kind==='cap')?('cappetta attualmente usata: '+capName(state.gear.rcap)):(st.rounds.length?('ultimo provato: '+st.rounds[st.rounds.length-1].value):('sensibilità attualmente usata: '+u0[d0.id]));
     var lockBtn='';
     if(d0.kind!=='cap'&&st.rounds.length){
       lockBtn='<button class="btn ghost" data-act="lock" type="button">Mi va bene '+esc(st.rounds[st.rounds.length-1].value)+', chiudi la fase</button>';
@@ -1580,9 +1693,7 @@ function renderToday(P){
     plate='<div class="card plate"><header class="plate-h"><span class="r-no">Round '+round+'</span><span class="r-meta">Fase '+(P.cur+1)+' di '+NS+'</span></header><div class="plate-b">'+
       '<div class="setting"><div class="lbl">Metti nel gioco</div><div class="s-name">'+esc(d0.name)+'</div><div class="s-val'+(d0.kind==='cap'?' txt':'')+'">'+esc(val)+'</div><div class="s-was">'+esc(was)+'</div></div>'+
       '<p class="why">'+esc(why)+'</p>'+lockBtn+
-      det('d-more','more','Gli altri numeri','<div class="others">'+STAGES.filter(function(d){return d.id!==d0.id;}).map(function(d){
-        return '<div class="o"><span>'+esc(d.name)+'</span><span class="v">'+esc(fv(d.id,P.vals[d.id]))+'</span></div>';
-      }).join('')+'</div>')+'</div></div>';
+      det('d-more','more','Gli altri numeri','<div class="others">'+valRows(P,d0.id)+'</div>')+'</div></div>';
   }
   var miss=DRILLS.filter(function(D){return !drillDone(D);});
   var ok=!miss.length;
@@ -1594,21 +1705,23 @@ function renderToday(P){
 /* ---------- Progressi ---------- */
 function setupLine(s){
   if(!s)return 'non registrate';
-  return SENS_KEYS.map(function(k){return s[k];}).join(' / ');
+  var o=OPT_IDS.filter(function(k){return s[k]!==undefined;}).map(function(k){return SHORT[k]+' '+s[k];}).join(' · ');
+  var hv=OTHER_KEYS.filter(function(k){return s[k]!==undefined;}).map(function(k){return SHORT[k].toLowerCase()+' '+s[k];}).join(' · ');
+  return [o,hv].filter(Boolean).join(' · ')||'–';
 }
 function stickLine(c,m,d,cap){return capName(cap)+', '+nameOf(CURVES,c)+(m?(' '+(m>0?'+':'')+m):'')+', deadzone '+d+'%';}
 function roundCard(r){
-  var def=(r.stage==='free')?(r.focus?stageById(r.focus):null):stageById(r.stage);
-  var title=(r.stage==='free')?('Mantenimento'+(def?' · '+def.tab:'')):def.name;
+  var def=(r.stage==='free')?null:stageById(r.stage);
+  var title=(r.stage==='free')?(r.legacy?((KEY_NAME[r.focus]||'Fase vecchia')+' (vecchio percorso)'):('Mantenimento'+(r.focus?' · '+KEY_NAME[r.focus]:''))):def.name;
   var s=r.setup,kit=kitLabel(r);
   var val=(r.stage==='free'||r.value===null)?'':(' · '+fv(r.stage,r.value));
   return '<div class="rd"><div class="rd-h"><b>R'+r.n+' · '+esc(title)+esc(val)+'</b><span>'+esc(fmtT(r.ts))+'</span></div>'+
     '<div class="kv">'+
     '<div><span class="k">Sensibilità</span><span class="x">'+esc(setupLine(s))+'</span></div>'+
     '<div><span class="k">Punteggio</span><span class="x">'+nf(r.score,0)+' su 100</span></div>'+
-    '<div><span class="k">Flick</span><span class="x">'+r.a+' / '+r.b+' · testa '+r.hits+'/20</span></div>'+
+    '<div><span class="k">Flick</span><span class="x">oltre '+r.a+' · prima '+r.b+' · in testa '+r.hits+'/20</span></div>'+
     '<div><span class="k">Trk · Trans · Rinc</span><span class="x">'+r.trk+' · '+(r.swi===null?(r.pre===null?'–':'pre '+r.pre):r.swi+'/10')+' · '+(r.rec===null?'–':r.rec+'/'+(r.recN||10))+'</span></div>'+
-    ((r.ring!==null&&r.ring!==undefined)||(r.drift!==null&&r.drift!==undefined)?'<div><span class="k">Rosa dei colpi</span><span class="x">'+esc([(r.ring===null||r.ring===undefined)?null:RING[r.ring],driftName(r.drift)].filter(Boolean).join(' · '))+'</span></div>':'')+
+    ((r.ring!==null&&r.ring!==undefined)||(r.drift!==null&&r.drift!==undefined)?'<div><span class="k">Fori del rinculo</span><span class="x">'+esc([(r.ring===null||r.ring===undefined)?null:RING[r.ring],driftName(r.drift)].filter(Boolean).join(' · '))+'</span></div>':'')+
     (kit?'<div><span class="k">Operatore e arma</span><span class="x">'+esc(kit)+'</span></div>':'')+
     (s?'<div><span class="k">Stick destro</span><span class="x">'+esc(stickLine(s.rc,s.rm,s.rd,s.rcap))+'</span></div>':'')+
     '</div></div>';
@@ -1640,14 +1753,14 @@ function renderProg(P){
     wk.map(function(w){
       return '<tr><td>'+esc(fmtD(w.start))+' – '+esc(fmtD(w.end))+'</td><td class="num">'+w.days+'</td><td class="num">'+w.n+'</td><td class="num">'+nf(w.score,0)+'</td><td class="num">'+(w.delta===null?'–':'<span class="'+(w.delta>0?'pos':(w.delta<0?'neg':''))+'">'+sgn(w.delta)+'</span>')+'</td></tr>';
     }).join('')+'</tbody></table></div></section>'):'';
-  var stages='<section class="card"><h2>Le cinque fasi</h2><div class="others">'+P.stages.map(function(st){
+  var stages='<section class="card"><h2>Le fasi del percorso</h2><div class="others">'+P.stages.map(function(st){
     var v=(st.status==='done')?fv(st.def.id,st.final):(st.status==='active'?(st.def.kind==='cap'?capName('convessa'):String(st.next)):'–');
     var chip=(st.status==='done')?'<span class="st-chip done">Fatta</span>':(st.status==='active'?'<span class="st-chip cur">In corso</span>':'<span class="st-chip">Da fare</span>');
     return '<div class="o"><span>'+esc(st.def.name)+' '+chip+'</span><span class="v">'+esc(v)+'</span></div>';
   }).join('')+'</div>'+
   det('d-stg','more','Grafico e round di ogni fase',(function(){
-    var vs=viewStage||STAGES[Math.min(P.cur,3)].id;
-    if(vs==='cap')vs='ads25';
+    var vs=viewStage||STAGES[Math.min(P.cur,NS-2)].id;
+    if(vs==='cap'||stageIdx(vs)<0)vs='ads35';
     var vst=P.stages[stageIdx(vs)];
     var chips=STAGES.filter(function(d){return d.kind==='num';}).map(function(d){
       return '<button type="button" class="cs" data-act="view" data-s="'+d.id+'" aria-pressed="'+(d.id===vs)+'">'+esc(d.tab)+'</button>';
@@ -1670,27 +1783,28 @@ function tablesHtml(A){
   var t2=A.combos.length?'<div class="tw"><table><thead><tr><th>Combinazione</th><th>Round</th><th>Sere</th><th>Punti</th></tr></thead><tbody>'+
     A.combos.map(function(c){return '<tr><td class="num">'+esc(c.label)+'</td><td class="num">'+c.n+'</td><td class="num">'+c.days+'</td><td class="num">'+nf(c.score,1)+'</td></tr>';}).join('')+'</tbody></table></div>':'';
   var rows='';
-  SENS_KEYS.forEach(function(k){
+  OPT_IDS.forEach(function(k){
     A.params[k].items.forEach(function(it){
-      rows+='<tr><td>'+esc(stageById(k).tab)+'</td><td class="num">'+it.v+'</td><td class="num">'+it.n+'</td><td class="num">'+nf(it.score,1)+'</td><td class="num">'+(it.md===null?'–':sgn(it.md)+' ('+it.fn+')')+'</td></tr>';
+      rows+='<tr><td>'+esc(SHORT[k])+'</td><td class="num">'+it.v+'</td><td class="num">'+it.n+'</td><td class="num">'+nf(it.score,1)+'</td><td class="num">'+(it.md===null?'–':sgn(it.md)+' ('+it.fn+')')+'</td></tr>';
     });
   });
-  var t3=rows?'<div class="tw"><table><thead><tr><th>Sensibilità</th><th>Valore</th><th>Round</th><th>Punti</th><th>Sup.−cor.</th></tr></thead><tbody>'+rows+'</tbody></table></div>':'';
+  var t3=rows?'<div class="tw"><table><thead><tr><th>Mirino</th><th>Valore</th><th>Round</th><th>Punti</th><th>Oltre−prima</th></tr></thead><tbody>'+rows+'</tbody></table></div>':'';
   return det('d-antab','more','Vedi i numeri','<div class="setup-b"><div class="lbl">Per giorno</div>'+t1+(t2?'<div class="lbl">Per combinazione</div>'+t2:'')+(t3?'<div class="lbl">Per singolo valore</div>'+t3:'')+'</div>');
 }
 function kitTable(A){
-  if(!A.kits.length)return '<section class="card"><h2>Operatore e arma</h2><p class="note">Scrivi operatore e arma nel riquadro delle sensibilità: qui vedrai con cosa vai meglio.</p></section>';
+  if(!A.kits.length)return '<section class="card"><h2>Operatore e arma</h2><p class="note">Nell\'esercizio del rinculo scegli operatore e arma: qui vedrai con cosa vai meglio.</p></section>';
   return '<section class="card"><h2>Operatore e arma</h2><div class="tw"><table><thead><tr><th>Operatore · arma</th><th>Round</th><th>Punti</th><th>Rinculo</th></tr></thead><tbody>'+
     A.kits.map(function(k){
       return '<tr><td>'+esc(k.key)+'</td><td class="num">'+k.n+'</td><td class="num">'+nf(k.score,1)+'</td><td class="num">'+(k.rec===null?'–':nf(k.rec,0)+'%')+'</td></tr>';
     }).join('')+'</tbody></table></div><p class="hint">Con meno di 2 round per riga è presto per confrontare.</p></section>';
 }
 
-/* ---------- modello delle sensibilità ---------- */
-/* Per ogni sensibilità prendo tutti i round di flick fatti su quella sensibilità e metto in relazione il valore usato con superate − corte.
+/* ---------- modello delle sensibilità (solo mirini) ---------- */
+/* Per ogni mirino prendo tutti i round di flick fatti con quel mirino e metto in relazione il valore usato con (oltre − prima).
    Una retta ai minimi quadrati dice dove le due cose si pareggiano: è il valore di comfort.
-   La stessa retta dice fin dove puoi salire prima di superare la testa più di LIM_OVER volte su 20: è l'obiettivo di velocità.
-   Poi correggo il comfort con il punteggio (se un altro valore rende chiaramente di più) e, per la verticale, con il rinculo. */
+   La stessa retta dice fin dove puoi salire prima di andare oltre la testa più di LIM_OVER volte su 20: è l'obiettivo di velocità.
+   Poi correggo il comfort con il punteggio (se un altro valore rende chiaramente di più) e con il rinculo di quel mirino.
+   I mirini senza round li calcolo dagli altri con valore = a + b / zoom. */
 var LIM_OVER=2;
 function fitLine(pts){
   var n=pts.length;
@@ -1702,16 +1816,16 @@ function fitLine(pts){
   var b=sxy/sxx,a=my-b*mx;
   return {a:a,b:b,r2:(syy>0)?(sxy*sxy)/(sxx*syy):1,n:n};
 }
-function focusOf(r){return r.focus||(SENS_KEYS.indexOf(r.stage)>-1?r.stage:null);}
+function focusOf(r){return r.focus||(OPT_IDS.indexOf(r.stage)>-1?r.stage:null);}
 function sensModel(A,P){
   var out={};
-  SENS_KEYS.forEach(function(k){
+  OPT_IDS.forEach(function(k){
     var now=P.vals[k];
     var F=A.rs.filter(function(r){return focusOf(r)===k;}).map(function(r){
       var x=(r.setup&&r.setup[k]!==undefined)?r.setup[k]:r.value;
       return {x:x,d:r.d};
     }).filter(function(p){return p.x!==null&&p.x!==undefined;});
-    var m={k:k,now:now,n:F.length,pts:F,fit:null,eq:null,limit:null,comfort:null,target:null,conf:'–',est:false,perf:null,ring:null,ringUp:false};
+    var m={k:k,now:now,n:F.length,pts:F,fit:null,eq:null,limit:null,comfort:null,target:null,conf:'–',est:false,perf:null,ring:null,ringUp:false,derived:false};
     if(!F.length){out[k]=m;return;}
     var xs=uniq(F.map(function(p){return p.x;}));
     var fit=(xs.length>=2)?fitLine(F.map(function(p){return [p.x,p.d];})):null;
@@ -1736,16 +1850,15 @@ function sensModel(A,P){
         comfort=Math.round((comfort+q.best.v)/2);
       }
     }
-    if(k==='v'){
-      var R=A.rs.filter(function(r){return r.ring!==null&&r.ring!==undefined;});
-      if(R.length>=3){
-        m.ring={mean:mean(R.map(function(r){return r.ring;})),n:R.length};
-        if(m.ring.mean>=2){
-          var up=Math.max(1,Math.round(comfort*0.05));
-          var cap=(m.limit!==null)?Math.floor(m.limit):comfort+up;
-          var nv=Math.min(comfort+up,Math.max(comfort,cap));
-          if(nv>comfort){comfort=nv;m.ringUp=true;}
-        }
+    /* rinculo: se con questo mirino il foro più alto arriva spesso al 2° anello o oltre, un numero un po' più alto aiuta a tirare giù */
+    var R=A.rs.filter(function(r){return focusOf(r)===k&&r.ring!==null&&r.ring!==undefined;});
+    if(R.length>=3){
+      m.ring={mean:mean(R.map(function(r){return r.ring;})),n:R.length};
+      if(m.ring.mean>=2){
+        var up=Math.max(1,Math.round(comfort*0.05));
+        var cap=(m.limit!==null)?Math.floor(m.limit):comfort+up;
+        var nv=Math.min(comfort+up,Math.max(comfort,cap));
+        if(nv>comfort){comfort=nv;m.ringUp=true;}
       }
     }
     m.comfort=clampV(comfort);
@@ -1761,14 +1874,27 @@ function sensModel(A,P){
     m.conf=(F.length>=6&&xs.length>=3&&m.fit&&m.fit.r2>=0.3)?'alta':((F.length>=3&&xs.length>=2&&m.fit)?'media':'bassa');
     out[k]=m;
   });
+  var meas=OPT_IDS.filter(function(k){return out[k].comfort!==null;});
+  if(meas.length>=2){
+    var fc=optFit(meas.map(function(k){return [ZOOM[k],out[k].comfort];}));
+    var ft=optFit(meas.map(function(k){return [ZOOM[k],out[k].target];}));
+    OPT_IDS.forEach(function(k){
+      var m=out[k];
+      if(m.comfort!==null)return;
+      m.comfort=fc(ZOOM[k]);m.target=Math.max(m.comfort,ft(ZOOM[k]));m.derived=true;m.conf='calc.';
+      m.step=Math.max(1,Math.round(m.comfort*0.04));m.next=Math.min(m.target,m.comfort+m.step);
+      m.from=meas;
+    });
+  }
   return out;
 }
 function whyLine(m){
+  if(m.derived)return 'Calcolato da '+m.from.map(function(k){return OPTIC[k];}).join(', ')+': a parità di zoom la rotazione resta uguale.';
   var p=[];
-  if(m.fit)p.push('Su '+cnt(m.n,'round di flick','round di flick')+' superate e corte si pareggiano a '+nf(m.eq,1)+'.');
-  else p.push('Su '+cnt(m.n,'round di flick','round di flick')+' a '+m.v0+' superate meno corte vale '+sgn(m.md)+' su 20.');
+  if(m.fit)p.push('Su '+cnt(m.n,'round di flick','round di flick')+' oltre e prima si pareggiano a '+nf(m.eq,1)+'.');
+  else p.push('Su '+cnt(m.n,'round di flick','round di flick')+' a '+m.v0+' (oltre − prima) vale '+sgn(m.md)+' su 20.');
   if(m.perf)p.push('Con '+m.perf.v+' fai '+nf(m.perf.gain,0)+' punti in più: mi sposto a metà strada.');
-  if(m.ringUp)p.push('Il rinculo ti alza il mirino fino al '+nf(m.ring.mean,1)+'° anello: un po\' di verticale in più lo compensa.');
+  if(m.ringUp)p.push('Nel rinculo il foro più alto arriva in media al '+nf(m.ring.mean,1)+'° anello: alzo questo mirino di circa il 5%, così tiri giù più facilmente.');
   return p.join(' ');
 }
 function balanceChart(m){
@@ -1780,7 +1906,7 @@ function balanceChart(m){
   function X(v){return L+(v-x0)/(x1-x0)*pw;}
   function Yp(d){return T0+ph/2-(d/Y)*(ph/2);}
   var id='cp-'+m.k;
-  var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Superate meno corte per ogni valore di '+esc(stageById(m.k).name)+', con la retta di equilibrio">'+
+  var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Oltre meno prima per ogni valore del '+esc(KEY_NAME[m.k])+', con la retta di equilibrio">'+
     '<defs><clipPath id="'+id+'"><rect x="'+L+'" y="'+T0+'" width="'+pw+'" height="'+ph+'"/></clipPath></defs>';
   s+='<rect class="band" x="'+L+'" y="'+Yp(TOL)+'" width="'+pw+'" height="'+(Yp(-TOL)-Yp(TOL))+'"/>';
   s+='<line class="zero" x1="'+L+'" x2="'+(W-R)+'" y1="'+Yp(0)+'" y2="'+Yp(0)+'"/>';
@@ -1803,66 +1929,56 @@ function balanceChart(m){
   });
   return s+lab+'</svg>';
 }
-var SHORT={h:'Orizz.',v:'Vert.',ads1:'1.0x',ads25:'2.5x'};
 function sensSummary(M,P){
-  var rows=SENS_KEYS.map(function(k){
-    var m=M[k],d=stageById(k);
+  var rows=OPT_IDS.map(function(k){
+    var m=M[k];
     if(m.comfort===null)return '<tr><td>'+esc(SHORT[k])+'</td><td class="num">'+m.now+'</td><td class="num">–</td><td class="num">–</td><td>–</td></tr>';
     var dl=m.comfort-m.now;
-    return '<tr><td>'+esc(SHORT[k])+'</td><td class="num">'+m.now+'</td><td class="num"><b>'+m.comfort+'</b>'+(dl?' <span class="'+(dl>0?'pos':'neg')+'">'+(dl>0?'+':'')+dl+'</span>':'')+'</td>'+
+    return '<tr'+(m.derived?' class="sub"':'')+'><td>'+esc(SHORT[k])+'</td><td class="num">'+m.now+'</td><td class="num"><b>'+m.comfort+'</b>'+(dl?' <span class="'+(dl>0?'pos':'neg')+'">'+(dl>0?'+':'')+dl+'</span>':'')+'</td>'+
       '<td class="num">'+m.target+(m.targetEst?'*':'')+'</td><td>'+m.conf+'</td></tr>';
   }).join('');
-  var opt='';
-  if(M.ads1.comfort!==null&&M.ads25.comfort!==null){
-    var fc=optFit(M.ads1.comfort,M.ads25.comfort),ft=optFit(M.ads1.target,M.ads25.target),on=opticVals(P.vals);
-    OPT_Z.forEach(function(z){
-      var k=optKey(z);
-      if(OPT_MAIN[k])return;
-      opt+='<tr class="sub"><td>'+optLbl(z)+'</td><td class="num">'+on[k]+'</td><td class="num">'+fc(z)+'</td><td class="num">'+ft(z)+'</td><td>calc.</td></tr>';
-    });
-  }
-  var diff=SENS_KEYS.some(function(k){return M[k].comfort!==null&&M[k].comfort!==M[k].now;});
+  var diff=OPT_IDS.some(function(k){return M[k].comfort!==null&&M[k].comfort!==M[k].now;});
   var btn=P.finished
     ?(diff?'<button class="btn pri block" data-act="applycomfort" type="button">Usa i valori di comfort</button>':'<p class="hint">Stai già usando i valori di comfort.</p>')
     :'<p class="hint">Durante il percorso i numeri li decide la scheda Oggi. Alla fine potrai applicare questi con un tocco.</p>';
-  return '<section class="card"><h2>Le tue sensibilità</h2>'+
-    '<div class="tw"><table class="sens-t"><thead><tr><th></th><th>Ora</th><th>Comfort</th><th>Obiettivo</th><th>Dati</th></tr></thead><tbody>'+rows+opt+'</tbody></table></div>'+
-    '<p class="hint">Comfort: dove superi la testa e resti corto lo stesso numero di volte. Obiettivo: il più veloce che reggi restando preciso.'+(SENS_KEYS.some(function(k){return M[k].targetEst;})?' * stimato: prova almeno due valori diversi.':'')+'</p>'+btn+'</section>';
+  return '<section class="card"><h2>I tuoi mirini</h2>'+
+    '<div class="tw"><table class="sens-t"><thead><tr><th></th><th>Ora</th><th>Comfort</th><th>Obiettivo</th><th>Dati</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+    '<p class="hint">Comfort: il numero con cui vai oltre la testa e ti fermi prima lo stesso numero di volte. Obiettivo: il numero più alto che reggi restando preciso. "calc." vuol dire calcolato dagli altri mirini.'+
+    (OPT_IDS.some(function(k){return M[k].targetEst;})?' * stimato: prova almeno due numeri diversi.':'')+'</p>'+btn+'</section>';
 }
 function sensChanges(M,P){
-  var any=SENS_KEYS.some(function(k){return M[k].comfort!==null;});
-  var list=SENS_KEYS.map(function(k){return M[k];}).filter(function(m){return m.comfort!==null&&m.comfort!==m.now;})
-    .sort(function(a,b){return Math.abs(b.comfort-b.now)-Math.abs(a.comfort-a.now);});
+  var any=OPT_IDS.some(function(k){return M[k].comfort!==null;});
+  var list=OPT_IDS.map(function(k){return M[k];}).filter(function(m){return m.comfort!==null&&m.comfort!==m.now;})
+    .sort(function(a,b){return (a.derived-b.derived)||(Math.abs(b.comfort-b.now)-Math.abs(a.comfort-a.now));});
   if(!any)return '<section class="card"><h2>Cosa cambierei</h2><p class="note">Servono round di flick: li registri dalla scheda Oggi.</p></section>';
-  if(!list.length)return '<section class="card"><h2>Cosa cambierei</h2><p class="lead">Niente: i tuoi numeri sono già in equilibrio.</p></section>';
+  if(!list.length)return '<section class="card"><h2>Cosa cambierei</h2><p class="lead">Niente: i tuoi mirini sono già in equilibrio.</p></section>';
   return '<section class="card"><h2>Cosa cambierei</h2><div class="adv">'+list.map(function(m,i){
-    var d=stageById(m.k),dl=m.comfort-m.now;
+    var dl=m.comfort-m.now;
     var on=(state.carry[m.k]===m.comfort);
     var b=P.finished?'<button class="btn '+(i===0?'pri':'ghost')+'" data-act="applytweak" data-k="'+m.k+'" data-v="'+m.comfort+'" type="button"'+(on?' disabled':'')+'>'+(on?'Già applicato':'Usa '+m.comfort)+'</button>':'';
     return '<div class="'+(i===0?'adv-1':'adv-i')+'">'+(i===0?'<span class="k">Prima modifica</span>':'')+
-      '<'+(i===0?'span class="t"':'h3')+'>'+esc(d.name)+': '+m.now+' → '+m.comfort+' ('+(dl>0?'+':'')+dl+')</'+(i===0?'span':'h3')+'>'+
+      '<'+(i===0?'span class="t"':'h3')+'>'+esc(KEY_NAME[m.k])+': '+m.now+' → '+m.comfort+' ('+(dl>0?'+':'')+dl+')</'+(i===0?'span':'h3')+'>'+
       '<p class="note">'+esc(whyLine(m))+'</p>'+b+'</div>';
-  }).join('')+'</div><p class="hint">Cambia una sensibilità per volta e tienila almeno due sere.</p></section>';
+  }).join('')+'</div><p class="hint">Cambia un mirino per volta e tienilo almeno due sere.</p></section>';
 }
 function sensGoals(M){
-  var rows=SENS_KEYS.map(function(k){
-    var m=M[k],d=stageById(k);
-    if(m.comfort===null)return '';
-    var plan=(m.target<=m.comfort)?'Sei già al limite: più su superi la testa.'
+  var rows=OPT_IDS.map(function(k){
+    var m=M[k];
+    if(m.comfort===null||m.derived)return '';
+    var plan=(m.target<=m.comfort)?'Sei già al limite: più su vai oltre la testa.'
       :('Prossimo passo '+m.next+', poi +'+m.step+' alla volta fino a '+m.target+'. Sali solo dopo 3 sessioni senza calo di punteggio.');
     var pct=(m.target<=m.comfort||m.now>=m.target)?100:(m.now<=m.comfort?0:Math.round((m.now-m.comfort)/(m.target-m.comfort)*100));
-    return '<div class="goal"><div class="goal-h"><b>'+esc(d.name)+'</b><span class="mono">'+m.now+' → '+m.target+(m.targetEst?'*':'')+'</span></div>'+
+    return '<div class="goal"><div class="goal-h"><b>'+esc(KEY_NAME[k])+'</b><span class="mono">'+m.now+' → '+m.target+(m.targetEst?'*':'')+'</span></div>'+
       '<div class="bar"><i style="width:'+pct+'%"></i></div><p class="note">'+esc(plan)+'</p></div>';
   }).join('');
   if(!rows)return '';
   return '<section class="card"><h2>Obiettivo velocità</h2>'+
-    '<p class="note">Il valore più alto in cui superi la testa al massimo '+LIM_OVER+' volte su 20 più di quante resti corto. Più rapido nel girarti, ancora preciso.</p>'+
+    '<p class="note">Il numero più alto con cui vai oltre la testa al massimo '+LIM_OVER+' volte su 20 più di quante ti fermi prima. Ti giri più veloce e resti preciso.</p>'+
     '<div class="goals">'+rows+'</div></section>';
 }
 function sensCard(m){
-  var d=stageById(m.k);
-  if(!m.n)return '<section class="card"><h3>'+esc(d.name)+'</h3><p class="note">Nessun round di flick su questa sensibilità nel periodo scelto.</p></section>';
-  return '<section class="card chart"><div class="stg-h"><h3>'+esc(d.name)+'</h3><span class="st-chip">affidabilità '+m.conf+'</span></div>'+
+  if(!m.n)return '<section class="card"><h3>'+esc(KEY_NAME[m.k])+'</h3><p class="note">Nessun round di flick con questo mirino nel periodo scelto.</p></section>';
+  return '<section class="card chart"><div class="stg-h"><h3>'+esc(KEY_NAME[m.k])+'</h3><span class="st-chip">affidabilità '+m.conf+'</span></div>'+
     balanceChart(m)+
     '<div class="lg">'+lgItem('lg-l cf','comfort '+m.comfort)+lgItem('lg-l tg','obiettivo '+m.target)+lgItem('lg-l now','ora '+m.now)+(m.fit?lgItem('lg-l fitl','retta di equilibrio'):'')+'</div>'+
     '<p class="note">'+esc(whyLine(m))+'</p></section>';
@@ -1874,7 +1990,7 @@ function renderAdv(P){
     var miss=MIN_ADV-tot;
     return '<section class="card gate"><h2>Consigli</h2><p class="lead">Mancano '+esc(cnt(miss,'round','round'))+'.</p>'+
       '<div class="bar"><i style="width:'+Math.round(tot/MIN_ADV*100)+'%"></i></div>'+
-      '<p class="note">Con '+MIN_ADV+' round calcolo la tua sensibilità di comfort e un obiettivo di velocità. Intanto segui la scheda Oggi.</p></section>';
+      '<p class="note">Con '+MIN_ADV+' round calcolo la sensibilità più comoda per ogni mirino e un obiettivo di velocità. Intanto segui la scheda Oggi.</p></section>';
   }
   var A=analyze(P),M=sensModel(A,P);
   var chips=[['7','7 giorni'],['30','30 giorni'],['all','Tutto'],['custom','Date']].map(function(c){
@@ -1890,14 +2006,14 @@ function renderAdv(P){
   var lg='<div class="lg">'+(A.best?lgItem('lg-d best','meglio: '+A.best.c.label):'')+lgItem('lg-d','altri round')+lgItem('lg-l','media della sera')+'</div>';
   var trend='<section class="card chart"><h2>Andamento</h2>'+trendChart(A)+lg+
     '<p class="ro" id="ro-trend" aria-live="polite">'+esc(anTrend.tips[anTrendI])+'</p></section>';
-  var cmb=A.combos.length?('<section class="card"><h2>Punteggio per combinazione</h2><p class="note">Orizzontale/verticale · mirino 1.0x/2.5x.</p><div class="hb">'+
+  var cmb=A.combos.length?('<section class="card"><h2>Punteggio per combinazione</h2><p class="note">Mirini 1.0x / 2.5x / 3.5x / 8.0x.</p><div class="hb">'+
     A.combos.slice(0,6).map(function(c){
       var isB=A.best&&c.key===A.best.c.key;
       return hbRow(c.label,cnt(c.n,'round','round'),c.score,(isB?'best':'')+(c.n===1?' thin':''),nf(c.score,0));
     }).join('')+'</div></section>'):'';
   return filter+
     '<div class="cols"><div class="col">'+sensSummary(M,P)+sensChanges(M,P)+'</div><div class="col">'+sensGoals(M)+'</div></div>'+
-    '<h2>Come ci arrivo</h2><div class="grid2">'+SENS_KEYS.map(function(k){return sensCard(M[k]);}).join('')+'</div>'+
+    '<h2>Come ci arrivo</h2><div class="grid2">'+OPT_IDS.filter(function(k){return M[k].n>0||PATH_KEYS.indexOf(k)>-1;}).map(function(k){return sensCard(M[k]);}).join('')+'</div>'+
     '<div class="cols"><div class="col">'+kp+cmb+'</div><div class="col">'+trend+'</div></div>'+kitTable(A)+tablesHtml(A);
 }
 
@@ -1932,7 +2048,7 @@ function capData(){
       score:L.length?mean(L.map(function(r){return r.score;})):null,
       hits:L.length?mean(L.map(function(r){return r.hits;})):null,
       trk:L.length?mean(L.map(function(r){return r.trk;})):null,
-      pre:L.length?mean(L.map(function(r){return r.pre;})):null,
+      swi:(function(){var x=L.filter(function(r){return r.swi!==null&&r.swi!==undefined;});return x.length?mean(x.map(function(r){return r.swi;})):null;})(),
       rec:rec.length?mean(rec.map(function(r){return 100*r.rec/(r.recN||10);})):null,
       d:L.length?mean(L.map(function(r){return r.d;})):null,
       sessions:capSessions(L),rs:L};
@@ -1961,8 +2077,8 @@ function capCard(c,P){
     '<div class="kpi"><span class="k">Punti</span><span class="n">'+(c.score===null?'–':nf(c.score,0))+'</span></div>'+
     '<div class="kpi"><span class="k">Rinculo</span><span class="n">'+(c.rec===null?'–':nf(c.rec,0)+'%')+'</span></div></div>';
   var det2=c.n?('<div class="kv"><div><span class="k">Teste su 20</span><span class="x">'+nf(c.hits,1)+'</span></div>'+
-    '<div><span class="k">Tracking · Pre-aim</span><span class="x">'+nf(c.trk,1)+' · '+nf(c.pre,1)+'</span></div>'+
-    '<div><span class="k">Superate − corte</span><span class="x">'+sgn(c.d)+'</span></div></div>'):'';
+    '<div><span class="k">Tracking · Transizioni</span><span class="x">'+nf(c.trk,1)+' · '+(c.swi===null?'–':nf(c.swi,1)+'/10')+'</span></div>'+
+    '<div><span class="k">Oltre − prima</span><span class="x">'+sgn(c.d)+'</span></div></div>'):'';
   var slots;
   if(c.sessions.length){
     slots='<div class="tw"><table><thead><tr><th>Sessione</th><th>Round</th><th>Punti</th><th>Sensibilità</th><th>Operatore e arma</th></tr></thead><tbody>'+
@@ -2000,10 +2116,25 @@ function renderCaps(P){
 function renderGuide(P){
   var s=SYNC_T[sync]||SYNC_T.pending;
   return '<section class="card guide">'+
-    '<section><h2>In breve</h2><ol class="how num"><li>Metti nel gioco il numero che trovi in <b>Oggi</b>, e controlla che il riquadro \'Sensibilità che usi ora\' abbia gli stessi numeri.</li><li>Fai i 4 allenamenti guidati: tracking, flick, transizioni, rinculo.</li><li>Nel rinculo segna anche dov\'è arrivato il foro più alto e da che parte tira il gruppo.</li><li>Scrivi i risultati e salva.</li><li>Dopo qualche round, in <b>Consigli</b> trovi le sensibilità da usare e un obiettivo di velocità.</li></ol></section>'+
-    '<section><h3>Come trovo il numero</h3><p>Nel flick, da fare <b>senza L2</b> quando taro orizzontale e verticale e <b>con L2 premuto per tutto il tempo</b> quando taro i mirini, conti quante volte superi la testa e quante resti corto su 20 colpi. Se superi di più, il numero è alto. Se resti corto, è basso. Quando sono quasi pari due round di fila, la fase è chiusa.</p></section>'+
-    '<section><h3>Il punteggio</h3><span class="eq">40% colpite + 20% tracking + 20% transizioni + 20% rinculo</span><p class="note">Va da 0 a 100. I round vecchi contano solo gli esercizi che avevano (pre-aim al posto delle transizioni, o senza rinculo): i pesi si ribilanciano da soli, così restano confrontabili.</p></section>'+
-    '<section><h3>Tutti i mirini</h3><p>Il percorso misura 1.0x e 2.5x. Gli altri ingrandimenti (1.5x, 2.0x, 3.0x, 3.5x, 4.0x, 5.0x, 8.0x, 12.0x) li calcolo da quei due, con la stessa velocità di rotazione a parità di zoom, e li trovi nel riquadro delle sensibilità sotto "Tutti i mirini del gioco". Ogni valore si può correggere a mano.</p></section>'+
+    '<section><h2>In breve</h2><ol class="how num">'+
+      '<li>In <b>Oggi</b> vedi quale mirino stai tarando e che numero mettere nel gioco. Mettilo, poi controlla che il riquadro "Sensibilità che usi ora" abbia gli stessi numeri.</li>'+
+      '<li>Nel poligono di tiro fai i 4 esercizi guidati, sempre con L2 premuto: tracking, flick, transizioni e rinculo.</li>'+
+      '<li>Scrivi i risultati e salva il round: ti dico il numero da provare la volta dopo.</li>'+
+      '<li>Quando un mirino è a posto passi al successivo: 1.0x, poi 2.5x, poi 3.5x, infine la cappetta.</li>'+
+      '<li>In <b>Consigli</b> trovi la sensibilità più comoda per ogni mirino e un obiettivo per diventare più veloce.</li></ol></section>'+
+    '<section><h3>Come trovo il numero</h3><p>Nel flick conti, su 20 colpi, quante volte vai <b>oltre la testa</b> e quante ti fermi <b>prima della testa</b>. Se vai oltre più spesso, il numero è troppo alto e lo abbasso. Se ti fermi prima più spesso, è troppo basso e lo alzo. Quando le due cose sono quasi pari per due round di fila, quel mirino è a posto.</p></section>'+
+    '<section><h3>I mirini</h3><p>Il percorso tara 1.0x, 2.5x e 3.5x. L\'8.0x lo calcolo da quei tre: a parità di zoom la rotazione resta uguale. Se nel gioco hai un numero diverso, lo correggi nel riquadro delle sensibilità. Se usi spesso l\'8.0x, provalo nel mantenimento.</p>'+
+      '<p class="note">Orizzontale e verticale non le taro: le scrivi solo per ricordarti cosa avevi.</p></section>'+
+    '<section><h3>Il punteggio</h3><span class="eq">40% colpi in testa nel flick + 20% tracking + 20% transizioni + 20% rinculo</span><p class="note">Va da 0 a 100. I round vecchi contano solo gli esercizi che avevano (pre-aim al posto delle transizioni, o senza rinculo): i pesi si ribilanciano da soli, così restano confrontabili.</p></section>'+
+    det('d-calc','more','Come scelgo la sensibilità migliore','<div class="setup-b">'+
+      '<p><b>1. Il comfort.</b> Per ogni mirino prendo tutti i tuoi round di flick e li metto su un grafico: da una parte il numero usato, dall\'altra quante volte sei andato oltre meno quante ti sei fermato prima. Traccio la retta che passa più vicina a tutti i punti. Il comfort è il numero in cui la retta vale zero: lì vai oltre e ti fermi prima lo stesso numero di volte.</p>'+
+      '<p><b>2. Il punteggio.</b> Se con un altro numero hai fatto chiaramente più punti, cioè più della soglia di rumore (ora '+nf(P.T,1)+'), sposto il comfort a metà strada verso quel numero.</p>'+
+      '<p><b>3. Il rinculo.</b> Se in almeno 3 round con quel mirino il foro più alto arriva in media al 2° anello o più su, alzo il comfort di circa il 5%: con un numero un po\' più alto tiri giù il mirino più facilmente.</p>'+
+      '<p><b>4. L\'obiettivo.</b> Sulla stessa retta cerco il numero più alto con cui vai oltre la testa al massimo '+LIM_OVER+' volte su 20 più di quante ti fermi prima. Al massimo il 15% sopra il comfort. Ci arrivi a passi di circa il 4%, e sali solo dopo 3 sessioni senza calo di punteggio.</p>'+
+      '<p><b>5. L\'affidabilità.</b> Alta con almeno 6 round, 3 numeri diversi e punti ben allineati sulla retta. Media con almeno 3 round e 2 numeri. Bassa con meno dati.</p>'+
+      '<p><b>6. I mirini senza dati.</b> Se un mirino non ha round lo calcolo dagli altri con la regola numero = a + b / zoom.</p>'+
+      '<p class="note">Durante il percorso il passo va dal 4% al 20% del numero, in proporzione a quanto sei sbilanciato, mai meno di 1. Se hai già provato un numero troppo alto e uno troppo basso, provo quello in mezzo. Un mirino si chiude con due round di fila in equilibrio (differenza al massimo '+TOL+'), con due numeri vicini uno alto e uno basso, dopo '+MAXR+' round, oppure quando lo chiudi tu.</p>'+
+      '<p class="note">Soglia di rumore: la differenza media fra due round gemelli, minimo '+MIN_T+' punti. Una differenza più piccola non conta come miglioramento.</p></div>')+
     '<section><h3>Il tuo utente</h3><p>Sei entrato come <b>'+esc(me?me.email:'')+'</b>. '+esc(s[1])+'</p><p class="note">Email e password restano qui: non c\'è un server, quindi non parte nessuna email e non c\'è un recupero password. La password serve a cifrare i tuoi dati in questo browser: senza, quei dati non si aprono. Su un altro dispositivo crei un utente nuovo e ci porti i dati con la copia di sicurezza.</p><p class="note">I dati restano anche se chiudi tutto o spegni il PC. Spariscono solo se cancelli i dati dei siti o se navighi in incognito.</p>'+
     det('d-bk','more','Copia di sicurezza','<div class="setup-b"><p class="note">Questo testo sono tutti i tuoi dati. Copialo e incollalo nel riquadro sotto dell\'altro dispositivo per spostare la taratura, o tienilo da parte come backup.</p>'+
       '<textarea class="bk" id="bk" readonly>'+esc(JSON.stringify(state))+'</textarea>'+
@@ -2011,13 +2142,7 @@ function renderGuide(P){
       '<textarea class="bk" id="bk-in" placeholder="Incolla qui il backup dell\'altro dispositivo"></textarea>'+
       '<button class="btn ghost" data-act="import" type="button">Carica il backup</button></div>')+'</section>'+
     '<section><h3>Se condividi la pagina</h3><p>Chi apre il link si crea il suo utente e ha i suoi round. Più persone possono usare lo stesso dispositivo: ognuna entra con la sua email e vede solo i suoi dati, chiusi con la sua password.</p><p class="note">Non serve nessun account esterno. Per cambiare telefono o PC, anche lui usa la copia di sicurezza.</p></section>'+
-    '<section><h3>Regole d\'oro</h3><ul class="how"><li>Cambia un numero per volta.</li><li>Stesso riscaldamento, stesso operatore.</li><li>Giudica dal riscaldamento, non dalle partite.</li><li>Serata storta? Salta il round.</li></ul></section>'+
-    det('d-meth','more','Dettagli del calcolo','<div class="setup-b">'+
-      '<p class="note">Passo del test: dal 4% al 20% del valore, in proporzione allo squilibrio, mai meno di 1. Se hai provato un valore troppo alto e uno troppo basso, prendo la via di mezzo.</p>'+
-      '<p class="note">Una fase si chiude con due round uguali in equilibrio (differenza al massimo '+TOL+'), oppure con due valori vicini uno alto e uno basso, oppure dopo '+MAXR+' round, oppure quando la chiudi tu.</p>'+
-      '<p class="note">Soglia di rumore: la differenza media fra due round gemelli, minimo '+MIN_T+' punti. Ora vale <b>'+nf(P.T,1)+'</b>. Una differenza sotto questa soglia non conta come miglioramento.</p>'+
-      '<p class="note">Comfort: per ogni sensibilità metto tutti i tuoi flick su un grafico, valore usato contro superate meno corte, e traccio la retta che li approssima meglio. Il comfort è dove la retta passa per zero. Se un altro valore ti fa fare chiaramente più punti mi sposto a metà strada; per la verticale, se il rinculo ti porta il mirino oltre il secondo anello, alzo di circa il 5%.</p>'+
-      '<p class="note">Obiettivo: il punto in cui la stessa retta arriva a +'+LIM_OVER+', cioè superi la testa al massimo '+LIM_OVER+' volte su 20 più di quante resti corto. Massimo +15% sul comfort, a passi di circa il 4%.</p></div>')+
+    '<section><h3>Regole d\'oro</h3><ul class="how"><li>Cambia un numero per volta.</li><li>Stessi esercizi, stesso operatore e stessa arma.</li><li>Giudica dagli esercizi, non dalle partite.</li><li>Serata storta? Salta il round.</li></ul></section>'+
     '</section>';
 }
 
@@ -2119,6 +2244,26 @@ document.addEventListener('input',function(e){
 document.addEventListener('change',function(e){
   var di=e.target.closest?e.target.closest('input[data-act="and"]'):null;
   if(di){if(di.dataset.k==='from')anFrom=di.value;else anTo=di.value;render();return;}
+  var ks=e.target.closest?e.target.closest('select[data-act="kitop"],select[data-act="kitwep"]'):null;
+  if(ks){
+    ensureDraft();
+    var v0=ks.value;
+    if(ks.dataset.act==='kitop'){
+      if(v0==='__other'){draft.opFree=true;draft.op='';draft.wep='';draft.wepFree=false;}
+      else{
+        draft.opFree=false;draft.op=v0;
+        var inf=opInfo(v0);
+        if(!inf){draft.wep='';draft.wepFree=false;}
+        else if(!canonWep(inf,draft.wep)){draft.wep=inf.pri[0];draft.wepFree=false;}
+      }
+    }else{
+      if(v0==='__other'){draft.wepFree=true;draft.wep='';}
+      else{draft.wepFree=false;draft.wep=v0;}
+    }
+    saveDraft();render();
+    var back=$(ks.id);if(back)try{back.focus();}catch(x){}
+    return;
+  }
   var el=e.target.closest?e.target.closest('select[data-act="gear"]'):null;
   if(!el)return;
   var o={};o[el.dataset.k]=el.value;
@@ -2181,19 +2326,13 @@ document.addEventListener('click',function(e){
   if(a==='sens'){
     ensureDraft();P=computePlan();
     k=el.dataset.k;
+    if(PERS_KEYS.indexOf(k)>-1){state.carry[k]=clampV(P.vals[k]+Number(el.dataset.d));commit();return;}
     var cur=(draft.sens[k]!==undefined)?draft.sens[k]:P.vals[k];
     draft.sens[k]=clampV(cur+Number(el.dataset.d));
     saveDraft();render();return;
   }
   if(a==='sensreset'){ensureDraft();draft.sens={};saveDraft();render();return;}
-  if(a==='optx'){
-    P=computePlan();
-    k=el.dataset.k;
-    var ov=opticVals(Object.assign({},P.vals,usedSens(P)));
-    state.optx[k]=clampV(ov[k]+Number(el.dataset.d));
-    commit();return;
-  }
-  if(a==='optxreset'){state.optx={};commit();return;}
+  if(a==='ads8reset'){delete state.carry.ads8;commit();toast('8.0x ricalcolato');return;}
   if(a==='gearn'){
     k=el.dataset.k;
     var lim=(k==='rm'||k==='lm')?[-10,10]:[0,30];
@@ -2209,12 +2348,11 @@ document.addEventListener('click',function(e){
     var maint=P.finished,idx=P.cur,def=maint?null:P.stages[P.cur].def;
     var used=usedSens(P),setup=Object.assign({},state.gear);
     SENS_KEYS.forEach(function(q){setup[q]=used[q];});
-    setup.optx=opticVals(Object.assign({},P.vals,used));
     var now=new Date();
     var round={stage:maint?'free':def.id,value:null,a:draft.a,b:draft.b,trk:draft.trk,pre:null,swi:draft.swi,rec:draft.rec,recN:draft.mag,
       ring:draft.ring,drift:draft.drift,
-      op:txt(draft.op),wep:txt(draft.wep),at:fmtD(now),day:dkey(now),ts:now.getTime(),setup:normSetup(setup),focus:null};
-    if(maint)round.focus=draft.focus||'h';
+      op:canonOp(draft.op),wep:txt(draft.wep),at:fmtD(now),day:dkey(now),ts:now.getTime(),setup:normSetup(setup),focus:null};
+    if(maint)round.focus=curFocus();
     else if(def.kind==='cap')round.value=state.gear.rcap;
     else{round.value=used[def.id];round.focus=def.id;}
     state.rounds.push(round);
@@ -2263,14 +2401,14 @@ document.addEventListener('click',function(e){
     P=computePlan();
     if(!P.finished)return;
     var Mx=sensModel(analyze(P),P),nch=0;
-    SENS_KEYS.forEach(function(q){if(Mx[q].comfort!==null){state.carry[q]=Mx[q].comfort;nch++;}});
+    OPT_IDS.forEach(function(q){if(Mx[q].comfort!==null){state.carry[q]=Mx[q].comfort;nch++;}});
     if(nch){draft=blankDraft();saveDraft();commit();toast('Valori di comfort applicati');}
     return;
   }
   if(a==='applytweak'){
     state.carry[el.dataset.k]=clampInt(el.dataset.v,1,100);
     draft=blankDraft();saveDraft();
-    commit();toast(stageById(el.dataset.k).tab+': '+state.carry[el.dataset.k]);return;
+    commit();toast(KEY_NAME[el.dataset.k]+': '+state.carry[el.dataset.k]);return;
   }
   if(a==='copy'){
     var tc=$('bk');
@@ -2321,11 +2459,6 @@ document.addEventListener('click',function(e){
   }
 });
 
-(function fillLists(){
-  var a=$('dl-op'),b=$('dl-wep');
-  if(a)a.innerHTML=OPS.map(function(o){return '<option value="'+esc(o)+'"></option>';}).join('');
-  if(b)b.innerHTML=WEPS.map(function(o){return '<option value="'+esc(o)+'"></option>';}).join('');
-})();
 render();
 initStore();
 })();
