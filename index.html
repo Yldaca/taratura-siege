@@ -6,6 +6,13 @@
 <meta name="theme-color" content="#0F1B24">
 <meta name="description" content="Coach per trovare la sensibilità giusta in Rainbow Six Siege su PS5.">
 <style>html,body{margin:0}[hidden]{display:none!important}</style>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Taratura">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Taratura Siege</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -360,7 +367,7 @@ button:focus-visible,summary:focus-visible,select:focus-visible,a:focus-visible,
 .btn.mini{min-height:36px;padding:0 10px;font-size:12px}
 .bk{width:100%;min-height:90px;font:500 12px var(--font-mono);padding:8px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:2px}
 
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}
 .nav[hidden]{display:none}
 .nav button{min-height:58px;background:transparent;border:0;font:600 12px/1.2 var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);padding-inline:2px}
 .nav button[aria-current="page"]{color:var(--ink);box-shadow:inset 0 3px 0 var(--accent)}
@@ -395,6 +402,129 @@ button:focus-visible,summary:focus-visible,select:focus-visible,a:focus-visible,
 @media (min-width:1100px){
   .cols{grid-template-columns:minmax(0,5fr) minmax(0,6fr);align-items:start;gap:20px}
 }
+/* sessione guidata, screenshot: livello a schermo intero sopra la pagina */
+.ov{position:fixed;inset:0;z-index:20;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:max(14px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(28px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.ov[hidden]{display:none}
+body.ov-on{overflow:hidden}
+.s-wrap{max-width:620px;margin-inline:auto;display:flex;flex-direction:column;gap:14px}
+.s-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.s-prog{list-style:none;padding:0;margin:0;display:flex;gap:4px;flex:1 1 auto;min-width:0}
+.s-prog li{flex:1 1 0;min-width:0;font:600 10px/1.2 var(--font-body);letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);padding-top:7px;border-top:3px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-prog li.done{border-color:var(--good);color:var(--ink)}
+.s-prog li.cur{border-color:var(--accent);color:var(--ink)}
+.s-prog .ns{display:none}
+@media (max-width:520px){.s-prog .nl{display:none}.s-prog .ns{display:inline}}
+.s-body{display:flex;flex-direction:column;gap:14px}
+.s-set{border:1px solid var(--line);background:var(--surface);padding:14px;display:flex;flex-direction:column;gap:2px}
+.s-big{font:600 64px/1.05 var(--font-mono);font-variant-numeric:tabular-nums;color:var(--accent)}
+.s-timer{display:flex;flex-direction:column;gap:10px;padding:14px;border:1px solid var(--line);background:var(--surface)}
+.s-time{font:600 64px/1 var(--font-mono);font-variant-numeric:tabular-nums;text-align:center}
+.ab-count{font-size:120px}
+.s-phase{font:700 22px/1.1 var(--font-display);letter-spacing:.06em;text-transform:uppercase;text-align:center;color:var(--ink-2)}
+.s-phase.work{color:var(--good)}
+.s-phase.rest{color:var(--warn)}
+.s-cta{gap:8px}
+/* conteggio colpo per colpo */
+.tal{display:flex;flex-direction:column;gap:10px;padding:12px;border:1px solid var(--line);background:var(--bg)}
+.tal-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.tal-n{font:600 18px var(--font-mono)}
+.tal-side{font:600 15px/1.2 var(--font-body);color:var(--accent)}
+.tal-strip{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:3px}
+.tal-strip.ten{grid-template-columns:repeat(10,minmax(0,1fr))}
+.tal-strip i{height:10px;background:var(--line);border-radius:1px}
+.tal-strip i.t-o{background:var(--warn)}
+.tal-strip i.t-p,.tal-strip i.t-n{background:var(--bad)}
+.tal-strip i.t-h,.tal-strip i.t-y{background:var(--good)}
+.tal-b{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.tal-b.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.tb{min-height:64px;border:2px solid var(--line);background:var(--surface);border-radius:3px;font:700 17px/1.1 var(--font-body);padding:6px 4px;color:var(--ink)}
+.tal.big .tb{min-height:104px;font-size:21px}
+.tb.t-h,.tb.t-y{border-color:var(--good);color:var(--good)}
+.tb.t-o{border-color:var(--warn);color:var(--warn)}
+.tb.t-p,.tb.t-n{border-color:var(--bad);color:var(--bad)}
+.tb:active:not([disabled]){transform:scale(.97)}
+.tb[disabled]{opacity:.35;cursor:not-allowed}
+.btn.on{border-color:var(--accent);color:var(--accent)}
+.seg-s{display:block;font:500 11px/1.2 var(--font-mono);opacity:.75}
+/* screenshot del bersaglio */
+.sh-fig{position:relative;border:1px solid var(--line);cursor:crosshair;line-height:0;touch-action:manipulation}
+.sh-fig img{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none;pointer-events:none}
+.sh-fig svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.sh-ring{fill:none;stroke:#55C2E8;opacity:.85}
+.sh-c{fill:#55C2E8}
+.sh-h{fill:rgba(240,112,95,.35);stroke:#F0705F}
+.pat svg{display:block;width:100%;max-width:280px;margin-inline:auto;height:auto}
+.chart .pat .ring{fill:none;stroke:var(--line);stroke-width:1.5}
+.chart .pat .dot{fill:var(--bad);fill-opacity:.55;stroke:none}
+.chart .pat .line{stroke:var(--ink);stroke-width:2.5}
+/* test del controller */
+.pad-run{display:flex;flex-direction:column;gap:10px;padding:12px;border:1px solid var(--accent);background:var(--accent-soft)}
+.pc{display:block;width:100%;height:auto;border:1px solid var(--line)}
+.pc-bg{fill:var(--bg)}
+.pc-t{fill:none;stroke:var(--accent);stroke-width:3}
+.pc-t.in{fill:var(--band);stroke:var(--good)}
+.pc-c{fill:var(--ink)}
+/* partite */
+.m-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.m-form label{display:flex;flex-direction:column;gap:4px;min-width:0}
+.tw table.ab-t{min-width:0}
+/* animazioni per ottica */
+.dm-sight{fill:none;stroke:var(--ink-2);stroke-width:2;opacity:.7}
+.dm-dot{fill:#E5484D}
+.dm-vig{fill:#05090C;opacity:.94}
+.dm-chev{stroke:#E5484D;stroke-width:2.5;fill:none;stroke-linejoin:round;stroke-linecap:round}
+.dm-lane{stroke:var(--ink-2);stroke-width:1;opacity:.3;fill:none}
+.scoped .dm-t{fill:#E4ECF0}
+.scoped .dm-t.ok{fill:#4CC38A}
+.scoped .dm-t.bad{fill:#F0705F}
+@media (max-width:380px){.nav button{font-size:9px;letter-spacing:0}}
+@media (min-width:900px){.ov{padding-inline:28px}.s-wrap{max-width:720px}}
+/* partite: media mobile e collegamento a R6 Tracker */
+.chart .line.m-avg{stroke:var(--accent);stroke-width:3}
+.m-trk{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px}
+.m-trk label{display:flex;flex-direction:column;gap:4px;flex:1 1 180px;min-width:0}
+.m-trk .btn{flex:0 0 auto;min-height:48px;display:inline-flex;align-items:center;text-decoration:none}
+.m-trk .btn[hidden]{display:none}
+#m-card .m-sv{display:block;font:500 11px/1.3 var(--font-mono);color:var(--ink-2);margin-top:2px}
+#m-card .m-del{width:1%;text-align:right}
+#m-card .m-del .btn{min-width:44px;min-height:44px;padding:0 8px}
+@media (max-width:420px){#m-card .tw th,#m-card .tw td{padding-left:4px;padding-right:4px}#m-card .tw th:first-child,#m-card .tw td:first-child{padding-left:8px}}
+#m-card .tw{position:relative}
+#m-card .tw th{letter-spacing:.04em}
+/* statistiche automatiche */
+.lv-bar{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--line);background:var(--bg)}
+.lv-txt{flex:1 1 auto;min-width:0;font-size:14px;line-height:1.45}
+.lv-sub{font-size:12px;color:var(--ink-2)}
+.lv-dot{flex:0 0 auto;width:10px;height:10px;border-radius:50%;margin-top:5px;background:var(--line)}
+.lv-dot.ok{background:var(--good)}
+.lv-dot.on{background:var(--good);box-shadow:0 0 0 4px var(--accent-soft)}
+.lv-dot.err{background:var(--bad)}
+.lv-dot.busy{background:var(--warn)}
+@media (prefers-reduced-motion:no-preference){.lv-dot.on{animation:lvp 1.6s ease-in-out infinite}@keyframes lvp{50%{box-shadow:0 0 0 7px transparent}}}
+.lv-bar .btn{flex:0 0 auto}
+.lv-steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:14px}
+.lv-steps li{line-height:1.5}
+.lv-steps a{color:var(--accent)}
+.lv-vars{margin:8px 0;padding-left:18px;display:flex;flex-direction:column;gap:8px}
+.lv-acts{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.lv-tok{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}
+.lv-tok code{flex:1 1 200px;min-width:0;padding:8px 10px;border:1px solid var(--line);background:var(--bg);font:500 13px/1.3 var(--font-mono);word-break:break-all;user-select:all;-webkit-user-select:all}
+.lv-url{display:flex;flex-direction:column;gap:4px;margin:8px 0}
+.lv-src{min-height:160px;font-size:12px;line-height:1.35;white-space:pre;overflow:auto;resize:vertical}
+.lv-res{border:1px solid var(--line);padding:12px;margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.lv-res p{margin:0}
+.lv-res.good{border-color:var(--good)}
+.lv-res.bad{border-color:var(--bad)}
+.lv-f{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:6px}
+.lv-f li.ok span[aria-hidden]{color:var(--good);font-weight:700}
+.lv-f li.no{color:var(--ink-2)}
+.lv-f li.no span[aria-hidden]{color:var(--bad);font-weight:700}
+.hint.err{color:var(--bad)}
+.lv-set>summary{font-weight:600}
+#m-card tr.m-auto td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+.chart .pt.auto{fill:var(--good)}
+#m-card .m-tag{color:var(--accent);font-weight:600}
+
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
 </style>
 <style>@media (max-width:899px){body{padding-top:max(18px,env(safe-area-inset-top,0px))}}</style>
@@ -412,11 +542,14 @@ button:focus-visible,summary:focus-visible,select:focus-visible,a:focus-visible,
     <button type="button" data-act="tab" data-t="progressi">Progressi</button>
     <button type="button" data-act="tab" data-t="consigli">Consigli</button>
     <button type="button" data-act="tab" data-t="cappette">Cappette</button>
+    <button type="button" data-act="tab" data-t="test">Test</button>
     <button type="button" data-act="tab" data-t="guida">Guida</button>
   </nav>
   <main id="view"></main>
 </div>
 <div class="toast" id="toast" role="status" hidden></div>
+<div class="ov" id="ov" hidden></div>
+<input type="file" id="shot-in" accept="image/*" hidden>
 <script>
 (function(){
 'use strict';
@@ -569,12 +702,12 @@ var DRILLS=[
    q:'rainbow six siege tracking aim training controller'},
   {id:'flk',name:'Flick',short:'Flick',mins:5,kind:'ab',ask:null,
    goal:'È l\'esercizio che decide il numero: dice se ti giri troppo o troppo poco.',
-   chips:function(u,def){return [adsLine(u,def),'L2 premuto dall\'inizio','20 colpi'];},
+   chips:function(u,def){return [adsLine(u,def),'bersaglio '+distWord(distKey(def))+' · '+distM(distKey(def))+' m','L2 premuto dall\'inizio','20 colpi'];},
    how:function(u,def){return [
-     'Bersaglio fermo a circa 10 metri. Premi L2 e tienilo premuto fino alla fine: ti giri già mirando, non premi L2 dopo esserti girato.',
+     'Bersaglio fermo a circa '+distM(distKey(def))+' metri. Premi L2 e tienilo premuto fino alla fine: ti giri già mirando, non premi L2 dopo esserti girato.',
      'Sposta il mirino di lato finché il bersaglio è al bordo dello schermo.',
      'Con un solo movimento deciso porta il mirino sulla testa e spara un colpo appena ti fermi. Non correggere prima di sparare.',
-     'Guarda dove è finito il colpo: oltre la testa, prima della testa o in testa. Ripeti alternando destra e sinistra, 20 colpi in tutto.'];},
+     'Dopo ogni colpo tocca qui sotto dove è finito: prima della testa, in testa o oltre. Alterna sinistra e destra, 20 colpi in tutto.'];},
    q:'rainbow six siege flick aim training controller'},
   {id:'swi',name:'Transizioni',short:'Trans',mins:3,kind:'n10',
    goal:'Allena a passare da un nemico all\'altro senza perdere tempo.',
@@ -650,7 +783,55 @@ function normSetup(s){
   return o;
 }
 function canonOp(x){var i=opInfo(x);return i?i.name:txt(x);}
-function defaultState(){return {v:4,rev:0,rounds:[],locks:{},manual:{},gear:normGear(null),carry:{},kit:{op:'',wep:'',mag:30},seen:0};}
+function defaultState(){return {v:5,rev:0,rounds:[],locks:{},manual:{},gear:normGear(null),carry:{},kit:{op:'',wep:'',mag:30},seen:0,ab:[],matches:[],ctest:[],prefs:{tts:true}};}
+function okDay(d){return /^\d{4}-\d{2}-\d{2}$/.test(String(d||''));}
+function fnum(x,lo,hi,dec){var n=Number(x);if(!isFinite(n))return null;n=Math.max(lo,Math.min(hi,n));var m=Math.pow(10,dec);return Math.round(n*m)/m;}
+function normHoles(h){
+  if(!Array.isArray(h))return null;
+  var o=h.slice(0,150).map(function(p){return Array.isArray(p)?[fnum(p[0],-3,3,2),fnum(p[1],-3,3,2)]:null;}).filter(function(p){return p&&p[0]!==null&&p[1]!==null;});
+  return o.length?o:null;
+}
+function normAB(x){
+  if(!x||typeof x!=='object'||OPT_IDS.indexOf(x.k)<0||!Array.isArray(x.blocks))return null;
+  var A=clampInt(x.A,1,100),B=clampInt(x.B,1,100);
+  if(A===B)return null;
+  var bl=x.blocks.slice(0,12).map(function(b){
+    if(!b||typeof b!=='object')return null;
+    var v=clampInt(b.v,1,100);if(v!==A&&v!==B)return null;
+    return {v:v,o:clampInt(b.o,0,300),p:clampInt(b.p,0,300),h:clampInt(b.h,0,300),secs:clampInt(b.secs,5,600)};
+  }).filter(Boolean);
+  if(!bl.length)return null;
+  return {ts:Number(x.ts)||0,day:okDay(x.day)?x.day:dkey(new Date(Number(x.ts)||Date.now())),k:x.k,A:A,B:B,dist:/^[vml]$/.test(String(x.dist||''))?x.dist:'m',blocks:bl};
+}
+function normMatch(x){
+  if(!x||typeof x!=='object'||!okDay(x.day))return null;
+  var auto=x.src==='auto'&&typeof x.id==='string'&&/^\d{1,16}$/.test(x.id);
+  var hs=(x.hs===null||x.hs===undefined)?null:fnum(x.hs,0,100,1);
+  if(hs===null&&!auto)return null;
+  var s={};OPT_IDS.forEach(function(k){if(x.s&&x.s[k]!==undefined)s[k]=clampInt(x.s[k],1,100);});
+  var o={ts:Number(x.ts)||0,day:x.day,hs:hs,kd:(x.kd===null||x.kd===undefined)?null:fnum(x.kd,0,10,2),n:(x.n===null||x.n===undefined)?null:clampInt(x.n,1,300),s:s};
+  if(auto){
+    o.src='auto';o.id=x.id;o.open=!!x.open;
+    o.k=clampInt(x.k,0,1000000);o.d=clampInt(x.d,0,1000000);o.h=(x.h===null||x.h===undefined)?null:clampInt(x.h,0,1000000);
+  }
+  return o;
+}
+function normLive(x){
+  if(!x||typeof x!=='object')return {url:'',token:'',on:false,since:0,hidden:[]};
+  var u=String(x.url||'').trim().slice(0,200);
+  if(u&&!/^https:\/\/[^\s/?#]+\.[^\s/?#]+(\/[^\s?#]*)?$/.test(u))u='';
+  var t=String(x.token||'');if(!/^[A-Za-z0-9_-]{16,128}$/.test(t))t='';
+  var h=Array.isArray(x.hidden)?x.hidden.filter(function(i){return typeof i==='string'&&/^\d{1,16}$/.test(i);}).slice(-500):[];
+  return {url:u,token:t,on:!!(x.on&&u&&t),paused:!!x.paused,since:Math.max(0,Math.floor(Number(x.since)||0)),hidden:h};
+}
+function normCT(x){
+  if(!x||typeof x!=='object')return null;
+  var o={ts:Number(x.ts)||0,day:okDay(x.day)?x.day:dkey(new Date(Number(x.ts)||Date.now())),drift:null,range:null,prec:null};
+  if(x.drift&&typeof x.drift==='object')o.drift={l:fnum(x.drift.l,0,100,1)||0,r:fnum(x.drift.r,0,100,1)||0};
+  if(x.range&&typeof x.range==='object')o.range=x.range;
+  if(x.prec&&typeof x.prec==='object')o.prec={time:fnum(x.prec.time,0,120,2)||0,over:fnum(x.prec.over,0,50,2)||0};
+  return o;
+}
 function normalize(r){
   var s=defaultState();
   try{
@@ -674,7 +855,11 @@ function normalize(r){
           rec:(x.rec===null||x.rec===undefined)?null:clampInt(x.rec,0,clampInt(x.recN===undefined?10:x.recN,1,120)),
           op:canonOp(x.op),wep:txt(x.wep),at:String(x.at||''),legacy:legacy,
           day:/^\d{4}-\d{2}-\d{2}$/.test(String(x.day||''))?x.day:parseAt(x.at),ts:Number(x.ts)||0,
-          setup:normSetup(x.setup),focus:(SENS_KEYS.indexOf(foc)>-1?foc:null)});
+          setup:normSetup(x.setup),focus:(SENS_KEYS.indexOf(foc)>-1?foc:null),
+          dist:/^[vml]$/.test(String(x.dist||''))?x.dist:null,
+          shots:(typeof x.shots==='string'&&/^[oph]{20}$/.test(x.shots))?x.shots:null,
+          swiSeq:(typeof x.swiSeq==='string'&&/^[yn]{10}$/.test(x.swiSeq))?x.swiSeq:null,
+          holes:normHoles(x.holes)});
       });
     }
     if(o.locks&&typeof o.locks==='object'){
@@ -687,6 +872,10 @@ function normalize(r){
     }
     if(o.kit&&typeof o.kit==='object'){s.kit={op:canonOp(o.kit.op),wep:txt(o.kit.wep),mag:clampInt(o.kit.mag===undefined?30:o.kit.mag,1,120)};}
     if(o.optx&&typeof o.optx==='object'&&s.carry.ads8===undefined&&o.optx['8.0']!==undefined)s.carry.ads8=clampInt(o.optx['8.0'],1,100);
+    if(Array.isArray(o.ab))s.ab=o.ab.map(normAB).filter(Boolean).slice(-300);
+    if(Array.isArray(o.matches))s.matches=o.matches.map(normMatch).filter(Boolean).slice(-400);
+    if(Array.isArray(o.ctest))s.ctest=o.ctest.map(normCT).filter(Boolean).slice(-100);
+    if(o.prefs&&typeof o.prefs==='object')s.prefs={tts:o.prefs.tts!==false,ubi:ubiName(o.prefs.ubi),live:normLive(o.prefs.live)};
   }catch(e){}
   return s;
 }
@@ -712,9 +901,9 @@ var calMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1),calDay=d
 var openD={'d-setup':true},demoPaused=false;
 try{demoPaused=window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
 function draftKey(){return LSD+(me?'-'+me.id:'');}
-function blankDraft(){return {sig:state.rounds.length,trk:null,a:null,b:null,swi:null,rec:null,ring:null,drift:null,mag:state.kit.mag||30,sens:{},focus:null,op:state.kit.op,wep:state.kit.wep,opFree:false,wepFree:false};}
+function blankDraft(){return {sig:state.rounds.length,trk:null,a:null,b:null,swi:null,rec:null,ring:null,drift:null,mag:state.kit.mag||30,sens:{},focus:null,op:state.kit.op,wep:state.kit.wep,opFree:false,wepFree:false,dist:null,shots:null,swiSeq:null,holes:null};}
 function loadDraft(){
-  try{var j=JSON.parse(localStorage.getItem(draftKey()));if(j&&j.sig===state.rounds.length){if(!j.sens)j.sens={};if(j.rec===undefined)j.rec=null;if(j.swi===undefined)j.swi=null;if(j.ring===undefined)j.ring=null;if(j.drift===undefined)j.drift=null;if(!j.mag)j.mag=state.kit.mag||30;if(j.op===undefined)j.op=state.kit.op;if(j.wep===undefined)j.wep=state.kit.wep;if(!j.opFree)j.opFree=false;if(!j.wepFree)j.wepFree=false;if(OPT_IDS.indexOf(j.focus)<0)j.focus=null;return j;}}catch(e){}
+  try{var j=JSON.parse(localStorage.getItem(draftKey()));if(j&&j.sig===state.rounds.length){if(!j.sens)j.sens={};if(j.rec===undefined)j.rec=null;if(j.swi===undefined)j.swi=null;if(j.ring===undefined)j.ring=null;if(j.drift===undefined)j.drift=null;if(!j.mag)j.mag=state.kit.mag||30;if(j.op===undefined)j.op=state.kit.op;if(j.wep===undefined)j.wep=state.kit.wep;if(!j.opFree)j.opFree=false;if(!j.wepFree)j.wepFree=false;if(OPT_IDS.indexOf(j.focus)<0)j.focus=null;['dist','shots','swiSeq','holes'].forEach(function(q){if(j[q]===undefined)j[q]=null;});return j;}}catch(e){}
   return blankDraft();
 }
 function saveDraft(){try{localStorage.setItem(draftKey(),JSON.stringify(draft));}catch(e){}}
@@ -906,7 +1095,7 @@ function rScore(r){
 }
 function deco(r,i){
   return {n:i+1,stage:r.stage,value:r.value,legacy:r.legacy,a:r.a,b:r.b,trk:r.trk,pre:r.pre,swi:r.swi,rec:r.rec,recN:r.recN,ring:r.ring,drift:r.drift,op:r.op,wep:r.wep,
-    at:r.at,day:r.day,ts:r.ts,setup:r.setup,focus:r.focus,
+    at:r.at,day:r.day,ts:r.ts,setup:r.setup,focus:r.focus,dist:r.dist,shots:r.shots,swiSeq:r.swiSeq,holes:r.holes,
     d:r.a-r.b,hits:20-r.a-r.b,bal:Math.abs(r.a-r.b)<=TOL,score:rScore(r)};
 }
 function pickBest(rounds){
@@ -1145,6 +1334,7 @@ function tTick(){
   tRender();
 }
 function tRender(){
+  sessTick();
   var tm=$('t-time'),go=$('t-go'),stt=$('t-state');
   if(!tm)return;
   var t=T[dstep];
@@ -1163,9 +1353,17 @@ function mv(vals,times,dur,extra){
 function fade(times,dur,extra){
   return '<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="'+kt(times)+'" dur="'+dur+'" repeatCount="indefinite"'+(extra||'')+'/>';
 }
+var demoOpt='1.0x',ZOOMV={'2.5x':1.45,'3.5x':1.7,'8.0x':2.2};
+function scoped(){return demoOpt!=='1.0x';}
+function zoomWrap(w){
+  if(!scoped())return w;
+  var z=ZOOMV[demoOpt]||1.5;
+  return '<g transform="translate('+CX+' '+CY+') scale('+z+') translate('+(-CX)+' '+(-CY)+')">'+w+'</g>';
+}
 function scene(pose,label,body){
-  return '<svg viewBox="0 0 '+DW+' '+DH+'" data-pose="'+pose+'" role="img" aria-label="'+esc(label)+'">'+
-    '<rect class="dm-sky" width="'+DW+'" height="118"/><rect class="dm-floor" y="118" width="'+DW+'" height="62"/>'+body+'</svg>';
+  return '<svg viewBox="0 0 '+DW+' '+DH+'" data-pose="'+pose+'" role="img" aria-label="'+esc(label+(scoped()?', vista nel mirino '+demoOpt:''))+'"'+(scoped()?' class="scoped"':'')+'>'+
+    '<rect class="dm-sky" width="'+DW+'" height="118"/><rect class="dm-floor" y="118" width="'+DW+'" height="62"/>'+
+    '<path class="dm-lane" d="M40 180 L128 118 M280 180 L192 118 M0 150 H320"/>'+body+'</svg>';
 }
 function wallBits(){
   var s='';
@@ -1177,11 +1375,24 @@ function target(hit){
   return '<rect class="dm-body" x="-19" y="13" width="38" height="47" rx="8"/><circle class="dm-head" cx="0" cy="0" r="11"/>'+(hit||'');
 }
 function cross(){
+  if(scoped()){
+    var r=74;
+    return '<path class="dm-vig" fill-rule="evenodd" d="M0 0H'+DW+'V'+DH+'H0Z M'+(CX-r)+' '+CY+' a'+r+' '+r+' 0 1 0 '+(2*r)+' 0 a'+r+' '+r+' 0 1 0 '+(-2*r)+' 0Z"/>'+
+      '<path class="dm-chev" d="M'+(CX-9)+' '+(CY+11)+' L'+CX+' '+CY+' L'+(CX+9)+' '+(CY+11)+'"/>'+
+      '<line class="dm-chev" x1="'+CX+'" y1="'+(CY+16)+'" x2="'+CX+'" y2="'+(CY+52)+'"/>'+
+      '<line class="dm-chev" x1="'+(CX-40)+'" y1="'+CY+'" x2="'+(CX-22)+'" y2="'+CY+'"/><line class="dm-chev" x1="'+(CX+22)+'" y1="'+CY+'" x2="'+(CX+40)+'" y2="'+CY+'"/>';
+  }
+  if(demoOpt==='1.0x'){
+    return '<rect class="dm-sight" x="'+(CX-36)+'" y="'+(CY-27)+'" width="72" height="54" rx="12"/>'+
+      '<line class="dm-sight" x1="'+(CX-24)+'" y1="'+(CY+27)+'" x2="'+(CX-30)+'" y2="'+(CY+40)+'"/><line class="dm-sight" x1="'+(CX+24)+'" y1="'+(CY+27)+'" x2="'+(CX+30)+'" y2="'+(CY+40)+'"/>'+
+      '<circle class="dm-dot" cx="'+CX+'" cy="'+CY+'" r="3"/>';
+  }
   return '<g class="dm-cross"><circle cx="'+CX+'" cy="'+CY+'" r="2.5" fill="currentColor"/>'+
     '<line x1="'+(CX-17)+'" y1="'+CY+'" x2="'+(CX-7)+'" y2="'+CY+'"/><line x1="'+(CX+7)+'" y1="'+CY+'" x2="'+(CX+17)+'" y2="'+CY+'"/>'+
     '<line x1="'+CX+'" y1="'+(CY-17)+'" x2="'+CX+'" y2="'+(CY-7)+'"/><line x1="'+CX+'" y1="'+(CY+7)+'" x2="'+CX+'" y2="'+(CY+17)+'"/></g>';
 }
 function gun(flashT,dur){
+  if(scoped())return '';
   var f=flashT?'<g opacity="0"><polygon class="dm-flash" points="268,134 284,126 280,137 290,141 272,145"/>'+
     '<animate attributeName="opacity" values="'+flashT.v+'" keyTimes="'+kt(flashT.k)+'" dur="'+dur+'" repeatCount="indefinite"/></g>':'';
   return f+'<polygon class="dm-gun" points="298,180 272,146 284,139 316,176"/><polygon class="dm-gun" points="286,158 276,172 292,182 302,170"/>';
@@ -1191,7 +1402,7 @@ function demoTrk(){
   var dur='6s';
   var tgt='<g transform="translate(200 '+CY+')"><g>'+mv('0 0;120 0;0 0',[0,0.5,1],dur,' calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"')+target()+'</g></g>';
   var world='<g><g>'+mv('-40 0;-160 0;-40 0',[0,0.5,1],dur,' calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1" begin="0.18s"')+wallBits()+tgt+'</g></g>';
-  return scene(0.9,'Il bersaglio cammina di lato e il mirino resta sulla sua testa',world+cross()+gun()+cap('Il mirino resta sulla testa'));
+  return scene(0.9,'Il bersaglio cammina di lato e il mirino resta sulla sua testa',zoomWrap(world)+cross()+gun()+cap('Il mirino resta sulla testa'));
 }
 function demoFlk(vert){
   var P=vert
@@ -1214,7 +1425,7 @@ function demoFlk(vert){
   var fl={v:'0;0;1;0;0',k:[0,0.17*L,0.19*L,0.22*L,1]};
   var world='<g><g>'+mv(pts.map(function(p){return p[1];}).join(';'),pts.map(function(p){return p[0];}),dur)+wallBits()+
     '<g transform="translate('+CX+' '+CY+')">'+target(hitG)+'</g></g></g>';
-  return scene(0.6,'Tre flick: uno oltre la testa, uno che si ferma prima e uno in testa',world+cross()+gun(fl,dur)+labels);
+  return scene(0.6,'Tre flick: uno oltre la testa, uno che si ferma prima e uno in testa',zoomWrap(world)+cross()+gun(fl,dur)+labels);
 }
 function demoPre(){
   var dur='6s';
@@ -1263,7 +1474,7 @@ function demoRec(){
   var l1='<text class="dm-t bad" x="'+CX+'" y="172" opacity="0">'+fade([0,0.06,0.09,H-0.04,H-0.01,1],dur)+'Il gruppo sale fuori dai cerchi</text>';
   var l2='<text class="dm-t ok" x="'+CX+'" y="172" opacity="0">'+fade([0,H+0.06,H+0.09,0.96,0.99,1],dur)+'Stick giù: restano nel centro</text>';
   return scene(0.05,'Un caricatore che sale fuori dai cerchi, poi uno tenuto nel centro accompagnando lo stick giù',
-    world+world2+cross()+gun({v:flashV.join(';'),k:flashK},dur)+l1+l2);
+    zoomWrap(world)+zoomWrap(world2)+cross()+gun({v:flashV.join(';'),k:flashK},dur)+l1+l2);
 }
 function demoSwi(){
   var dur='6s',T=[0,0.14,0.28,0.5,0.64,0.86,1];
@@ -1272,10 +1483,11 @@ function demoSwi(){
   var world='<g><g>'+mv(V.join(';'),T,dur)+wallBits()+tg+'</g></g>';
   var fl={v:'0;0;1;0;0;1;0;0',k:[0,0.26,0.29,0.33,0.62,0.65,0.69,1]};
   var l='<text class="dm-t" x="'+CX+'" y="172">Da una testa all\'altra</text>';
-  return scene(0.2,'Il mirino passa dalla testa di un bersaglio a quella dell\'altro',world+cross()+gun(fl,dur)+l);
+  return scene(0.2,'Il mirino passa dalla testa di un bersaglio a quella dell\'altro',zoomWrap(world)+cross()+gun(fl,dur)+l);
 }
 function demoHtml(D,def){
   var svg,q=D.q;
+  demoOpt=OPTIC[optKeyOf(def)];
   if(D.id==='trk')svg=demoTrk();
   else if(D.id==='flk')svg=demoFlk(false);
   else if(D.id==='swi')svg=demoSwi();
@@ -1283,7 +1495,7 @@ function demoHtml(D,def){
   return '<figure class="demo">'+svg+
     '<div class="demo-btns"><button class="btn ghost" data-act="demo" type="button">'+(demoPaused?'Riproduci':'Pausa')+'</button>'+
     '<a class="btn ghost" href="https://www.youtube.com/results?search_query='+encodeURIComponent(q)+'" target="_blank" rel="noopener noreferrer">Video veri</a></div>'+
-    '<figcaption class="hint">Disegno animato, non una registrazione del gioco. Per il gioco vero usa "Video veri".</figcaption></figure>';
+    '<figcaption class="hint">Disegno animato, non una registrazione del gioco: '+(scoped()?'vista nel mirino '+esc(demoOpt)+' con il reticolo a punta':'punto rosso del mirino 1.0x')+'. Per il gioco vero usa "Video veri".</figcaption></figure>';
 }
 function applyDemo(){
   var els=document.querySelectorAll('.demo svg');
@@ -1339,6 +1551,7 @@ function analyze(P){
   var rg=anRange();
   var rs=state.rounds.map(deco).filter(function(r){return r.day&&r.day>=rg.from&&r.day<=rg.to;}).sort(cmpDay);
   rs.forEach(function(r,i){r.i=i;});
+  markWarm(rs);
   var A={rg:rg,rs:rs,n:rs.length,T:P.T,days:[],combos:[],params:{},losses:[],ins:[],best:null,noSetup:0,trend:null,avg:null,ss:[],caps:[],kits:[],bestKit:null};
   if(!rs.length)return A;
   var T=P.T;
@@ -1602,54 +1815,9 @@ function focusHtml(){
     OPT_IDS.map(function(k){return '<button type="button" data-act="focus" data-s="'+k+'" aria-pressed="'+(f===k)+'">'+esc(OPTIC[k])+'</button>';}).join('')+'</div></div>';
 }
 function drillDone(D){
-  if(D.id==='flk')return draft.a!==null&&draft.b!==null;
+  if(D.id==='flk'){if(draft.shots)return draft.shots.length>=FLK_N;return draft.a!==null&&draft.b!==null;}
+  if(D.id==='swi'){if(draft.swiSeq)return draft.swiSeq.length>=SWI_N;return draft.swi!==null&&draft.swi!==undefined;}
   return draft[D.id]!==null&&draft[D.id]!==undefined;
-}
-function drillCard(P,used,def,maint){
-  var D=DRILLS[dstep],body='';
-  if(D.kind==='rate'){
-    body='<div class="field"><div class="ask">'+esc(D.ask)+'</div>'+rateHtml('trk',draft.trk)+
-      '<p class="hint">'+esc(D.hint)+'</p></div>';
-  }else if(D.kind==='n10'){
-    body='<div class="field"><div class="ask">'+esc(D.ask)+'</div>'+stpHtml('num','swi',draft.swi,{wide:true,big:true,five:true})+
-      '<p class="hint">'+esc(D.hint)+'</p></div>';
-  }else if(D.kind==='mag'){
-    body='<div class="field"><div class="ask">Con che operatore e arma?</div>'+kitHtml()+'</div>'+
-      '<div class="field"><div class="ask">Colpi del caricatore</div>'+stpHtml('num','mag',draft.mag,{wide:true,five:true})+
-      '<p class="hint">Quanti colpi ha il caricatore pieno: li vedi nel contatore delle munizioni.</p></div>'+
-      '<div class="field"><div class="ask">'+esc(D.ask)+'</div>'+stpHtml('num','rec',draft.rec,{wide:true,big:true,five:true})+
-      '<p class="hint">Conta i fori dentro il cerchio più grande, su tutto il caricatore.</p></div>'+
-      (draft.rec===null?'':'<p class="res">'+draft.rec+' su '+draft.mag+'</p>')+
-      '<div class="field"><div class="ask">Dov\'è arrivato il foro più in alto?</div><div class="seg">'+
-      RING.map(function(x,i){return '<button type="button" data-act="ring" data-v="'+i+'" aria-pressed="'+(draft.ring===i)+'">'+esc(x)+'</button>';}).join('')+
-      '</div><p class="hint">Hai iniziato dal centro: più è lontano, più il mirino ti è salito.</p></div>'+
-      '<div class="field"><div class="ask">Da che parte vanno i fori?</div><div class="seg">'+
-      DRIFT.map(function(x){return '<button type="button" data-act="drift" data-v="'+x[0]+'" aria-pressed="'+(draft.drift===x[0])+'">'+esc(x[1])+'</button>';}).join('')+
-      '</div><p class="hint">Il foro più alto entra nel calcolo della sensibilità, la direzione è un promemoria. Puoi saltarle.</p></div>';
-  }else if(D.kind==='ab'){
-    var hits=(draft.a===null)?null:20-draft.a-draft.b;
-    body=(maint?focusHtml():'')+
-      '<div class="field"><div class="ask">'+esc(def.la)+': quante volte su 20?</div>'+stpHtml('num','a',draft.a,{wide:true,big:true})+'<p class="hint">'+esc(def.ha)+'</p></div>'+
-      '<div class="field"><div class="ask">'+esc(def.lb)+': quante volte su 20?</div>'+stpHtml('num','b',draft.b,{wide:true,big:true})+'<p class="hint">'+esc(def.hb)+'</p></div>'+
-      (hits===null?'':'<p class="res">In testa: '+hits+' su 20</p>');
-  }
-  var dots=DRILLS.map(function(X,i){
-    return '<button type="button" data-act="dstep" data-i="'+i+'"'+(i===dstep?' aria-current="step"':'')+' class="'+(drillDone(X)?'ok':'')+'" aria-label="Allenamento '+(i+1)+': '+esc(X.name)+(drillDone(X)?', fatto':'')+'">'+esc(X.short)+(drillDone(X)?' ✓':'')+'</button>';
-  }).join('');
-  var nav='<div class="row-btn">'+
-    (dstep>0?'<button class="btn ghost" data-act="dstep" data-i="'+(dstep-1)+'" type="button">Indietro</button>':'')+
-    (dstep<ND-1?'<button class="btn pri" data-act="dstep" data-i="'+(dstep+1)+'" type="button">Avanti</button>':'')+'</div>';
-  return '<section class="card">'+
-    '<div class="steps-h"><span class="dr-n">Allenamento '+(dstep+1)+' di '+ND+'</span><div class="dots">'+dots+'</div></div>'+
-    '<div class="dr-h"><h2>'+esc(D.name)+'</h2><span class="note">'+D.mins+' minuti</span></div>'+
-    '<p class="goal-t">'+esc(D.goal)+'</p>'+
-    '<div class="with">'+D.chips(used,def).map(function(c){return '<span>'+esc(c)+'</span>';}).join('')+'</div>'+
-    demoHtml(D,def)+
-    '<ol class="how num">'+D.how(used,def).map(function(h){return '<li>'+esc(h)+'</li>';}).join('')+'</ol>'+
-    '<div class="tm"><div class="t-time mono" id="t-time">'+fmt(T[dstep].left)+'</div>'+
-    '<div class="t-btns"><button class="btn pri" id="t-go" data-act="tgo" type="button">Avvia</button><button class="btn ghost" data-act="treset" type="button">Azzera</button></div>'+
-    '<div class="t-state" id="t-state"></div></div>'+
-    body+nav+'</section>';
 }
 function welcome(){
   return '<section class="card"><h2>Benvenuto</h2>'+
@@ -1699,7 +1867,9 @@ function renderToday(P){
   var ok=!miss.length;
   var save=(dstep===ND-1||ok)?('<div class="save-area"><button class="btn pri big block" data-act="save" type="button"'+(ok?'':' disabled')+'>Salva round</button>'+
     '<p class="hint">'+(ok?'Salvo i risultati con le sensibilità che hai indicato.':'Mancano: '+miss.map(function(D){return D.name;}).join(', ')+'.')+'</p></div>'):'';
-  return '<div class="cols"><div class="col">'+plate+setupHtml(P,maint?null:st.def.id)+'</div><div class="col">'+drillCard(P,used,def,maint)+save+'</div></div>';
+  var cta='<section class="card s-cta"><button class="btn pri big block" data-act="sessopen" type="button">Avvia la sessione guidata</button>'+
+    '<p class="hint">Schermo intero e tasti grandi: timer a intervalli con la voce, conteggio colpo per colpo, salvataggio alla fine.</p></section>';
+  return '<div class="cols"><div class="col">'+plate+setupHtml(P,maint?null:st.def.id)+'</div><div class="col">'+cta+drillCard(P,used,def,maint)+save+'</div></div>';
 }
 
 /* ---------- Progressi ---------- */
@@ -1710,16 +1880,17 @@ function setupLine(s){
   return [o,hv].filter(Boolean).join(' · ')||'–';
 }
 function stickLine(c,m,d,cap){return capName(cap)+', '+nameOf(CURVES,c)+(m?(' '+(m>0?'+':'')+m):'')+', deadzone '+d+'%';}
-function roundCard(r){
+function roundCard(r,ws){
   var def=(r.stage==='free')?null:stageById(r.stage);
+  var warm=ws&&ws[r.ts];
   var title=(r.stage==='free')?(r.legacy?((KEY_NAME[r.focus]||'Fase vecchia')+' (vecchio percorso)'):('Mantenimento'+(r.focus?' · '+KEY_NAME[r.focus]:''))):def.name;
   var s=r.setup,kit=kitLabel(r);
   var val=(r.stage==='free'||r.value===null)?'':(' · '+fv(r.stage,r.value));
-  return '<div class="rd"><div class="rd-h"><b>R'+r.n+' · '+esc(title)+esc(val)+'</b><span>'+esc(fmtT(r.ts))+'</span></div>'+
+  return '<div class="rd"><div class="rd-h"><b>R'+r.n+' · '+esc(title)+esc(val)+(warm?' <span class="tag soft">riscaldamento</span>':'')+'</b><span>'+esc(fmtT(r.ts))+'</span></div>'+
     '<div class="kv">'+
     '<div><span class="k">Sensibilità</span><span class="x">'+esc(setupLine(s))+'</span></div>'+
     '<div><span class="k">Punteggio</span><span class="x">'+nf(r.score,0)+' su 100</span></div>'+
-    '<div><span class="k">Flick</span><span class="x">oltre '+r.a+' · prima '+r.b+' · in testa '+r.hits+'/20</span></div>'+
+    '<div><span class="k">Flick</span><span class="x">oltre '+r.a+' · prima '+r.b+' · in testa '+r.hits+'/20'+(r.dist?' · '+distWord(r.dist):'')+(r.shots?' · colpo per colpo':'')+'</span></div>'+
     '<div><span class="k">Trk · Trans · Rinc</span><span class="x">'+r.trk+' · '+(r.swi===null?(r.pre===null?'–':'pre '+r.pre):r.swi+'/10')+' · '+(r.rec===null?'–':r.rec+'/'+(r.recN||10))+'</span></div>'+
     ((r.ring!==null&&r.ring!==undefined)||(r.drift!==null&&r.drift!==undefined)?'<div><span class="k">Fori del rinculo</span><span class="x">'+esc([(r.ring===null||r.ring===undefined)?null:RING[r.ring],driftName(r.drift)].filter(Boolean).join(' · '))+'</span></div>':'')+
     (kit?'<div><span class="k">Operatore e arma</span><span class="x">'+esc(kit)+'</span></div>':'')+
@@ -1744,10 +1915,10 @@ function renderProg(P){
   try{title=calMonth.toLocaleDateString('it-IT',{month:'long',year:'numeric'});}catch(e){title=y+'-'+pad(m+1);}
   var cal='<section class="card"><div class="cal-head"><h2>'+esc(title)+'</h2><div class="cal-nav"><button type="button" data-act="cal" data-d="-1" aria-label="Mese prima">‹</button><button type="button" data-act="cal" data-d="0" aria-label="Torna a oggi" style="font-size:12px;letter-spacing:.06em">OGGI</button><button type="button" data-act="cal" data-d="1" aria-label="Mese dopo">›</button></div></div>'+
     '<div class="cal-grid">'+head+cells+'</div><p class="hint">Il numero piccolo è il punteggio medio del giorno.</p></section>';
-  var L2=by[calDay]||[],dtitle;
+  var L2=by[calDay]||[],dtitle,WS=warmSet();
   try{dtitle=parseKey(calDay).toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});}catch(e){dtitle=calDay;}
   var day='<section class="card"><h2 style="text-transform:capitalize">'+esc(dtitle)+'</h2>'+
-    (L2.length?('<p class="note">'+cnt(L2.length,'round','round')+', media '+nf(mean(L2.map(function(r){return r.score;})),0)+'.</p>'+L2.map(roundCard).join('')):'<p class="note">Niente in questo giorno. Tocca un giorno colorato.</p>')+'</section>';
+    (L2.length?('<p class="note">'+cnt(L2.length,'round','round')+', media '+nf(mean(L2.map(function(r){return r.score;})),0)+'.</p>'+L2.map(function(r){return roundCard(r,WS);}).join('')):'<p class="note">Niente in questo giorno. Tocca un giorno colorato.</p>')+'</section>';
   var wk=weeklyReviews().slice(0,4);
   var weeks=wk.length?('<section class="card"><h2>Settimane</h2><div class="tw"><table><thead><tr><th>Settimana</th><th>Sere</th><th>Round</th><th>Punti</th><th>Diff.</th></tr></thead><tbody>'+
     wk.map(function(w){
@@ -1773,7 +1944,7 @@ function renderProg(P){
   var fix='<section class="card"><h3>Correzioni</h3><div class="row-btn">'+
     (state.rounds.length?'<button class="btn" data-act="undo" type="button">'+(arm==='undo'?'Tocca ancora per annullare':'Annulla l\'ultimo round')+'</button>':'')+
     '<button class="btn ghost" data-act="reset" type="button">'+(arm==='reset'?'Tocca ancora: cancella tutto':'Azzera tutto')+'</button></div></section>';
-  return '<div class="cols"><div class="col">'+cal+stages+'</div><div class="col">'+day+weeks+fix+'</div></div>';
+  return '<div class="cols"><div class="col">'+cal+stages+'</div><div class="col">'+day+matchCard(P)+liveSetupCard(P)+weeks+fix+'</div></div>';
 }
 
 /* ---------- Consigli ---------- */
@@ -1806,13 +1977,17 @@ function kitTable(A){
    Poi correggo il comfort con il punteggio (se un altro valore rende chiaramente di più) e con il rinculo di quel mirino.
    I mirini senza round li calcolo dagli altri con valore = a + b / zoom. */
 var LIM_OVER=2;
+/* Minimi quadrati pesati: [x, y, peso]. Il riscaldamento pesa 0,5, i confronti A/B in proporzione ai colpi. */
 function fitLine(pts){
   var n=pts.length;
   if(n<2)return null;
-  var mx=mean(pts.map(function(p){return p[0];})),my=mean(pts.map(function(p){return p[1];}));
+  var W=0,mx=0,my=0;
+  pts.forEach(function(p){var w=(p[2]===undefined?1:p[2]);W+=w;mx+=w*p[0];my+=w*p[1];});
+  if(!W)return null;
+  mx/=W;my/=W;
   var sxx=0,sxy=0,syy=0;
-  pts.forEach(function(p){sxx+=(p[0]-mx)*(p[0]-mx);sxy+=(p[0]-mx)*(p[1]-my);syy+=(p[1]-my)*(p[1]-my);});
-  if(sxx===0)return null;
+  pts.forEach(function(p){var w=(p[2]===undefined?1:p[2]);sxx+=w*(p[0]-mx)*(p[0]-mx);sxy+=w*(p[0]-mx)*(p[1]-my);syy+=w*(p[1]-my)*(p[1]-my);});
+  if(sxx<1e-9)return null;
   var b=sxy/sxx,a=my-b*mx;
   return {a:a,b:b,r2:(syy>0)?(sxy*sxy)/(sxx*syy):1,n:n};
 }
@@ -1821,26 +1996,32 @@ function sensModel(A,P){
   var out={};
   OPT_IDS.forEach(function(k){
     var now=P.vals[k];
-    var F=A.rs.filter(function(r){return focusOf(r)===k;}).map(function(r){
+    var RK=A.rs.filter(function(r){return focusOf(r)===k;});
+    var F=RK.map(function(r){
       var x=(r.setup&&r.setup[k]!==undefined)?r.setup[k]:r.value;
-      return {x:x,d:r.d};
+      return {x:x,d:r.d,w:r.warm?0.5:1};
     }).filter(function(p){return p.x!==null&&p.x!==undefined;});
-    var m={k:k,now:now,n:F.length,pts:F,fit:null,eq:null,limit:null,comfort:null,target:null,conf:'–',est:false,perf:null,ring:null,ringUp:false,derived:false};
+    var nr=F.length;
+    F=F.concat(abPoints(k,A.rg));
+    var m={k:k,now:now,n:F.length,nr:nr,na:F.length-nr,pts:F,fit:null,eq:null,limit:null,comfort:null,target:null,conf:'–',est:false,perf:null,ring:null,ringUp:false,derived:false,ci:null,inCI:false,
+      side:sideSplit(RK),dists:distSplit(RK)};
     if(!F.length){out[k]=m;return;}
     var xs=uniq(F.map(function(p){return p.x;}));
-    var fit=(xs.length>=2)?fitLine(F.map(function(p){return [p.x,p.d];})):null;
+    var fit=(xs.length>=2)?fitLine(F.map(function(p){return [p.x,p.d,p.w];})):null;
     if(fit&&fit.b>0.05){
       m.fit=fit;m.eq=-fit.a/fit.b;m.limit=(LIM_OVER-fit.a)/fit.b;
     }else{
       var by={};
-      F.forEach(function(p){(by[p.x]=by[p.x]||[]).push(p.d);});
-      var v0=Number(Object.keys(by).sort(function(a,b){return by[b].length-by[a].length;})[0]);
-      var md=mean(by[v0]);
+      F.forEach(function(p){(by[p.x]=by[p.x]||[]).push(p);});
+      function wsum(L){return L.reduce(function(s,p){return s+p.w;},0);}
+      var v0=Number(Object.keys(by).sort(function(a,b){return wsum(by[b])-wsum(by[a]);})[0]);
+      var md=by[v0].reduce(function(s,p){return s+p.w*p.d;},0)/wsum(by[v0]);
       m.v0=v0;m.md=md;m.est=true;
       m.eq=(Math.abs(md)<=TOL)?v0:clampV(v0+(md>0?-stepFor(v0,md):stepFor(v0,md)));
     }
     var lo=Math.min.apply(null,xs),hi=Math.max.apply(null,xs);
     m.eq=Math.max(lo*0.8,Math.min(hi*1.2,m.eq));
+    if(m.fit)m.ci=eqCI(F,lo,hi);
     var comfort=Math.round(m.eq);
     var q=A.params[k];
     if(q&&q.best&&!q.weak&&q.items.length>=2){
@@ -1872,6 +2053,7 @@ function sensModel(A,P){
     m.step=Math.max(1,Math.round(m.comfort*0.04));
     m.next=Math.min(m.target,m.comfort+m.step);
     m.conf=(F.length>=6&&xs.length>=3&&m.fit&&m.fit.r2>=0.3)?'alta':((F.length>=3&&xs.length>=2&&m.fit)?'media':'bassa');
+    m.inCI=!!(m.ci&&now>=m.ci[0]&&now<=m.ci[1]&&!m.perf&&!m.ringUp);
     out[k]=m;
   });
   var meas=OPT_IDS.filter(function(k){return out[k].comfort!==null;});
@@ -1890,9 +2072,9 @@ function sensModel(A,P){
 }
 function whyLine(m){
   if(m.derived)return 'Calcolato da '+m.from.map(function(k){return OPTIC[k];}).join(', ')+': a parità di zoom la rotazione resta uguale.';
-  var p=[];
-  if(m.fit)p.push('Su '+cnt(m.n,'round di flick','round di flick')+' oltre e prima si pareggiano a '+nf(m.eq,1)+'.');
-  else p.push('Su '+cnt(m.n,'round di flick','round di flick')+' a '+m.v0+' (oltre − prima) vale '+sgn(m.md)+' su 20.');
+  var p=[],src=cnt(m.nr,'round di flick','round di flick')+(m.na?' e '+cnt(m.na,'blocco A/B','blocchi A/B'):'');
+  if(m.fit)p.push('Su '+src+' oltre e prima si pareggiano a '+nf(m.eq,1)+(m.ci?', con un margine fra '+m.ci[0]+' e '+m.ci[1]:'')+'.');
+  else p.push('Su '+src+' a '+m.v0+' (oltre − prima) vale '+sgn(m.md)+' su 20.');
   if(m.perf)p.push('Con '+m.perf.v+' fai '+nf(m.perf.gain,0)+' punti in più: mi sposto a metà strada.');
   if(m.ringUp)p.push('Nel rinculo il foro più alto arriva in media al '+nf(m.ring.mean,1)+'° anello: alzo questo mirino di circa il 5%, così tiri giù più facilmente.');
   return p.join(' ');
@@ -1948,10 +2130,12 @@ function sensSummary(M,P){
 }
 function sensChanges(M,P){
   var any=OPT_IDS.some(function(k){return M[k].comfort!==null;});
-  var list=OPT_IDS.map(function(k){return M[k];}).filter(function(m){return m.comfort!==null&&m.comfort!==m.now;})
+  var list=OPT_IDS.map(function(k){return M[k];}).filter(function(m){return m.comfort!==null&&m.comfort!==m.now&&!m.inCI;})
     .sort(function(a,b){return (a.derived-b.derived)||(Math.abs(b.comfort-b.now)-Math.abs(a.comfort-a.now));});
+  var keep=OPT_IDS.map(function(k){return M[k];}).filter(function(m){return m.comfort!==null&&m.comfort!==m.now&&m.inCI;});
+  var keepTxt=keep.length?'<p class="hint">Dentro il margine, puoi lasciarli come sono: '+keep.map(function(m){return SHORT[m.k]+' a '+m.now+' (margine '+m.ci[0]+'–'+m.ci[1]+')';}).join(', ')+'.</p>':'';
   if(!any)return '<section class="card"><h2>Cosa cambierei</h2><p class="note">Servono round di flick: li registri dalla scheda Oggi.</p></section>';
-  if(!list.length)return '<section class="card"><h2>Cosa cambierei</h2><p class="lead">Niente: i tuoi mirini sono già in equilibrio.</p></section>';
+  if(!list.length)return '<section class="card"><h2>Cosa cambierei</h2><p class="lead">Niente: i tuoi mirini sono già in equilibrio.</p>'+keepTxt+'</section>';
   return '<section class="card"><h2>Cosa cambierei</h2><div class="adv">'+list.map(function(m,i){
     var dl=m.comfort-m.now;
     var on=(state.carry[m.k]===m.comfort);
@@ -1959,7 +2143,7 @@ function sensChanges(M,P){
     return '<div class="'+(i===0?'adv-1':'adv-i')+'">'+(i===0?'<span class="k">Prima modifica</span>':'')+
       '<'+(i===0?'span class="t"':'h3')+'>'+esc(KEY_NAME[m.k])+': '+m.now+' → '+m.comfort+' ('+(dl>0?'+':'')+dl+')</'+(i===0?'span':'h3')+'>'+
       '<p class="note">'+esc(whyLine(m))+'</p>'+b+'</div>';
-  }).join('')+'</div><p class="hint">Cambia un mirino per volta e tienilo almeno due sere.</p></section>';
+  }).join('')+'</div>'+keepTxt+'<p class="hint">Cambia un mirino per volta e tienilo almeno due sere. Se sei in dubbio fra due numeri, usa il confronto A/B nella scheda Test.</p></section>';
 }
 function sensGoals(M){
   var rows=OPT_IDS.map(function(k){
@@ -1976,12 +2160,27 @@ function sensGoals(M){
     '<p class="note">Il numero più alto con cui vai oltre la testa al massimo '+LIM_OVER+' volte su 20 più di quante ti fermi prima. Ti giri più veloce e resti preciso.</p>'+
     '<div class="goals">'+rows+'</div></section>';
 }
+function pickB(m){
+  if(m.comfort!==null&&m.comfort!==m.now)return m.comfort;
+  if(m.target!==null&&m.target>m.now)return m.target;
+  return clampV(m.now+Math.max(1,Math.round(m.now*0.08)));
+}
 function sensCard(m){
   if(!m.n)return '<section class="card"><h3>'+esc(KEY_NAME[m.k])+'</h3><p class="note">Nessun round di flick con questo mirino nel periodo scelto.</p></section>';
+  var kv=[];
+  if(m.ci)kv.push(['Margine 80%',m.ci[0]+'–'+m.ci[1]]);
+  if(m.side)kv.push(['Per lato','da sinistra '+sgn(m.side.l)+' · da destra '+sgn(m.side.r)]);
+  if(m.dists)kv.push(['Per distanza',m.dists.map(function(x){return distWord(x.d)+' '+sgn(x.m);}).join(' · ')]);
+  var b=pickB(m);
   return '<section class="card chart"><div class="stg-h"><h3>'+esc(KEY_NAME[m.k])+'</h3><span class="st-chip">affidabilità '+m.conf+'</span></div>'+
     balanceChart(m)+
     '<div class="lg">'+lgItem('lg-l cf','comfort '+m.comfort)+lgItem('lg-l tg','obiettivo '+m.target)+lgItem('lg-l now','ora '+m.now)+(m.fit?lgItem('lg-l fitl','retta di equilibrio'):'')+'</div>'+
-    '<p class="note">'+esc(whyLine(m))+'</p></section>';
+    '<p class="note">'+esc(whyLine(m))+'</p>'+
+    (kv.length?'<div class="kv">'+kv.map(function(x){return '<div><span class="k">'+esc(x[0])+'</span><span class="x">'+esc(x[1])+'</span></div>';}).join('')+'</div>':'')+
+    (m.side&&Math.abs(m.side.l-m.side.r)>=3?'<p class="hint">I due lati non sono uguali (oltre − prima su 20): il test del controller, nella scheda Test, dice se lo stick è a posto.</p>':'')+
+    (m.dists?'<p class="hint">Valori di oltre − prima su 20 per distanza: vicino e lontano chiedono cose diverse, il comfort è il compromesso.</p>':'')+
+    (b!==m.now?'<button class="btn ghost" data-act="abfrom" data-k="'+m.k+'" data-a="'+m.now+'" data-b="'+b+'" type="button">Metti alla prova: '+m.now+' contro '+b+'</button>':'')+
+    '</section>';
 }
 
 function renderAdv(P){
@@ -2012,9 +2211,9 @@ function renderAdv(P){
       return hbRow(c.label,cnt(c.n,'round','round'),c.score,(isB?'best':'')+(c.n===1?' thin':''),nf(c.score,0));
     }).join('')+'</div></section>'):'';
   return filter+
-    '<div class="cols"><div class="col">'+sensSummary(M,P)+sensChanges(M,P)+'</div><div class="col">'+sensGoals(M)+'</div></div>'+
+    '<div class="cols"><div class="col">'+sensSummary(M,P)+sensChanges(M,P)+'</div><div class="col">'+sensGoals(M)+speedCard(A)+'</div></div>'+
     '<h2>Come ci arrivo</h2><div class="grid2">'+OPT_IDS.filter(function(k){return M[k].n>0||PATH_KEYS.indexOf(k)>-1;}).map(function(k){return sensCard(M[k]);}).join('')+'</div>'+
-    '<div class="cols"><div class="col">'+kp+cmb+'</div><div class="col">'+trend+'</div></div>'+kitTable(A)+tablesHtml(A);
+    '<div class="cols"><div class="col">'+kp+cmb+'</div><div class="col">'+trend+'</div></div>'+kitTable(A)+patternCard(A)+tablesHtml(A);
 }
 
 /* ---------- scheda Cappette ---------- */
@@ -2125,6 +2324,14 @@ function renderGuide(P){
     '<section><h3>Come trovo il numero</h3><p>Nel flick conti, su 20 colpi, quante volte vai <b>oltre la testa</b> e quante ti fermi <b>prima della testa</b>. Se vai oltre più spesso, il numero è troppo alto e lo abbasso. Se ti fermi prima più spesso, è troppo basso e lo alzo. Quando le due cose sono quasi pari per due round di fila, quel mirino è a posto.</p></section>'+
     '<section><h3>I mirini</h3><p>Il percorso tara 1.0x, 2.5x e 3.5x. L\'8.0x lo calcolo da quei tre: a parità di zoom la rotazione resta uguale. Se nel gioco hai un numero diverso, lo correggi nel riquadro delle sensibilità. Se usi spesso l\'8.0x, provalo nel mantenimento.</p>'+
       '<p class="note">Orizzontale e verticale non le taro: le scrivi solo per ricordarti cosa avevi.</p></section>'+
+    '<section><h3>La sessione guidata</h3><p>In <b>Oggi</b>, "Avvia la sessione guidata" apre gli esercizi a schermo intero, con tasti grandi da usare con una mano. Il tracking ha un timer a intervalli: 30 secondi di lavoro e 5 di pausa, e una voce ti avvisa. Nel flick ti dice da che lato partire.</p></section>'+
+    '<section><h3>Conta colpo per colpo</h3><p>Nel flick, dopo ogni colpo tocca <b>Prima</b>, <b>In testa</b> o <b>Oltre</b>; nelle transizioni <b>Netto</b> o <b>Non netto</b>. I totali li faccio io e vedo anche se da destra vai diverso che da sinistra.</p><p class="note">Con "Conta con la voce" basta dire oltre, prima o testa. Funziona nel browser del telefono o del PC (Chrome, Edge, Safari), non dentro Claude.</p></section>'+
+    '<section><h3>Distanza</h3><p>Il flick del mirino 1.0x si fa a 10 metri, quelli di 2.5x e 3.5x a 20 metri. Puoi cambiarla: se registri round a distanze diverse, in Consigli vedi come cambia l\'equilibrio.</p></section>'+
+    '<section><h3>Confronto A/B</h3><p>Nella scheda <b>Test</b> scegli due numeri: li provi nella stessa sera in 4 blocchi da 30 secondi, alternati in ordine casuale, facendo più flick che puoi. Ne escono i colpi in testa al minuto per ciascuno e un verdetto che dice se la differenza è chiara.</p></section>'+
+    '<section><h3>Riscaldamento e margine</h3><p>Il primo round di ogni sera conta la metà nel calcolo, perché di solito è il peggiore. Il comfort ha un margine all\'80%: se il numero che usi è già dentro, non ti dico di cambiarlo.</p></section>'+
+    '<section><h3>Screenshot del bersaglio</h3><p>Nel rinculo puoi caricare uno screenshot del bersaglio a cerchi: tocchi il centro, il bordo e ogni foro, e conto io colpi, anello più alto e direzione. In Consigli trovi la rosa dei colpi di ogni arma.</p></section>'+
+    '<section><h3>Partite e controller</h3><p>In <b>Progressi</b> salvi ogni sessione di classificate, con il giorno: % di colpi in testa, K/D e partite (li trovi su R6 Tracker). È la prova che l\'allenamento funziona anche in partita. Con le <b>statistiche automatiche</b> le sessioni arrivano da sole: un Worker gratuito su Cloudflare legge i tuoi totali da R6 Arenyze e l\'app fa la differenza fra una lettura e l\'altra. Non servono l\'account PlayStation né la password Ubisoft. In <b>Test</b> misuri la deriva degli stick, quanto arrivano in fondo e quanto sei preciso a fermarti.</p></section>'+
+    '<section><h3>Installala sul telefono</h3><p>Dal sito GitHub dell\'app. iPhone, in Safari: Condividi, poi "Aggiungi alla schermata Home". Android, in Chrome: menu ⋮, poi "Installa app". Si apre come un\'app e funziona anche senza rete.</p></section>'+
     '<section><h3>Il punteggio</h3><span class="eq">40% colpi in testa nel flick + 20% tracking + 20% transizioni + 20% rinculo</span><p class="note">Va da 0 a 100. I round vecchi contano solo gli esercizi che avevano (pre-aim al posto delle transizioni, o senza rinculo): i pesi si ribilanciano da soli, così restano confrontabili.</p></section>'+
     det('d-calc','more','Come scelgo la sensibilità migliore','<div class="setup-b">'+
       '<p><b>1. Il comfort.</b> Per ogni mirino prendo tutti i tuoi round di flick e li metto su un grafico: da una parte il numero usato, dall\'altra quante volte sei andato oltre meno quante ti sei fermato prima. Traccio la retta che passa più vicina a tutti i punti. Il comfort è il numero in cui la retta vale zero: lì vai oltre e ti fermi prima lo stesso numero di volte.</p>'+
@@ -2132,7 +2339,8 @@ function renderGuide(P){
       '<p><b>3. Il rinculo.</b> Se in almeno 3 round con quel mirino il foro più alto arriva in media al 2° anello o più su, alzo il comfort di circa il 5%: con un numero un po\' più alto tiri giù il mirino più facilmente.</p>'+
       '<p><b>4. L\'obiettivo.</b> Sulla stessa retta cerco il numero più alto con cui vai oltre la testa al massimo '+LIM_OVER+' volte su 20 più di quante ti fermi prima. Al massimo il 15% sopra il comfort. Ci arrivi a passi di circa il 4%, e sali solo dopo 3 sessioni senza calo di punteggio.</p>'+
       '<p><b>5. L\'affidabilità.</b> Alta con almeno 6 round, 3 numeri diversi e punti ben allineati sulla retta. Media con almeno 3 round e 2 numeri. Bassa con meno dati.</p>'+
-      '<p><b>6. I mirini senza dati.</b> Se un mirino non ha round lo calcolo dagli altri con la regola numero = a + b / zoom.</p>'+
+      '<p><b>6. Riscaldamento e confronti.</b> Il primo round di ogni sera pesa la metà. I blocchi dei confronti A/B entrano nella retta come punti in più, con peso proporzionale ai colpi contati. Il margine all\'80% lo ottengo ricampionando i tuoi dati 400 volte.</p>'+
+      '<p><b>7. I mirini senza dati.</b> Se un mirino non ha round lo calcolo dagli altri con la regola numero = a + b / zoom.</p>'+
       '<p class="note">Durante il percorso il passo va dal 4% al 20% del numero, in proporzione a quanto sei sbilanciato, mai meno di 1. Se hai già provato un numero troppo alto e uno troppo basso, provo quello in mezzo. Un mirino si chiude con due round di fila in equilibrio (differenza al massimo '+TOL+'), con due numeri vicini uno alto e uno basso, dopo '+MAXR+' round, oppure quando lo chiudi tu.</p>'+
       '<p class="note">Soglia di rumore: la differenza media fra due round gemelli, minimo '+MIN_T+' punti. Una differenza più piccola non conta come miglioramento.</p></div>')+
     '<section><h3>Il tuo utente</h3><p>Sei entrato come <b>'+esc(me?me.email:'')+'</b>. '+esc(s[1])+'</p><p class="note">Email e password restano qui: non c\'è un server, quindi non parte nessuna email e non c\'è un recupero password. La password serve a cifrare i tuoi dati in questo browser: senza, quei dati non si aprono. Su un altro dispositivo crei un utente nuovo e ci porti i dati con la copia di sicurezza.</p><p class="note">I dati restano anche se chiudi tutto o spegni il PC. Spariscono solo se cancelli i dati dei siti o se navighi in incognito.</p>'+
@@ -2146,12 +2354,1219 @@ function renderGuide(P){
     '</section>';
 }
 
+
+/* ---------- distanze del flick ---------- */
+var DISTS=[['v','Vicino','5 m'],['m','Medio','10 m'],['l','Lontano','20 m']];
+var DIST_DEF={ads1:'m',ads25:'l',ads35:'l',ads8:'l'};
+function distKey(def){var d=draft.dist;return (d==='v'||d==='m'||d==='l')?d:DIST_DEF[optKeyOf(def)];}
+function distM(d){return d==='v'?5:(d==='l'?20:10);}
+function distWord(d){return d==='v'?'vicino':(d==='l'?'lontano':'medio');}
+function distHtml(def){
+  var d=distKey(def);
+  return '<div class="field"><div class="ask">Distanza del bersaglio</div><div class="seg">'+DISTS.map(function(x){
+    return '<button type="button" data-act="dist" data-v="'+x[0]+'" aria-pressed="'+(d===x[0])+'">'+esc(x[1])+'<span class="seg-s">'+esc(x[2])+'</span></button>';
+  }).join('')+'</div></div>';
+}
+function cntc(s,c){var n=0;s=s||'';for(var i=0;i<s.length;i++){if(s.charAt(i)===c)n++;}return n;}
+
+/* ---------- voce: istruzioni lette ad alta voce e vibrazione (solo nella sessione guidata) ---------- */
+var TTS=(function(){try{return ('speechSynthesis' in window)?window.speechSynthesis:null;}catch(e){return null;}})();
+function say(t){
+  if(!TTS||!sess||(state.prefs&&state.prefs.tts===false))return;
+  try{TTS.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='it-IT';u.rate=1.08;TTS.speak(u);}catch(e){}
+}
+function buzz(p){try{if(navigator.vibrate)navigator.vibrate(p);}catch(e){}}
+
+/* ---------- conteggio colpo per colpo ---------- */
+/* Flick: o = oltre la testa, p = prima della testa, h = in testa. Transizioni: y = netto, n = non netto.
+   Il colpo con indice pari parte da sinistra, quello dispari da destra: così si vede anche se un lato è diverso dall'altro. */
+var FLK_N=20,SWI_N=10;
+function tallyAdd(k,v){
+  ensureDraft();
+  if(k==='flk'){
+    var s=draft.shots||'';
+    if(s.length>=FLK_N)return false;
+    s+=v;draft.shots=s;draft.a=cntc(s,'o');draft.b=cntc(s,'p');
+  }else{
+    var q=draft.swiSeq||'';
+    if(q.length>=SWI_N)return false;
+    q+=v;draft.swiSeq=q;draft.swi=cntc(q,'y');
+  }
+  saveDraft();
+  var full=(k==='flk')?draft.shots.length>=FLK_N:draft.swiSeq.length>=SWI_N;
+  if(full){buzz([40,60,40]);say('Fatto');if(voice.on&&voice.kind===k)voiceStop();}
+  else{buzz(25);if(k==='flk')say(draft.shots.length%2?'Da destra':'Da sinistra');}
+  return true;
+}
+function tallyUndo(k){
+  ensureDraft();
+  if(k==='flk'){
+    var s=(draft.shots||'').slice(0,-1);
+    draft.shots=s||null;draft.a=s?cntc(s,'o'):null;draft.b=s?cntc(s,'p'):null;
+  }else{
+    var q=(draft.swiSeq||'').slice(0,-1);
+    draft.swiSeq=q||null;draft.swi=q?cntc(q,'y'):null;
+  }
+  saveDraft();
+}
+function tallyHtml(k,big){
+  var flk=(k==='flk'),s=(flk?draft.shots:draft.swiSeq)||'',N=flk?FLK_N:SWI_N,n=s.length,full=n>=N;
+  var strip='<div class="tal-strip'+(flk?'':' ten')+'" aria-hidden="true">';
+  for(var i=0;i<N;i++){var c=s.charAt(i);strip+='<i class="'+(c?'t-'+c:'')+'"></i>';}
+  strip+='</div>';
+  var btns=flk?[['p','Prima'],['h','In testa'],['o','Oltre']]:[['n','Non netto'],['y','Netto']];
+  var side=flk?('<div class="tal-side">'+(full?'Fatti tutti e 20':(n%2?'Prossimo: parti da destra →':'← Prossimo: parti da sinistra'))+'</div>'):'';
+  var on=voice.on&&voice.kind===k;
+  var vb=voice.ok?'<button class="btn ghost'+(on?' on':'')+'" data-act="voice" data-k="'+k+'" type="button"'+(full?' disabled':'')+'>'+(on?'Voce attiva · spegni':'Conta con la voce')+'</button>':'';
+  return '<div class="tal'+(big?' big':'')+'">'+
+    '<div class="tal-h"><span class="lbl">'+(flk?'Conta colpo per colpo':'Conta passaggio per passaggio')+'</span><span class="tal-n mono">'+n+' / '+N+'</span></div>'+side+strip+
+    '<div class="tal-b'+(flk?' three':'')+'">'+btns.map(function(b){
+      return '<button type="button" class="tb t-'+b[0]+'" data-act="tally" data-k="'+k+'" data-v="'+b[0]+'"'+(full?' disabled':'')+'>'+esc(b[1])+'</button>';
+    }).join('')+'</div>'+
+    '<div class="row-btn"><button class="btn ghost" data-act="tallyundo" data-k="'+k+'" type="button"'+(n?'':' disabled')+'>Annulla l\'ultimo</button>'+vb+'</div>'+
+    (on?'<p class="hint">Di\' '+(flk?'"oltre", "prima" o "testa"':'"netto" oppure "no"')+' dopo ogni '+(flk?'colpo':'passaggio')+'. "Annulla" toglie l\'ultimo.'+(voice.heard?' Ho sentito: «'+esc(voice.heard)+'»':'')+'</p>':'')+
+    '</div>';
+}
+
+/* ---------- conteggio a voce (riconoscimento vocale del browser) ---------- */
+var SRC=(function(){try{return window.SpeechRecognition||window.webkitSpeechRecognition||null;}catch(e){return null;}})();
+var voice={ok:!!SRC,on:false,kind:null,heard:'',rec:null};
+var VW={
+  flk:[[/^(oltre|oltr|lungo|lunga|lunghi)$/,'o'],[/^(prima|corto|corta|corti)$/,'p'],[/^(testa|teste|centro|dentro|preso|presa|colpito)$/,'h']],
+  swi:[[/^(netto|netta|si|sì|preso|buono)$/,'y'],[/^(no|sporco|sporca|mancato|fuori)$/,'n']]
+};
+function voiceWords(txt){
+  var k=voice.kind,list=VW[k]||[];
+  String(txt||'').toLowerCase().replace(/[^a-zàèéìòù ]/g,' ').split(/\s+/).forEach(function(w){
+    if(!w||!voice.on)return;
+    if(/^(annulla|cancella|indietro)$/.test(w)){if(sess&&sess.mode==='ab')abUndo();else tallyUndo(k);return;}
+    for(var i=0;i<list.length;i++){
+      if(list[i][0].test(w)){if(sess&&sess.mode==='ab')abTap(list[i][1]);else tallyAdd(k,list[i][1]);return;}
+    }
+  });
+  voice.heard=String(txt||'').trim().slice(0,40);
+  render();
+}
+function voiceStart(k){
+  if(!SRC)return;
+  voice.kind=k;voice.on=true;voice.heard='';
+  if(!voice.rec){
+    try{
+      var r=new SRC();
+      r.lang='it-IT';r.continuous=true;r.interimResults=false;r.maxAlternatives=1;
+      r.onresult=function(e){for(var i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)voiceWords(e.results[i][0].transcript);}};
+      r.onerror=function(e){
+        if(/not-allowed|service-not-allowed|audio-capture/.test((e&&e.error)||'')){
+          voice.on=false;voice.ok=false;toast('Microfono non disponibile qui: usa i tasti');render();
+        }
+      };
+      r.onend=function(){if(voice.on){try{r.start();}catch(x){}}};
+      voice.rec=r;
+    }catch(e){voice.ok=false;voice.on=false;return;}
+  }
+  try{voice.rec.start();}catch(e){}
+}
+function voiceStop(){voice.on=false;voice.kind=null;if(voice.rec){try{voice.rec.stop();}catch(e){}}}
+
+/* ---------- corpi degli esercizi (usati dalla scheda e dalla sessione) ---------- */
+function bodyTrk(D){
+  return '<div class="field"><div class="ask">'+esc(D.ask)+'</div>'+rateHtml('trk',draft.trk)+'<p class="hint">'+esc(D.hint)+'</p></div>';
+}
+function manualFlk(def){
+  return det('d-man','more','Oppure scrivi i totali a mano','<div class="setup-b">'+
+    '<div class="field"><div class="ask">'+esc(def.la)+': quante volte su 20?</div>'+stpHtml('num','a',draft.a,{wide:true,big:true})+'<p class="hint">'+esc(def.ha)+'</p></div>'+
+    '<div class="field"><div class="ask">'+esc(def.lb)+': quante volte su 20?</div>'+stpHtml('num','b',draft.b,{wide:true,big:true})+'<p class="hint">'+esc(def.hb)+'</p></div></div>');
+}
+function flkRes(){
+  if(draft.a===null)return '';
+  var s=draft.shots;
+  if(s&&s.length<FLK_N)return '<p class="res">Finora: oltre '+draft.a+' · prima '+draft.b+' · in testa '+(s.length-draft.a-draft.b)+'</p>';
+  return '<p class="res">Oltre '+draft.a+' · prima '+draft.b+' · in testa '+(20-draft.a-draft.b)+' su 20</p>';
+}
+function bodyFlk(def,maint,big){
+  return (maint&&!big?focusHtml():'')+(big?'':distHtml(def))+tallyHtml('flk',big)+flkRes()+manualFlk(def);
+}
+function bodySwi(D,big){
+  return '<div class="field"><div class="ask">'+esc(D.ask)+'</div><p class="hint">'+esc(D.hint)+'</p></div>'+tallyHtml('swi',big)+
+    (draft.swi===null?'':'<p class="res">Netti: '+draft.swi+' su 10</p>')+
+    det('d-mans','more','Oppure scrivi il totale a mano','<div class="setup-b">'+stpHtml('num','swi',draft.swi,{wide:true,big:true,five:true})+'</div>');
+}
+function bodyRec(D){
+  var hl=draft.holes&&draft.holes.length?('<p class="res">Dallo screenshot: '+draft.holes.length+' fori segnati</p>'):'';
+  return '<div class="field"><div class="ask">Con che operatore e arma?</div>'+kitHtml()+'</div>'+
+    '<div class="field"><div class="ask">Colpi del caricatore</div>'+stpHtml('num','mag',draft.mag,{wide:true,five:true})+
+    '<p class="hint">Quanti colpi ha il caricatore pieno: li vedi nel contatore delle munizioni.</p></div>'+
+    '<div class="field"><div class="ask">Hai uno screenshot del bersaglio?</div>'+
+    '<button class="btn ghost block" data-act="shotpick" type="button">Analizza lo screenshot</button>'+
+    '<p class="hint">Tocchi il centro, il bordo e i fori: conto io i colpi, l\'anello più alto e la direzione.</p>'+hl+'</div>'+
+    '<div class="field"><div class="ask">'+esc(D.ask)+'</div>'+stpHtml('num','rec',draft.rec,{wide:true,big:true,five:true})+
+    '<p class="hint">Conta i fori dentro il cerchio più grande, su tutto il caricatore.</p></div>'+
+    (draft.rec===null?'':'<p class="res">'+draft.rec+' su '+draft.mag+'</p>')+
+    '<div class="field"><div class="ask">Dov\'è arrivato il foro più in alto?</div><div class="seg">'+
+    RING.map(function(x,i){return '<button type="button" data-act="ring" data-v="'+i+'" aria-pressed="'+(draft.ring===i)+'">'+esc(x)+'</button>';}).join('')+
+    '</div><p class="hint">Hai iniziato dal centro: più è lontano, più il mirino ti è salito.</p></div>'+
+    '<div class="field"><div class="ask">Da che parte vanno i fori?</div><div class="seg">'+
+    DRIFT.map(function(x){return '<button type="button" data-act="drift" data-v="'+x[0]+'" aria-pressed="'+(draft.drift===x[0])+'">'+esc(x[1])+'</button>';}).join('')+
+    '</div><p class="hint">Il foro più alto entra nel calcolo della sensibilità, la direzione è un promemoria. Puoi saltarle.</p></div>';
+}
+function drillCard(P,used,def,maint){
+  var D=DRILLS[dstep],body='';
+  if(D.kind==='rate')body=bodyTrk(D);
+  else if(D.kind==='n10')body=bodySwi(D,false);
+  else if(D.kind==='mag')body=bodyRec(D);
+  else if(D.kind==='ab')body=bodyFlk(def,maint,false);
+  var dots=DRILLS.map(function(X,i){
+    return '<button type="button" data-act="dstep" data-i="'+i+'"'+(i===dstep?' aria-current="step"':'')+' class="'+(drillDone(X)?'ok':'')+'" aria-label="Allenamento '+(i+1)+': '+esc(X.name)+(drillDone(X)?', fatto':'')+'">'+esc(X.short)+(drillDone(X)?' ✓':'')+'</button>';
+  }).join('');
+  var nav='<div class="row-btn">'+
+    (dstep>0?'<button class="btn ghost" data-act="dstep" data-i="'+(dstep-1)+'" type="button">Indietro</button>':'')+
+    (dstep<ND-1?'<button class="btn pri" data-act="dstep" data-i="'+(dstep+1)+'" type="button">Avanti</button>':'')+'</div>';
+  return '<section class="card">'+
+    '<div class="steps-h"><span class="dr-n">Allenamento '+(dstep+1)+' di '+ND+'</span><div class="dots">'+dots+'</div></div>'+
+    '<div class="dr-h"><h2>'+esc(D.name)+'</h2><span class="note">'+D.mins+' minuti</span></div>'+
+    '<p class="goal-t">'+esc(D.goal)+'</p>'+
+    '<div class="with">'+D.chips(used,def).map(function(c){return '<span>'+esc(c)+'</span>';}).join('')+'</div>'+
+    demoHtml(D,def)+
+    '<ol class="how num">'+D.how(used,def).map(function(h){return '<li>'+esc(h)+'</li>';}).join('')+'</ol>'+
+    '<div class="tm"><div class="t-time mono" id="t-time">'+fmt(T[dstep].left)+'</div>'+
+    '<div class="t-btns"><button class="btn pri" id="t-go" data-act="tgo" type="button">Avvia</button><button class="btn ghost" data-act="treset" type="button">Azzera</button></div>'+
+    '<div class="t-state" id="t-state"></div></div>'+
+    body+nav+'</section>';
+}
+
+/* ---------- sessione guidata a schermo intero ---------- */
+var sess=null,trkPhase=null;
+var SESS_STEPS=['prep','trk','flk','swi','rec'],SESS_NAMES=['Inizio','Tracking','Flick','Transizioni','Rinculo'],SESS_SHORT=['Inizio','Trk','Flick','Trans','Rinc'];
+function sessOpen(){ensureDraft();sess={mode:'drill',step:'prep'};trkPhase=null;render();ovTop();}
+function sessClose(){
+  if(T[0].running)tPause(0);
+  voiceStop();stopAb();
+  try{if(TTS)TTS.cancel();}catch(e){}
+  sess=null;render();
+}
+function sessGo(step){
+  voiceStop();
+  sess.step=step;
+  if(step==='trk'){dstep=0;trkPhase=null;if(!T[0].running&&T[0].left>0)tStart(0);}
+  else if(step==='flk')dstep=1;
+  else if(step==='swi')dstep=2;
+  else if(step==='rec')dstep=3;
+  render();ovTop();
+  if(step==='trk')say('Tracking. Via');
+  else if(step==='flk')say('Flick. '+(((draft.shots||'').length%2)?'Da destra':'Da sinistra'));
+  else if(step==='swi')say('Transizioni');
+  else if(step==='rec')say('Rinculo');
+}
+function ovTop(){var o=$('ov');if(o)o.scrollTop=0;}
+function trkPhaseNow(){
+  var t=T[0];
+  if(t.left<=0)return 'end';
+  var el=t.full-t.left;
+  return (el%35000)<30000?'work':'rest';
+}
+function phaseLabel(){
+  var t=T[0],el=t.full-t.left,c=el%35000;
+  if(t.left<=0)return 'Tempo finito: dai il voto';
+  if(!t.running&&el<=0)return 'Pronto';
+  if(!t.running)return 'In pausa';
+  return (c<30000)?('Lavoro · ancora '+Math.ceil((30000-c)/1000)+' s'):('Pausa · ancora '+Math.ceil((35000-c)/1000)+' s');
+}
+function sessTick(){
+  var sp=$('s-phase'),stm=$('s-time'),sgo=$('s-go');
+  var t0=T[0];
+  if(stm)stm.textContent=fmt(t0.left);
+  if(sgo)sgo.textContent=t0.running?'Pausa':(t0.left<=0?'Ricomincia':(t0.left<t0.full?'Riprendi':'Avvia'));
+  if(sp){sp.textContent=phaseLabel();sp.className='s-phase '+(t0.running?trkPhaseNow():'');}
+  if(sess&&sess.mode==='drill'&&sess.step==='trk'){
+    var ph=trkPhaseNow();
+    if(ph==='end'){if(trkPhase!=='end'){trkPhase='end';say('Tempo. Dai il voto al tracking');}}
+    else if(t0.running&&ph!==trkPhase){
+      if(trkPhase!==null){say(ph==='work'?'Via':'Pausa');buzz(ph==='work'?[60,40,60]:120);}
+      trkPhase=ph;
+    }
+  }
+}
+function curSetting(P){
+  if(P.finished){var k=curFocus();return {name:KEY_NAME[k],val:String(P.vals[k]),maint:true};}
+  var st=P.stages[P.cur],d0=st.def;
+  if(d0.kind==='cap')return {name:d0.name,val:capName('convessa'),maint:false};
+  var v=(!st.rounds.length&&draft.sens[d0.id]!==undefined)?draft.sens[d0.id]:st.next;
+  return {name:d0.name,val:String(v),maint:false};
+}
+function nextBtn(step,ok,label){
+  return '<button class="btn pri big block" data-act="sessgo" data-s="'+step+'" type="button"'+(ok?'':' disabled')+'>'+esc(label)+'</button>';
+}
+function renderSession(P){
+  if(sess.mode==='ab')return renderAbSess(P);
+  var maint=P.finished,def=maint?defFor(curFocus()):P.stages[P.cur].def,u=usedSens(P);
+  var i=SESS_STEPS.indexOf(sess.step);
+  var top='<div class="s-top"><ol class="s-prog">'+SESS_NAMES.map(function(n,j){
+    return '<li class="'+(j<i?'done':(j===i?'cur':''))+'"><span class="nl">'+esc(n)+'</span><span class="ns">'+esc(SESS_SHORT[j])+'</span></li>';
+  }).join('')+'</ol><button class="btn ghost mini" data-act="sessexit" type="button">Esci</button></div>';
+  var b='',D;
+  if(sess.step==='prep'){
+    var cs=curSetting(P),tts=!(state.prefs&&state.prefs.tts===false);
+    b='<h2>Sessione guidata</h2>'+
+      '<div class="s-set"><div class="lbl">Metti nel gioco</div><div class="s-name">'+esc(cs.name)+'</div><div class="s-big mono">'+esc(cs.val)+'</div></div>'+
+      (cs.maint?focusHtml():'')+distHtml(def)+
+      '<div class="field"><div class="ask">Voce guida</div><div class="seg">'+
+        '<button type="button" data-act="tts" data-v="1" aria-pressed="'+tts+'">Accesa</button><button type="button" data-act="tts" data-v="0" aria-pressed="'+(!tts)+'">Spenta</button></div>'+
+        '<p class="hint">Ti dice quando lavorare e quando riposare, e da che lato partire nel flick.</p></div>'+
+      '<p class="note">Tieni il telefono vicino: ogni esercizio ha tasti grandi da toccare con una mano.</p>'+
+      nextBtn('trk',true,'Inizia');
+  }else if(sess.step==='trk'){
+    D=DRILLS[0];
+    b='<h2>'+esc(D.name)+'</h2><p class="goal-t">'+esc(D.goal)+'</p>'+
+      '<div class="with"><span>'+esc(adsLine(u,def))+'</span><span>L2 sempre premuto</span></div>'+
+      '<div class="s-timer"><div class="s-phase" id="s-phase">'+esc(phaseLabel())+'</div><div class="s-time mono" id="s-time">'+fmt(T[0].left)+'</div>'+
+      '<div class="row-btn"><button class="btn pri" id="s-go" data-act="sgo" type="button">Pausa</button><button class="btn ghost" data-act="sreset" type="button">Azzera</button></div></div>'+
+      '<p class="hint">30 secondi di lavoro e 5 di pausa, per 4 minuti. Il bersaglio cammina di lato e tu lo segui senza sparare.</p>'+
+      bodyTrk(D)+nextBtn('flk',draft.trk!==null,'Avanti: flick');
+  }else if(sess.step==='flk'){
+    D=DRILLS[1];
+    b='<h2>'+esc(D.name)+'</h2>'+
+      '<div class="with"><span>'+esc(adsLine(u,def))+'</span><span>bersaglio '+esc(distWord(distKey(def)))+' · '+distM(distKey(def))+' m</span><span>L2 dall\'inizio</span></div>'+
+      '<p class="hint">Bersaglio al bordo dello schermo, un solo movimento, spari appena ti fermi. Poi tocca dove è finito il colpo.</p>'+
+      bodyFlk(def,maint,true)+nextBtn('swi',drillDone(D),'Avanti: transizioni');
+  }else if(sess.step==='swi'){
+    D=DRILLS[2];
+    b='<h2>'+esc(D.name)+'</h2>'+
+      '<div class="with"><span>'+esc(adsLine(u,def))+'</span><span>due bersagli</span><span>L2 sempre premuto</span></div>'+
+      bodySwi(D,true)+nextBtn('rec',drillDone(D),'Avanti: rinculo');
+  }else{
+    D=DRILLS[3];
+    var miss=DRILLS.filter(function(X){return !drillDone(X);});
+    b='<h2>'+esc(D.name)+'</h2>'+
+      '<div class="with"><span>'+esc(adsLine(u,def))+'</span><span>bersaglio a cerchi · 15 m</span><span>caricatore intero</span></div>'+
+      bodyRec(D)+
+      '<button class="btn pri big block" data-act="save" type="button"'+(miss.length?' disabled':'')+'>Salva round</button>'+
+      '<p class="hint">'+(miss.length?'Mancano: '+miss.map(function(X){return X.name;}).join(', ')+'.':'Salvo i risultati con le sensibilità che hai indicato.')+'</p>';
+  }
+  return '<div class="s-wrap">'+top+'<div class="s-body">'+b+'</div></div>';
+}
+
+/* ---------- confronto A/B ---------- */
+/* Due numeri nella stessa sera, in 4 blocchi da 30 secondi alternati (A-B-A-B o B-A-B-A, a caso).
+   Stanchezza e riscaldamento pesano allo stesso modo su tutti e due, quindi il confronto è onesto.
+   In ogni blocco fai più flick che puoi e conti ogni colpo: ne escono precisione e velocità. */
+var AB_BLOCKS=4,AB_SECS=(function(){try{return Number(window.__abSecs)||30;}catch(e){return 30;}})();
+var abSetup=null,abRun=null;
+function abDefaults(P,k){
+  var now=P.vals[k],B=clampV(now+Math.max(1,Math.round(now*0.1)));
+  if(B===now)B=clampV(now-1);
+  return {k:k,A:now,B:B,dist:DIST_DEF[k]};
+}
+function abStart(){
+  var s=abSetup;
+  if(!s||s.A===s.B)return;
+  var first=(Math.random()<0.5)?s.A:s.B,second=(first===s.A)?s.B:s.A,order=[];
+  for(var i=0;i<AB_BLOCKS;i++)order.push(i%2?second:first);
+  sess={mode:'ab'};
+  abRun={k:s.k,A:s.A,B:s.B,dist:s.dist,blocks:order.map(function(v){return {v:v,seq:'',secs:AB_SECS};}),i:0,phase:'prep',until:0,timer:null,lastSec:null};
+  render();ovTop();
+  say('Confronto. Metti il '+OPTIC[s.k]+' a '+order[0]);
+}
+function stopAb(){if(abRun&&abRun.timer)clearInterval(abRun.timer);abRun=null;}
+function abReady(){
+  var r=abRun;if(!r)return;
+  r.phase='count';r.until=Date.now()+3000;r.lastSec=3;
+  clearInterval(r.timer);r.timer=setInterval(abTick,150);wake();
+  say('Tre');render();
+}
+function abTick(){
+  var r=abRun;if(!r){return;}
+  var now=Date.now(),left=r.until-now,sec=Math.ceil(left/1000);
+  if(r.phase==='count'){
+    if(sec!==r.lastSec){r.lastSec=sec;if(sec===2)say('Due');else if(sec===1)say('Uno');}
+    if(left<=0){r.phase='run';r.until=now+r.blocks[r.i].secs*1000;r.lastSec=null;say('Via');buzz(80);render();return;}
+    abPaint();return;
+  }
+  if(r.phase==='run'){
+    if(left<=0){
+      beep();buzz([80,60,80]);say('Stop');
+      if(voice.on)voiceStop();
+      clearInterval(r.timer);r.timer=null;release();
+      r.i++;
+      r.phase=(r.i>=r.blocks.length)?'result':'prep';
+      render();ovTop();
+      if(r.phase==='prep')say('Metti il '+OPTIC[r.k]+' a '+r.blocks[r.i].v);
+      return;
+    }
+    if(sec<=3&&sec!==r.lastSec){r.lastSec=sec;}
+    abPaint();
+  }
+}
+function abPaint(){
+  var r=abRun,e=$('ab-time');
+  if(!r||!e)return;
+  var left=Math.max(0,r.until-Date.now());
+  e.textContent=(r.phase==='count')?String(Math.max(1,Math.ceil(left/1000))):fmt(left);
+}
+function abTap(v){
+  var r=abRun;
+  if(!r||r.phase!=='run')return;
+  r.blocks[r.i].seq+=v;buzz(20);render();
+}
+function abUndo(){
+  var r=abRun;
+  if(!r||r.phase!=='run')return;
+  var b=r.blocks[r.i];b.seq=b.seq.slice(0,-1);render();
+}
+function abRedo(){
+  var r=abRun;if(!r)return;
+  clearInterval(r.timer);r.timer=null;release();voiceStop();
+  r.blocks[r.i].seq='';r.phase='prep';render();
+}
+function blkCounts(b){
+  if(typeof b.seq==='string')return {v:b.v,o:cntc(b.seq,'o'),p:cntc(b.seq,'p'),h:cntc(b.seq,'h'),secs:b.secs};
+  return {v:b.v,o:b.o||0,p:b.p||0,h:b.h||0,secs:b.secs||AB_SECS};
+}
+function abSum(blocks,v){
+  var o=0,p=0,h=0,secs=0,nb=0;
+  blocks.forEach(function(b0){var b=blkCounts(b0);if(b.v!==v)return;o+=b.o;p+=b.p;h+=b.h;secs+=b.secs;nb++;});
+  var n=o+p+h;
+  return {v:v,n:n,o:o,p:p,h:h,secs:secs,nb:nb,fpm:secs?n/secs*60:0,hpm:secs?h/secs*60:0,hit:n?h/n:0,bal:n?(o-p)/n*20:0};
+}
+/* Colpi in testa al minuto: confronto fra due conteggi di Poisson. |z| >= 1,64 vuol dire "chiaro" al 90%. */
+function abVerdict(a,b,sessions){
+  var res={better:null,clear:false,z:0,keep:null,lines:[]};
+  if(!a.secs||!b.secs||a.n<4||b.n<4){res.lines.push('Pochi colpi per dire qualcosa: rifai il confronto.');return res;}
+  var ra=a.h/a.secs,rb=b.h/b.secs,se=Math.sqrt(Math.max(1,a.h)/(a.secs*a.secs)+Math.max(1,b.h)/(b.secs*b.secs));
+  var z=(ra-rb)/se,fast=(z>=0)?a:b,slow=(z>=0)?b:a;
+  res.z=z;
+  if(Math.abs(z)>=1.64){
+    res.clear=true;res.better=fast.v;
+    res.lines.push('Con '+fast.v+' fai più colpi in testa al minuto: '+nf(fast.hpm,1)+' contro '+nf(slow.hpm,1)+'. Differenza chiara.');
+  }else{
+    res.lines.push('Colpi in testa al minuto: '+nf(a.hpm,1)+' con '+a.v+' e '+nf(b.hpm,1)+' con '+b.v+'. Differenza non chiara'+(sessions>1?'':': rifai il confronto in un\'altra sera')+'.');
+  }
+  [a,b].forEach(function(s){
+    if(s.n>=8&&s.bal>3)res.lines.push('Con '+s.v+' vai oltre la testa più spesso di quanto ti fermi prima ('+sgn(s.bal)+' su 20).');
+    else if(s.n>=8&&s.bal<-3)res.lines.push('Con '+s.v+' ti fermi prima della testa più spesso di quanto vai oltre ('+sgn(s.bal)+' su 20).');
+  });
+  if(res.clear&&Math.abs(fast.bal)<=4)res.keep=fast.v;
+  else if(res.clear){res.keep=slow.v;res.lines.push('Più veloce con '+fast.v+', ma sbilanciato: per ora resta su '+slow.v+' o prova un numero in mezzo.');}
+  else{res.keep=(Math.abs(a.bal)<=Math.abs(b.bal))?a.v:b.v;}
+  return res;
+}
+function abHead(V){
+  if(V.keep===null)return 'Da ripetere';
+  return V.clear?'Tieni '+V.keep:'Per ora '+V.keep+', da confermare';
+}
+function abSaveRun(){
+  var r=abRun;if(!r)return;
+  var now=new Date();
+  state.ab.push({ts:now.getTime(),day:dkey(now),k:r.k,A:r.A,B:r.B,dist:r.dist,
+    blocks:r.blocks.map(function(b){var c=blkCounts(b);return {v:c.v,o:c.o,p:c.p,h:c.h,secs:c.secs};})});
+  stopAb();sess=null;tab='test';
+  commit();toast('Confronto salvato');
+}
+function renderAbSess(P){
+  var r=abRun;
+  if(!r){sess=null;return '';}
+  var top='<div class="s-top"><ol class="s-prog">'+r.blocks.map(function(b,j){
+    return '<li class="'+(j<r.i||r.phase==='result'?'done':(j===r.i?'cur':''))+'">Blocco '+(j+1)+'</li>';
+  }).join('')+'</ol><button class="btn ghost mini" data-act="sessexit" type="button">Esci</button></div>';
+  var b='';
+  if(r.phase==='prep'){
+    var v=r.blocks[r.i].v;
+    b='<h2>Confronto A/B · blocco '+(r.i+1)+' di '+r.blocks.length+'</h2>'+
+      '<div class="s-set"><div class="lbl">Metti nel gioco</div><div class="s-name">'+esc(KEY_NAME[r.k])+'</div><div class="s-big mono">'+v+'</div>'+
+      '<div class="s-was">'+(v===r.A?'valore A':'valore B')+'</div></div>'+
+      '<ol class="how num"><li>Bersaglio fermo a circa '+distM(r.dist)+' metri. L2 premuto per tutto il blocco.</li>'+
+      '<li>In '+r.blocks[r.i].secs+' secondi fai più flick che puoi, alternando destra e sinistra.</li>'+
+      '<li>Dopo ogni colpo tocca dove è finito: prima, in testa o oltre. Se la voce è disponibile, puoi dirlo.</li></ol>'+
+      '<button class="btn pri big block" data-act="abready" type="button">Ho cambiato il numero: pronto</button>';
+  }else if(r.phase==='count'){
+    b='<h2>Pronto…</h2><div class="s-timer"><div class="s-time mono ab-count" id="ab-time">3</div></div>';
+  }else if(r.phase==='run'){
+    var bl=r.blocks[r.i],s=bl.seq,n=s.length,on=voice.on&&voice.kind==='flk';
+    b='<h2>Blocco '+(r.i+1)+' · '+esc(OPTIC[r.k])+' a '+bl.v+'</h2>'+
+      '<div class="s-timer"><div class="s-time mono" id="ab-time">'+fmt(Math.max(0,r.until-Date.now()))+'</div></div>'+
+      '<div class="tal big"><div class="tal-h"><span class="lbl">Colpi in questo blocco</span><span class="tal-n mono">'+n+'</span></div>'+
+      '<div class="tal-side">'+(n%2?'Prossimo: parti da destra →':'← Prossimo: parti da sinistra')+'</div>'+
+      '<div class="tal-b three">'+[['p','Prima'],['h','In testa'],['o','Oltre']].map(function(x){
+        return '<button type="button" class="tb t-'+x[0]+'" data-act="abtap" data-v="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>'+
+      '<div class="row-btn"><button class="btn ghost" data-act="abundo" type="button"'+(n?'':' disabled')+'>Annulla l\'ultimo</button>'+
+      (voice.ok?'<button class="btn ghost'+(on?' on':'')+'" data-act="voice" data-k="flk" type="button">'+(on?'Voce attiva · spegni':'Conta con la voce')+'</button>':'')+'</div>'+
+      '<p class="res">Oltre '+cntc(s,'o')+' · prima '+cntc(s,'p')+' · in testa '+cntc(s,'h')+'</p></div>'+
+      '<button class="btn ghost block" data-act="abredo" type="button">Rifai questo blocco</button>';
+  }else{
+    var SA=abSum(r.blocks,r.A),SB=abSum(r.blocks,r.B),V=abVerdict(SA,SB,1);
+    b='<h2>Risultato</h2>'+abTable(SA,SB)+
+      '<div class="adv-1"><span class="k">Verdetto</span><span class="t">'+esc(abHead(V))+'</span>'+
+      V.lines.map(function(l){return '<p class="note">'+esc(l)+'</p>';}).join('')+'</div>'+
+      '<button class="btn pri big block" data-act="absave" type="button">Salva il confronto</button>'+
+      '<button class="btn ghost block" data-act="sessexit" type="button">Esci senza salvare</button>';
+  }
+  return '<div class="s-wrap">'+top+'<div class="s-body">'+b+'</div></div>';
+}
+function abTable(SA,SB){
+  function row(l,f){return '<tr><td>'+l+'</td><td class="num">'+f(SA)+'</td><td class="num">'+f(SB)+'</td></tr>';}
+  return '<div class="tw"><table class="ab-t"><thead><tr><th></th><th>A · '+SA.v+'</th><th>B · '+SB.v+'</th></tr></thead><tbody>'+
+    row('Flick al minuto',function(s){return nf(s.fpm,1);})+
+    row('In testa',function(s){return s.n?Math.round(s.hit*100)+'%':'–';})+
+    row('In testa al minuto',function(s){return nf(s.hpm,1);})+
+    row('Oltre − prima su 20',function(s){return s.n?sgn(s.bal):'–';})+
+    row('Colpi contati',function(s){return String(s.n);})+
+    '</tbody></table></div>';
+}
+function abInRange(rg){return state.ab.filter(function(x){return x.day>=rg.from&&x.day<=rg.to;});}
+/* I confronti entrano nel modello come punti del flick (oltre − prima riportato su 20 colpi). */
+function abPoints(k,rg){
+  var out=[];
+  abInRange(rg).forEach(function(x){
+    if(x.k!==k)return;
+    [x.A,x.B].forEach(function(v){
+      var s=abSum(x.blocks,v);
+      if(s.n>=8)out.push({x:v,d:s.bal,w:Math.min(1,s.n/20),ab:true});
+    });
+  });
+  return out;
+}
+function abPairs(){
+  var g={},ord=[];
+  state.ab.forEach(function(x){
+    var lo=Math.min(x.A,x.B),hi=Math.max(x.A,x.B),key=x.k+'|'+lo+'|'+hi;
+    if(!g[key]){g[key]={k:x.k,lo:lo,hi:hi,list:[]};ord.push(key);}
+    g[key].list.push(x);
+  });
+  return ord.map(function(k){return g[k];});
+}
+function speedCard(A){
+  var L=abInRange(A.rg);
+  if(!L.length)return '';
+  var rows='';
+  OPT_IDS.forEach(function(k){
+    var vals=uniq([].concat.apply([],L.filter(function(x){return x.k===k;}).map(function(x){return [x.A,x.B];}))).sort(function(a,b){return a-b;});
+    vals.forEach(function(v){
+      var bl=[].concat.apply([],L.filter(function(x){return x.k===k;}).map(function(x){return x.blocks;}));
+      var s=abSum(bl,v);
+      if(!s.n)return;
+      rows+='<tr><td>'+esc(SHORT[k])+'</td><td class="num">'+v+'</td><td class="num">'+nf(s.fpm,1)+'</td><td class="num">'+Math.round(s.hit*100)+'%</td><td class="num"><b>'+nf(s.hpm,1)+'</b></td></tr>';
+    });
+  });
+  if(!rows)return '';
+  return '<section class="card"><h2>Velocità</h2><p class="note">Dai confronti A/B: quanti flick fai al minuto, quanti vanno in testa e quanti colpi in testa al minuto ne escono.</p>'+
+    '<div class="tw"><table><thead><tr><th></th><th>Valore</th><th>Flick/min</th><th>In testa</th><th>Testa/min</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>';
+}
+
+/* ---------- scheda Test ---------- */
+function renderTest(P){
+  if(!abSetup)abSetup=abDefaults(P,'ads1');
+  var s=abSetup;
+  var ab='<section class="card"><h2>Confronto A/B</h2>'+
+    '<p class="note">Due numeri nella stessa sera, alternati in 4 blocchi da 30 secondi in ordine casuale. È il modo più onesto per capire quale ti fa colpire di più e più in fretta.</p>'+
+    '<div class="field"><div class="ask">Mirino</div><div class="seg four">'+OPT_IDS.map(function(k){
+      return '<button type="button" data-act="abk" data-s="'+k+'" aria-pressed="'+(s.k===k)+'">'+esc(OPTIC[k])+'</button>';}).join('')+'</div></div>'+
+    '<div class="sens-grid"><div class="field"><div class="lbl">Valore A</div>'+stpHtml('abv','A',s.A,{five:true})+'</div>'+
+    '<div class="field"><div class="lbl">Valore B</div>'+stpHtml('abv','B',s.B,{five:true})+'</div></div>'+
+    '<div class="field"><div class="ask">Distanza</div><div class="seg">'+DISTS.map(function(x){
+      return '<button type="button" data-act="abdist" data-v="'+x[0]+'" aria-pressed="'+(s.dist===x[0])+'">'+esc(x[1])+'<span class="seg-s">'+esc(x[2])+'</span></button>';}).join('')+'</div></div>'+
+    (s.A===s.B?'<p class="warn-t">A e B devono essere diversi.</p>':'<p class="hint">Circa 4 minuti, più il tempo per cambiare il numero nel menu fra un blocco e l\'altro.</p>')+
+    '<button class="btn pri big block" data-act="abstart" type="button"'+(s.A===s.B?' disabled':'')+'>Inizia il confronto</button>'+
+    abHistory()+'</section>';
+  return '<div class="cols"><div class="col">'+ab+'</div><div class="col">'+padCard()+'</div></div>';
+}
+function abHistory(){
+  if(!state.ab.length)return '<p class="hint">Qui compariranno i tuoi confronti.</p>';
+  var pairs=abPairs().map(function(g){
+    var bl=[].concat.apply([],g.list.map(function(x){return x.blocks;}));
+    var SA=abSum(bl,g.lo),SB=abSum(bl,g.hi),V=abVerdict(SA,SB,g.list.length);
+    return '<div class="adv-i"><h3>'+esc(OPTIC[g.k])+': '+g.lo+' contro '+g.hi+' · '+cnt(g.list.length,'confronto','confronti')+'</h3>'+
+      '<p class="note"><b>'+esc(abHead(V))+'.</b> '+esc(V.lines.join(' '))+'</p></div>';
+  }).join('');
+  var last=state.ab.slice(-5).reverse().map(function(x){
+    var SA=abSum(x.blocks,x.A),SB=abSum(x.blocks,x.B);
+    return '<tr><td>'+esc(fmtD(parseKey(x.day)))+'</td><td>'+esc(OPTIC[x.k])+'</td><td class="num">'+x.A+' / '+x.B+'</td><td class="num">'+nf(SA.hpm,1)+' / '+nf(SB.hpm,1)+'</td></tr>';
+  }).join('');
+  return '<div class="lbl">Risultati per coppia di numeri</div><div class="adv">'+pairs+'</div>'+
+    '<div class="tw"><table><thead><tr><th>Sera</th><th>Mirino</th><th>A / B</th><th>Testa/min</th></tr></thead><tbody>'+last+'</tbody></table></div>';
+}
+
+/* ---------- numeri casuali ripetibili (per il margine: stessi dati, stesso risultato) ---------- */
+function rng(seed){
+  var a=seed>>>0;
+  return function(){a=(a+0x6D2B79F5)>>>0;var t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};
+}
+/* Margine all'80% del punto di equilibrio: ricampiono i round di flick 400 volte e rifaccio la retta. */
+function eqCI(pts,lo,hi){
+  if(pts.length<4)return null;
+  var seed=7;
+  pts.forEach(function(p){seed=(Math.imul(seed,31)+Math.round(p.x*7)+Math.round((p.d+40)*13)+Math.round(p.w*5))|0;});
+  var R=rng(seed),eqs=[];
+  for(var it=0;it<400;it++){
+    var S=[];
+    for(var j=0;j<pts.length;j++){var p=pts[Math.floor(R()*pts.length)];S.push([p.x,p.d,p.w]);}
+    var f=fitLine(S);
+    if(f&&f.b>0.05)eqs.push(Math.max(lo*0.8,Math.min(hi*1.2,-f.a/f.b)));
+  }
+  if(eqs.length<200)return null;
+  eqs.sort(function(a,b){return a-b;});
+  return [Math.round(eqs[Math.floor(eqs.length*0.1)]),Math.round(eqs[Math.min(eqs.length-1,Math.floor(eqs.length*0.9))])];
+}
+/* Il primo round di ogni sera è il riscaldamento: conta la metà. */
+function markWarm(rs){
+  var seen={};
+  rs.slice().sort(function(a,b){return (a.ts||0)-(b.ts||0);}).forEach(function(r){
+    var d=r.day||'?';
+    r.warm=!seen[d];seen[d]=1;
+  });
+  return rs;
+}
+function warmSet(){
+  var seen={},w={};
+  state.rounds.slice().sort(function(a,b){return (a.ts||0)-(b.ts||0);}).forEach(function(r){
+    var d=r.day||'?';if(!seen[d]){seen[d]=1;w[r.ts]=1;}
+  });
+  return w;
+}
+/* Lati: colpo pari = da sinistra, dispari = da destra. */
+function sideSplit(rs){
+  var L={o:0,p:0,n:0},R={o:0,p:0,n:0};
+  rs.forEach(function(r){
+    var s=r.shots;if(!s||s.length<FLK_N)return;
+    for(var i=0;i<s.length;i++){var X=(i%2)?R:L,c=s.charAt(i);X.n++;if(c==='o')X.o++;else if(c==='p')X.p++;}
+  });
+  if(L.n<20||R.n<20)return null;
+  return {l:(L.o-L.p)/L.n*20,r:(R.o-R.p)/R.n*20,nl:L.n,nr:R.n};
+}
+function distSplit(rs){
+  var g={};
+  rs.forEach(function(r){if(!r.dist)return;(g[r.dist]=g[r.dist]||[]).push(r.d);});
+  var out=[];
+  DISTS.forEach(function(x){var L=g[x[0]];if(L&&L.length>=2)out.push({d:x[0],m:mean(L),n:L.length});});
+  return out.length>=2?out:null;
+}
+
+/* ---------- screenshot del bersaglio ---------- */
+/* Tocchi il centro, poi il bordo del cerchio più grande, poi ogni foro. Le fasce sono 4, larghe uguali: centro, 1°, 2°, 3° anello; oltre il bordo è "fuori".
+   L'immagine non viene salvata: restano solo le posizioni dei fori, in proporzione al raggio. */
+var shot=null;
+function shotOpen(file){
+  if(!file)return;
+  var url;
+  try{url=URL.createObjectURL(file);}catch(e){toast('Non riesco ad aprire l\'immagine');return;}
+  var img=new Image();
+  img.onload=function(){shot={url:url,w:img.naturalWidth,h:img.naturalHeight,step:'c',c:null,R:null,holes:[]};render();ovTop();};
+  img.onerror=function(){try{URL.revokeObjectURL(url);}catch(e){}toast('Immagine non valida');};
+  img.src=url;
+}
+function shotClose(){if(shot&&shot.url){try{URL.revokeObjectURL(shot.url);}catch(e){}}shot=null;render();}
+function shotTap(e,el){
+  if(!shot)return;
+  var r=el.getBoundingClientRect();
+  if(!r.width||!r.height)return;
+  var x=(e.clientX-r.left)/r.width*shot.w,y=(e.clientY-r.top)/r.height*shot.h;
+  if(shot.step==='c'){shot.c=[x,y];shot.step='r';}
+  else if(shot.step==='r'){
+    var R=Math.hypot(x-shot.c[0],y-shot.c[1]);
+    if(R<shot.w*0.01)return;
+    shot.R=R;shot.step='h';
+  }else{if(shot.holes.length<150)shot.holes.push([x,y]);}
+  render();
+}
+function shotUndo(){
+  if(!shot)return;
+  if(shot.step==='h'&&shot.holes.length)shot.holes.pop();
+  else if(shot.step==='h'){shot.step='r';shot.R=null;}
+  else if(shot.step==='r'){shot.step='c';shot.c=null;}
+  render();
+}
+function ringOf(d){return d>1?4:Math.min(3,Math.floor(d*4));}
+function shotResult(){
+  var c=shot.c,R=shot.R;
+  var H=shot.holes.map(function(h){return [Math.round((h[0]-c[0])/R*100)/100,Math.round((h[1]-c[1])/R*100)/100];});
+  var inside=H.filter(function(h){return Math.hypot(h[0],h[1])<=1;}).length;
+  var top=H.reduce(function(m,h){return (!m||h[1]<m[1])?h:m;},null);
+  var mx=mean(H.map(function(h){return h[0];}));
+  return {H:H,inside:inside,ring:top?ringOf(Math.hypot(top[0],top[1])):null,drift:Math.abs(mx)<0.15?0:(mx>0?1:-1),mx:mx,my:mean(H.map(function(h){return h[1];}))};
+}
+function shotDone(){
+  if(!shot||!shot.holes.length)return;
+  var s=shotResult();
+  ensureDraft();
+  draft.holes=s.H;
+  draft.rec=Math.min(s.inside,draft.mag);
+  draft.ring=s.ring;draft.drift=s.drift;
+  saveDraft();
+  var msg=s.inside+' fori dentro, il più alto: '+RING[s.ring].toLowerCase();
+  shotClose();toast(msg);
+}
+function shotHtml(){
+  var s=shot,step={c:'1. Tocca il centro del bersaglio',r:'2. Tocca il bordo del cerchio più grande',h:'3. Tocca ogni foro'}[s.step];
+  var u=Math.max(s.w,s.h)/160,svg='';
+  if(s.c&&s.R){for(var i=1;i<=4;i++)svg+='<circle cx="'+s.c[0]+'" cy="'+s.c[1]+'" r="'+(s.R*i/4)+'" class="sh-ring" stroke-width="'+u*0.6+'"/>';}
+  if(s.c)svg+='<circle cx="'+s.c[0]+'" cy="'+s.c[1]+'" r="'+u*2.2+'" class="sh-c"/>';
+  s.holes.forEach(function(h){svg+='<circle cx="'+h[0]+'" cy="'+h[1]+'" r="'+u*2.4+'" class="sh-h" stroke-width="'+u*0.7+'"/>';});
+  var live='';
+  if(s.step==='h'&&s.holes.length){var q=shotResult();live='<p class="res">'+s.holes.length+' fori · '+q.inside+' dentro · il più alto: '+esc(RING[q.ring].toLowerCase())+' · '+esc(driftName(q.drift).toLowerCase())+'</p>';}
+  return '<div class="s-wrap"><div class="s-top"><span class="lbl">Screenshot del bersaglio</span><button class="btn ghost mini" data-act="shotclose" type="button">Chiudi</button></div>'+
+    '<div class="s-body"><p class="ask">'+esc(step)+'</p>'+
+    '<div class="sh-fig" data-act="shottap" role="button" aria-label="Immagine del bersaglio: tocca per segnare"><img src="'+esc(s.url)+'" alt="Screenshot del bersaglio" draggable="false">'+
+    '<svg viewBox="0 0 '+s.w+' '+s.h+'" preserveAspectRatio="none" aria-hidden="true">'+svg+'</svg></div>'+live+
+    '<div class="row-btn"><button class="btn ghost" data-act="shotundo" type="button"'+(s.step==='c'?' disabled':'')+'>Annulla l\'ultimo</button>'+
+    '<button class="btn pri" data-act="shotdone" type="button"'+(s.holes.length?'':' disabled')+'>Fatto: usa questi fori</button></div>'+
+    '<p class="hint">Ingrandisci con due dita se i fori sono piccoli. Le fasce sono 4, larghe uguali, dal centro al bordo.</p></div></div>';
+}
+/* Rosa dei colpi per arma, con gli ultimi 10 caricatori analizzati. */
+var patW=null;
+function patternCard(A){
+  var rs=A.rs.filter(function(r){return r.holes&&r.holes.length;});
+  if(!rs.length)return '';
+  var W=uniq(rs.map(function(r){return r.wep||'Arma?';}));
+  if(W.indexOf(patW)<0)patW=W[0];
+  var L=rs.filter(function(r){return (r.wep||'Arma?')===patW;}).slice(-10);
+  var H=[].concat.apply([],L.map(function(r){return r.holes;}));
+  var S=200,C=100,R=86,svg='<svg viewBox="0 0 '+S+' '+S+'" role="img" aria-label="Fori di '+esc(patW)+' sul bersaglio">';
+  for(var i=4;i>=1;i--)svg+='<circle cx="'+C+'" cy="'+C+'" r="'+(R*i/4)+'" class="ring"/>';
+  H.forEach(function(h){svg+='<circle cx="'+(C+Math.max(-1.15,Math.min(1.15,h[0]))*R)+'" cy="'+(C+Math.max(-1.15,Math.min(1.15,h[1]))*R)+'" r="3.2" class="dot"/>';});
+  var mx=mean(H.map(function(h){return h[0];})),my=mean(H.map(function(h){return h[1];}));
+  svg+='<line class="line" x1="'+(C+mx*R-7)+'" y1="'+(C+my*R)+'" x2="'+(C+mx*R+7)+'" y2="'+(C+my*R)+'"/><line class="line" x1="'+(C+mx*R)+'" y1="'+(C+my*R-7)+'" x2="'+(C+mx*R)+'" y2="'+(C+my*R+7)+'"/></svg>';
+  var hz=Math.abs(mx)<0.1?'al centro in orizzontale':(mx>0?'a destra':'a sinistra'),vt=Math.abs(my)<0.1?'al centro in verticale':(my<0?'in alto':'in basso');
+  var top=H.reduce(function(m,h){return Math.min(m,h[1]);},9);
+  var chips=W.length>1?'<div class="cs-row">'+W.map(function(w){return '<button type="button" class="cs" data-act="patw" data-v="'+esc(w)+'" aria-pressed="'+(w===patW)+'">'+esc(w)+'</button>';}).join('')+'</div>':'';
+  return '<section class="card chart"><h2>Rosa dei colpi</h2>'+chips+
+    '<div class="pat">'+svg+'</div>'+
+    '<p class="note">'+esc(patW)+': '+cnt(H.length,'foro','fori')+' da '+cnt(L.length,'caricatore','caricatori')+'. Il gruppo è '+hz+' e '+vt+'; il foro più alto arriva a '+Math.round(Math.max(0,-top)*100)+'% del raggio. La croce è il centro del gruppo.</p></section>';
+}
+
+/* ---------- test del controller (Gamepad API del browser) ---------- */
+/* Il browser legge il controller senza le impostazioni della PS5: sono misure indicative dell'hardware. */
+var gpad={test:null,samples:[],t0:0,raf:0,res:{},prec:null};
+function padList(){
+  try{if(!navigator.getGamepads)return null;return Array.prototype.slice.call(navigator.getGamepads()||[]).filter(Boolean);}catch(e){return null;}
+}
+function padGet(){var L=padList();return (L&&L.length)?L[0]:null;}
+try{
+  window.addEventListener('gamepadconnected',function(){if(tab==='test')render();});
+  window.addEventListener('gamepaddisconnected',function(){if(tab==='test')render();});
+}catch(e){}
+function axesOf(g){var a=g.axes||[];return {lx:a[0]||0,ly:a[1]||0,rx:a[2]||0,ry:a[3]||0};}
+function padStart(kind){
+  if(!padGet()){toast('Collega il controller e premi un tasto');return;}
+  gpad.test=kind;gpad.samples=[];gpad.t0=performance.now();
+  if(kind==='prec')precInit();
+  try{cancelAnimationFrame(gpad.raf);}catch(e){}
+  render();
+  gpad.raf=requestAnimationFrame(padLoop);
+}
+function padStop(){gpad.test=null;try{cancelAnimationFrame(gpad.raf);}catch(e){}render();}
+function padLoop(){
+  var g=padGet();
+  if(!g||!gpad.test){gpad.test=null;render();return;}
+  var A=axesOf(g),el=performance.now()-gpad.t0;
+  if(gpad.test==='drift'||gpad.test==='range'){
+    gpad.samples.push(A);
+    var e=$('pad-left');if(e)e.textContent=Math.max(0,Math.ceil((5000-el)/1000))+' s';
+    if(el>=5000){padFinish();return;}
+  }else if(gpad.test==='prec'){if(precStep(A))return;}
+  gpad.raf=requestAnimationFrame(padLoop);
+}
+function q95(a){a=a.slice().sort(function(x,y){return x-y;});return a.length?a[Math.min(a.length-1,Math.floor(0.95*a.length))]:0;}
+function reach(xs,ys){
+  var sec=[],i;
+  for(i=0;i<16;i++)sec.push(0);
+  xs.forEach(function(x,j){
+    var y=ys[j],m=Math.hypot(x,y);
+    if(m<0.3)return;
+    var k=Math.floor(((Math.atan2(y,x)+Math.PI)/(2*Math.PI))*16)%16;
+    if(m>sec[k])sec[k]=m;
+  });
+  var got=sec.filter(function(v){return v>0;});
+  return {cov:got.length,min:got.length?Math.round(Math.min.apply(null,got)*100):0,max:got.length?Math.round(Math.max.apply(null,got)*100):0};
+}
+function padFinish(){
+  var S=gpad.samples;
+  if(gpad.test==='drift'){
+    gpad.res.drift={l:Math.round(q95(S.map(function(s){return Math.hypot(s.lx,s.ly);}))*1000)/10,r:Math.round(q95(S.map(function(s){return Math.hypot(s.rx,s.ry);}))*1000)/10};
+  }else{
+    gpad.res.range={l:reach(S.map(function(s){return s.lx;}),S.map(function(s){return s.ly;})),r:reach(S.map(function(s){return s.rx;}),S.map(function(s){return s.ry;}))};
+  }
+  gpad.test=null;render();
+}
+var PREC_N=8,PREC_W=320,PREC_H=200,PREC_R=14,PREC_HOLD=400;
+function precInit(){
+  var R=rng((Date.now()&0xffff)+1),T2=[];
+  for(var i=0;i<PREC_N;i++)T2.push({x:30+R()*(PREC_W-60),y:30+R()*(PREC_H-60)});
+  var now=performance.now();
+  gpad.prec={x:PREC_W/2,y:PREC_H/2,tg:T2,i:0,inSince:0,over:0,times:[],tStart:now,last:now};
+}
+function precStep(A){
+  var p=gpad.prec,now=performance.now(),dt=Math.min(0.05,(now-p.last)/1000);p.last=now;
+  var dz=0.1,m=Math.hypot(A.rx,A.ry),vx=0,vy=0;
+  if(m>dz){var k=Math.pow((m-dz)/(1-dz),1.6)/m*260;vx=A.rx*k;vy=A.ry*k;}
+  p.x=Math.max(0,Math.min(PREC_W,p.x+vx*dt));p.y=Math.max(0,Math.min(PREC_H,p.y+vy*dt));
+  var t=p.tg[p.i],inside=Math.hypot(p.x-t.x,p.y-t.y)<=PREC_R;
+  if(inside){
+    if(!p.inSince)p.inSince=now;
+    if(now-p.inSince>=PREC_HOLD){
+      p.times.push((now-p.tStart)/1000);p.i++;p.inSince=0;p.tStart=now;buzz(15);
+      if(p.i>=PREC_N){
+        gpad.res.prec={time:Math.round(mean(p.times)*100)/100,over:Math.round(p.over/PREC_N*100)/100};
+        gpad.test=null;render();return true;
+      }
+    }
+  }else if(p.inSince){p.over++;p.inSince=0;}
+  var cu=$('pc-cur'),tg=$('pc-tgt'),nn=$('pc-n');
+  if(cu){cu.setAttribute('cx',p.x.toFixed(1));cu.setAttribute('cy',p.y.toFixed(1));}
+  if(tg&&p.tg[p.i]){tg.setAttribute('cx',p.tg[p.i].x.toFixed(1));tg.setAttribute('cy',p.tg[p.i].y.toFixed(1));tg.setAttribute('class','pc-t'+(p.inSince?' in':''));}
+  if(nn)nn.textContent=(p.i+1)+' / '+PREC_N;
+  return false;
+}
+function dzAdvice(drift,cur,name){
+  var need=Math.ceil(drift+2);
+  return name+': deriva '+nf(drift,1)+'%. Zona morta di almeno '+need+'%'+(cur!==undefined?(cur>=need?' (nel tuo setup '+cur+'%: va bene).':' (nel tuo setup '+cur+'%: alzala).'):'.');
+}
+function padCard(){
+  var L=padList(),g=L&&L.length?L[0]:null,res=gpad.res,body='';
+  var status=(L===null)?'<p class="warn-t">Qui il browser non può leggere il controller. Apri l\'app dal sito GitHub, in Chrome, Edge o Safari.</p>'
+    :(g?'<p class="res">Collegato: '+esc(String(g.id).slice(0,48))+'</p>':'<p class="note">Collega il DualSense Edge a questo telefono o PC con il cavo USB o il Bluetooth, poi premi un tasto qualsiasi.</p>');
+  if(gpad.test==='drift'||gpad.test==='range'){
+    body='<div class="pad-run"><div class="ask">'+(gpad.test==='drift'?'Non toccare gli stick':'Gira tutti e due gli stick fino in fondo, in cerchio')+'</div><div class="s-time mono" id="pad-left">5 s</div>'+
+      '<button class="btn ghost" data-act="padstop" type="button">Interrompi</button></div>';
+  }else if(gpad.test==='prec'){
+    var p=gpad.prec,t=p.tg[p.i];
+    body='<div class="pad-run"><div class="ask">Porta il cerchio pieno dentro il bersaglio con lo stick destro e tienilo lì</div>'+
+      '<svg class="pc" viewBox="0 0 '+PREC_W+' '+PREC_H+'" role="img" aria-label="Area del test di precisione"><rect width="'+PREC_W+'" height="'+PREC_H+'" class="pc-bg"/>'+
+      '<circle id="pc-tgt" class="pc-t" cx="'+t.x+'" cy="'+t.y+'" r="'+PREC_R+'"/><circle id="pc-cur" class="pc-c" cx="'+p.x+'" cy="'+p.y+'" r="5"/></svg>'+
+      '<p class="res" id="pc-n">'+(p.i+1)+' / '+PREC_N+'</p><button class="btn ghost" data-act="padstop" type="button">Interrompi</button></div>';
+  }
+  var lines=[];
+  if(res.drift){lines.push(dzAdvice(res.drift.r,state.gear.rd,'Stick destro'));lines.push(dzAdvice(res.drift.l,state.gear.ld,'Stick sinistro'));}
+  if(res.range){
+    ['r','l'].forEach(function(s){
+      var x=res.range[s],nm=(s==='r'?'Stick destro':'Stick sinistro');
+      if(x.cov<12)lines.push(nm+': giro incompleto, rifai la prova girando di più.');
+      else lines.push(nm+': arriva al '+x.min+'% nella direzione più corta'+(x.min<95?': non raggiunge il massimo ovunque.':'. Bene.'));
+    });
+  }
+  if(res.prec)lines.push('Precisione: '+nf(res.prec.time,2)+' secondi per bersaglio, '+nf(res.prec.over,2)+' uscite per bersaglio prima di fermarti.');
+  var hist=state.ctest.slice(-5).reverse().map(function(x){
+    return '<tr><td>'+esc(fmtD(parseKey(x.day)))+'</td><td class="num">'+(x.drift?nf(x.drift.r,1)+'%':'–')+'</td><td class="num">'+(x.prec?nf(x.prec.time,2)+' s':'–')+'</td><td class="num">'+(x.prec?nf(x.prec.over,2):'–')+'</td></tr>';
+  }).join('');
+  var dis=(!g||gpad.test)?' disabled':'';
+  return '<section class="card"><h2>Test del controller</h2>'+
+    '<p class="note">Misure vere dell\'hardware, senza poterle aggiustare a mano: deriva degli stick, quanto arrivano in fondo e quanto sei preciso a fermarti.</p>'+status+body+
+    '<div class="row-btn"><button class="btn ghost" data-act="pad" data-v="drift" type="button"'+dis+'>Deriva · 5 s</button>'+
+    '<button class="btn ghost" data-act="pad" data-v="range" type="button"'+dis+'>Escursione · 5 s</button>'+
+    '<button class="btn ghost" data-act="pad" data-v="prec" type="button"'+dis+'>Precisione · 8 bersagli</button></div>'+
+    (lines.length?'<div class="adv-i">'+lines.map(function(l){return '<p class="note">'+esc(l)+'</p>';}).join('')+'</div>':'')+
+    ((res.drift||res.prec)?'<button class="btn pri block" data-act="padsave" type="button">Salva il test</button>':'')+
+    (hist?'<div class="tw"><table><thead><tr><th>Data</th><th>Deriva dx</th><th>Tempo</th><th>Uscite</th></tr></thead><tbody>'+hist+'</tbody></table></div>':'')+
+    '<p class="hint">Il browser legge il controller senza le impostazioni della PS5: prendi i numeri come indicazione, e ripeti il test ogni tanto per vedere se lo stick cambia.</p></section>';
+}
+
+/* ---------- partite: la prova che conta ---------- */
+/* una riga per ogni sessione di gioco, con il giorno preciso.
+   Le sessioni possono arrivare da sole dal Worker (src:'auto') o essere scritte a mano. */
+var mtArm=null,mMet=null;
+var M_CHART=30,M_LIST=8,M_AVG=5;
+var MET={
+  hs:{lbl:'Colpi in testa',get:function(x){return x.hs;},fmt:function(v){return nf(v,1)+'%';},axis:function(v){return Math.round(v)+'%';},floor:2,
+    range:function(a){var lo=Math.max(0,Math.floor((Math.min.apply(null,a)-5)/5)*5),hi=Math.min(100,Math.ceil((Math.max.apply(null,a)+5)/5)*5);if(hi-lo<20)hi=Math.min(100,lo+20);return [lo,hi];},
+    word:'di colpi in testa',unit:'punti'},
+  kd:{lbl:'K/D',get:function(x){return x.kd;},fmt:function(v){return nf(v,2);},axis:function(v){return nf(v,1);},floor:0.1,
+    range:function(a){var lo=Math.max(0,Math.floor((Math.min.apply(null,a)-0.2)*4)/4),hi=Math.ceil((Math.max.apply(null,a)+0.2)*4)/4;if(hi-lo<1)hi=lo+1;return [lo,hi];},
+    word:'di K/D',unit:''}
+};
+function mSorted(){return state.matches.slice().sort(function(a,b){return a.day<b.day?-1:(a.day>b.day?1:a.ts-b.ts);});}
+function mHas(L,k){return L.filter(function(x){var v=MET[k].get(x);return v!==null&&v!==undefined;});}
+function mMetric(L){
+  var nh=mHas(L,'hs').length,nk=mHas(L,'kd').length;
+  if(mMet&&MET[mMet]&&mHas(L,mMet).length>=2)return mMet;
+  return nh>=2||nh>=nk?'hs':'kd';
+}
+function mDate(day,long){
+  var d=parseKey(day);
+  try{return d.toLocaleDateString('it-IT',long?{weekday:'long',day:'numeric',month:'long'}:{weekday:'short',day:'numeric',month:'short'});}catch(e){return day;}
+}
+function ubiName(x){return String(x||'').trim().replace(/[^A-Za-z0-9._-]/g,'').slice(0,20);}
+function trkUrl(n){return 'https://r6.tracker.network/r6siege/profile/ubi/'+encodeURIComponent(n)+'/overview';}
+/* i mirini in uso quel giorno: oggi quelli attuali, nel passato quelli dell'ultimo allenamento fino a quel giorno */
+function sensOn(day){
+  var P=computePlan(),sv={},r=null;
+  OPT_IDS.forEach(function(k){sv[k]=P.vals[k];});
+  if(!okDay(day)||day>=dkey(new Date()))return sv;
+  state.rounds.forEach(function(x){if(x.day<=day&&x.setup&&(!r||x.day>r.day||(x.day===r.day&&x.ts>r.ts)))r=x;});
+  if(r)OPT_IDS.forEach(function(k){if(r.setup[k]!==undefined&&r.setup[k]!==null)sv[k]=r.setup[k];});
+  return sv;
+}
+function trainOn(day){
+  var rs=state.rounds.filter(function(r){return r.day===day;});
+  return rs.length?mean(rs.map(rScore)):null;
+}
+/* peso di ogni sessione = numero di partite (se manca, la mediana delle altre) */
+function mWeights(L){
+  var ns=L.map(function(x){return x.n;}).filter(function(n){return n;}).sort(function(a,b){return a-b;});
+  var def=ns.length?ns[Math.floor(ns.length/2)]:1;
+  return L.map(function(x){return x.n||def;});
+}
+function matchCard(P){
+  var L=mSorted();
+  var today=dkey(new Date());
+  var ubi=(state.prefs&&state.prefs.ubi)||'';
+  var auto=liveReady();
+  var form='<div class="m-form"><label><span class="lbl">Giorno</span><input type="date" class="dt-in" id="m-day" value="'+today+'" max="'+today+'"></label>'+
+    '<label><span class="lbl">% colpi in testa</span><input type="number" inputmode="decimal" class="txt-in" id="m-hs" min="0" max="100" step="0.1" placeholder="es. 38,5"></label>'+
+    '<label><span class="lbl">K/D (se vuoi)</span><input type="number" inputmode="decimal" class="txt-in" id="m-kd" min="0" max="10" step="0.01" placeholder="es. 1,12"></label>'+
+    '<label><span class="lbl">Partite giocate</span><input type="number" inputmode="numeric" class="txt-in" id="m-n" min="1" max="300" step="1" placeholder="es. 4"></label></div>'+
+    '<p class="hint">Mirini salvati con questa sessione: <b class="mono" id="m-sv">'+esc(comboKey(sensOn(today)))+'</b> (1x / 2,5x / 3,5x / 8x)</p>'+
+    '<button class="btn pri block" data-act="madd" type="button">Salva la sessione</button>';
+  var trk='<div class="m-trk"><label><span class="lbl">Nome Ubisoft</span><input type="text" class="txt-in" id="m-ubi" value="'+esc(ubi)+'" maxlength="20" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="il tuo nome in gioco"></label>'+
+    '<a class="btn ghost" id="m-trk" href="'+(ubi?trkUrl(ubi):'#')+'" target="_blank" rel="noopener noreferrer"'+(ubi?'':' hidden')+'>Apri R6 Tracker</a></div>';
+  var td=L.filter(function(x){return x.day===today;});
+  var tdNote=(!auto&&td.length)?'<p class="hint">Oggi hai già salvato '+cnt(td.length,'sessione','sessioni')+'. Se hai giocato ancora, salvane un\'altra: conta come sessione a parte.</p>':'';
+  var met=mMetric(L),pts=mHas(L,met);
+  var seg='';
+  if(mHas(L,'hs').length>=2&&mHas(L,'kd').length>=2){
+    seg='<div class="cs-row" role="group" aria-label="Cosa mostrare nel grafico">'+['hs','kd'].map(function(k){return '<button type="button" class="cs" data-act="mmet" data-v="'+k+'" aria-pressed="'+(k===met)+'">'+MET[k].lbl+'</button>';}).join('')+'</div>';
+  }
+  var chart=pts.length>=2?seg+matchChart(L,met):'';
+  var sum=matchSummary(L,met);
+  var list=L.slice(-M_LIST).reverse().map(function(x){
+    var tr=trainOn(x.day),arm=mtArm===x.ts;
+    var tag=x.src==='auto'?'<span class="m-sv m-tag">'+(x.open?'in corso':'automatica')+'</span>':'';
+    return '<tr'+(x.src==='auto'?' class="m-auto"':'')+'><td>'+esc(mDate(x.day))+'<span class="m-sv">'+esc(comboKey(x.s))+'</span>'+tag+'</td>'+
+      '<td class="num">'+(x.hs===null?'–':nf(x.hs,1)+'%')+(x.kd===null?'':'<span class="m-sv">K/D '+nf(x.kd,2)+'</span>')+'</td><td class="num">'+(x.n===null?'–':x.n)+'</td>'+
+      '<td class="num">'+(tr===null?'–':Math.round(tr))+'</td>'+
+      '<td class="m-del"><button class="btn ghost mini" data-act="mdel" data-v="'+x.ts+'" type="button" aria-label="'+(arm?'Conferma: togli':'Togli')+' la sessione del '+esc(mDate(x.day,true))+'">'+(arm?'Sicuro?':'✕')+'</button></td></tr>';
+  }).join('');
+  var intro=auto?
+    '<p class="note">Le sessioni arrivano da sole dal collegamento automatico: totali delle classificate letti ogni 15–60 minuti. Aggiungi a mano solo quello che manca.</p>':
+    '<p class="note">Ogni volta che giochi le classificate, salva i numeri di quella sessione: % di colpi in testa, K/D e quante partite. Li trovi nella cronologia partite di R6 Tracker. Se giochi due volte nello stesso giorno, salva due sessioni.</p>';
+  return '<section class="card chart" id="m-card"><h2>Le tue partite</h2>'+intro+
+    (auto?liveBar():'')+trk+
+    (auto?det('d-mman','m-man','Aggiungi a mano',form):form)+tdNote+chart+sum+
+    (list?'<div class="tw"><table><thead><tr><th>Giorno</th><th>Testa</th><th>Partite</th><th title="Punteggio dell\'allenamento di quel giorno">Allen.</th><th><span class="sr">Togli</span></th></tr></thead><tbody>'+list+'</tbody></table></div>'+
+      (L.length>M_LIST?'<p class="hint">In tabella le ultime '+M_LIST+' sessioni su '+L.length+'. Il grafico e le medie le usano tutte.</p>':''):'')+'</section>';
+}
+function matchChart(L0,met){
+  var M=MET[met],A=mHas(L0,met),W0=mWeights(A).slice(-M_CHART),L=A.slice(-M_CHART);
+  var W=360,H=190,Lm=34,Rm=14,T0=22,B=26,pw=W-Lm-Rm,ph=H-T0-B,n=L.length;
+  var vs=L.map(M.get),rg=M.range(vs),lo=rg[0],hi=rg[1];
+  function X(i){return Lm+(n===1?pw/2:i/(n-1)*pw);}
+  function Y(v){return T0+ph-(v-lo)/(hi-lo)*ph;}
+  /* media mobile delle ultime M_AVG sessioni, pesata per partite */
+  var avg=vs.map(function(v,i){var a=Math.max(0,i-M_AVG+1),sw=0,sx=0;for(var j=a;j<=i;j++){sw+=W0[j];sx+=W0[j]*vs[j];}return sx/sw;});
+  var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(M.lbl)+' sessione per sessione, con la media delle ultime '+M_AVG+'">';
+  [lo,(lo+hi)/2,hi].forEach(function(v){s+='<line class="grid" x1="'+Lm+'" x2="'+(W-Rm)+'" y1="'+Y(v)+'" y2="'+Y(v)+'"/><text x="'+(Lm-6)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+M.axis(v)+'</text>';});
+  for(var i=1;i<n;i++){
+    if(comboKey(L[i].s)!==comboKey(L[i-1].s)){
+      var xm=(X(i)+X(i-1))/2;
+      s+='<line class="mk" x1="'+xm+'" x2="'+xm+'" y1="'+T0+'" y2="'+(T0+ph)+'"/><text x="'+xm+'" y="'+(T0-6)+'" text-anchor="middle">'+esc(matchChange(L[i-1].s,L[i].s))+'</text>';
+    }
+  }
+  s+='<path class="line thin" d="'+vs.map(function(v,i){return (i?'L':'M')+X(i)+' '+Y(v);}).join(' ')+'"/>';
+  if(n>=3)s+='<path class="line m-avg" d="'+avg.map(function(v,i){return (i?'L':'M')+X(i)+' '+Y(v);}).join(' ')+'"/>';
+  L.forEach(function(x,i){s+='<circle class="pt'+(x.src==='auto'?' auto':'')+'" cx="'+X(i)+'" cy="'+Y(vs[i])+'" r="'+(n>20?3:4.5)+'"/>';});
+  s+='<text x="'+X(0)+'" y="'+(H-8)+'" text-anchor="start">'+esc(dm(L[0].day))+'</text><text x="'+X(n-1)+'" y="'+(H-8)+'" text-anchor="end">'+esc(dm(L[n-1].day))+'</text></svg>';
+  return s+'<p class="hint">Ogni punto è una sessione'+(A.length>M_CHART?' (le ultime '+M_CHART+')':'')+'. '+(n>=3?'La linea spessa è la media delle ultime '+M_AVG+' sessioni: guarda quella, il singolo giorno balla molto. ':'')+(L.some(function(x){return x.src==='auto';})?'I punti verdi sono arrivati dal collegamento automatico. ':'')+'Le righe tratteggiate segnano quando hai cambiato un mirino.</p>';
+}
+function matchChange(a,b){
+  for(var i=0;i<OPT_IDS.length;i++){var k=OPT_IDS[i];if(a[k]!==b[k])return SHORT[k]+' '+a[k]+'→'+b[k];}
+  return 'cambio';
+}
+/* confronto fra set di mirini: media pesata per partite,
+   rumore stimato dalla variazione fra sessioni con gli stessi mirini */
+function matchSummary(L0,met){
+  met=met||'hs';
+  var M=MET[met],L=mHas(L0,met),skip=L0.length-L.length;
+  var miss=skip?'<p class="hint">'+cnt(skip,'sessione non ha','sessioni non hanno')+' il dato '+esc(M.lbl==='K/D'?'del K/D':'dei colpi in testa')+': '+(skip===1?'resta':'restano')+' fuori da questo confronto.</p>':'';
+  if(L.length<2)return L0.length>=2?miss:'';
+  var W=mWeights(L),G={},order=[];
+  L.forEach(function(x,i){
+    var k=comboKey(x.s);
+    if(!G[k]){G[k]={k:k,n:0,w:0,sx:0,idx:[]};order.push(k);}
+    var g=G[k];g.n++;g.w+=W[i];g.sx+=W[i]*M.get(x);g.idx.push(i);
+  });
+  var rows=order.map(function(k){var g=G[k];g.m=g.sx/g.w;return g;});
+  var ss=0,df=L.length-rows.length,wbar=W.reduce(function(a,b){return a+b;},0)/W.length;
+  rows.forEach(function(g){g.idx.forEach(function(i){var d=M.get(L[i])-g.m;ss+=W[i]*d*d;});});
+  var s2=Math.max(df>0?ss/df:0,M.floor*M.floor*wbar);
+  rows.sort(function(a,b){return b.m-a.m;});
+  var ok=rows.filter(function(r){return r.n>=2;}),txt='';
+  if(rows.length===1){
+    txt='<p class="hint">Finora hai giocato sempre con gli stessi mirini. Quando ne cambi uno, qui vedi se in partita vai meglio o peggio.</p>';
+  }else if(ok.length>=2&&df>=2){
+    var A=ok[0],Z=ok[ok.length-1],d=A.m-Z.m,mg=1.64*Math.sqrt(s2/A.w+s2/Z.w);
+    var dtx=met==='hs'?nf(d,1)+' punti':nf(d,2),mtx=met==='hs'?nf(mg,1):nf(mg,2);
+    txt='<p class="note">Con <b>'+esc(A.k)+'</b> hai in media '+M.fmt(A.m)+' '+M.word+', con '+esc(Z.k)+' '+M.fmt(Z.m)+'. '+
+      (d>=mg?'Differenza di '+dtx+', più grande del margine di rumore fra sessioni (±'+mtx+'): conta.':'Differenza di '+dtx+', dentro il margine di rumore fra sessioni (±'+mtx+'): servono altre sessioni per dirlo.')+'</p>';
+  }else{
+    txt='<p class="hint">Per confrontare due set di mirini servono almeno due sessioni con ciascuno.</p>';
+  }
+  var top=Math.max.apply(null,rows.map(function(r){return r.m;}))||1;
+  return '<div class="hb">'+rows.map(function(r){return hbRow(r.k,cnt(r.n,'sessione','sessioni'),met==='hs'?r.m:r.m/top*100,r===rows[0]?'best':'',M.fmt(r.m));}).join('')+'</div>'+txt+miss;
+}
+/* codice del Worker Cloudflare, da copiare nel passo 3 */
+var WORKER_SRC="// Taratura Siege - collegamento automatico (Cloudflare Worker, piano gratuito)\n//\n// Cosa fa: ogni 15 minuti decide se leggere i tuoi totali da R6 Arenyze\n// (uccisioni, morti, colpi in testa, partite), li salva nel database D1 e\n// ricava le sessioni di gioco: la differenza fra due letture e' quello che\n// hai fatto in mezzo. L'app chiede le sessioni con il tuo codice personale.\n//\n// Impostazioni del Worker (Settings -> Variables and Secrets):\n//   API_KEY     Secret  la chiave API di R6 Arenyze\n//   APP_TOKEN   Secret  il codice personale che ti da' l'app\n//   UBI_NAME    Text    il tuo nome Ubisoft\n//   PLATFORM    Text    psn | xbl | uplay        (se manca: psn)\n// Facoltative:\n//   MODES          ranked | standard | casual | all   (se manca: ranked)\n//   SEASON         es. Y11S3 (se manca: quella del servizio)\n//   MONTHLY_BUDGET chiamate al mese da non superare  (se manca: 1800)\n//   GAP_MIN        minuti senza partite che chiudono una sessione (120)\n//   STATS_PATH     percorso fisso dei totali, se /test ne trova piu' di uno\n//   ALLOWED_ORIGINS siti che possono chiamare il Worker, separati da virgola (*)\n// Binding: database D1 con nome variabile DB.\n// Trigger: Cron  */15 * * * *\nconst VERSION = 1;\nconst API_BASE = 'https://public-api.arenyze.com/r6/api';\nconst MIN = 60000;\nconst FIELDS = ['kills', 'deaths', 'headshots', 'matches', 'wins', 'losses', 'abandons'];\nconst KEYMAP = {\n  kills: 'kills', kill: 'kills',\n  deaths: 'deaths', death: 'deaths',\n  headshots: 'headshots', headshot: 'headshots', headshotkills: 'headshots', killsheadshot: 'headshots',\n  matchesplayed: 'matches', matches: 'matches', matchesplayedcount: 'matches',\n  wins: 'wins', win: 'wins', matcheswon: 'wins',\n  losses: 'losses', loss: 'losses', matcheslost: 'losses',\n  abandons: 'abandons', abandon: 'abandons', matchesabandoned: 'abandons'\n};\nconst LABELS = new Set(['boardid', 'board', 'gamemode', 'sessiontype', 'playlist', 'mode', 'modes', 'type', 'name', 'key', 'season', 'seasonid', 'seasonyear', 'platform', 'platformfamily']);\n\nclass Err extends Error {\n  constructor(status, code, msg) { super(msg); this.status = status; this.code = code; }\n}\n\n/* ---------- configurazione ---------- */\nfunction cfg(env) {\n  const s = (v, d) => (v === undefined || v === null || String(v).trim() === '') ? d : String(v).trim();\n  return {\n    key: s(env.API_KEY, ''),\n    token: s(env.APP_TOKEN, ''),\n    name: s(env.UBI_NAME, ''),\n    platform: s(env.PLATFORM, 'psn').toLowerCase(),\n    modes: s(env.MODES, 'ranked').toLowerCase(),\n    season: s(env.SEASON, ''),\n    budget: Math.max(100, Number(env.MONTHLY_BUDGET) || 1800),\n    gap: Math.max(30, Number(env.GAP_MIN) || 120) * MIN,\n    path: s(env.STATS_PATH, ''),\n    origins: s(env.ALLOWED_ORIGINS, '*').split(',').map(x => x.trim()).filter(Boolean)\n  };\n}\nfunction missing(c) {\n  const m = [];\n  if (!c.key) m.push('API_KEY');\n  if (!c.name) m.push('UBI_NAME');\n  if (!['psn', 'xbl', 'uplay'].includes(c.platform)) m.push('PLATFORM (psn, xbl o uplay)');\n  return m;\n}\n\n/* ---------- database ---------- */\nconst readyDBs = new WeakSet();\nasync function setup(env) {\n  if (env.DB && readyDBs.has(env.DB)) return;\n  if (!env.DB) throw new Err(500, 'no_db', 'Manca il database: collega D1 al Worker con il nome variabile DB.');\n  await env.DB.batch([\n    env.DB.prepare('CREATE TABLE IF NOT EXISTS snaps (ts INTEGER PRIMARY KEY, prev INTEGER, path TEXT, kills INTEGER, deaths INTEGER, headshots INTEGER, matches INTEGER, wins INTEGER, losses INTEGER, abandons INTEGER)'),\n    env.DB.prepare('CREATE TABLE IF NOT EXISTS meta (k TEXT PRIMARY KEY, v TEXT)')\n  ]);\n  readyDBs.add(env.DB);\n}\nasync function getMeta(env) {\n  const r = await env.DB.prepare(\"SELECT k, v FROM meta WHERE k <> 'raw'\").all();\n  const m = {};\n  for (const row of (r.results || [])) { try { m[row.k] = JSON.parse(row.v); } catch (e) { /* valore rovinato: lo ignoro */ } }\n  return m;\n}\nasync function putMeta(env, m) {\n  const st = env.DB.prepare('INSERT OR REPLACE INTO meta (k, v) VALUES (?, ?)');\n  await env.DB.batch(Object.keys(m).map(k => st.bind(k, JSON.stringify(m[k] === undefined ? null : m[k]))));\n}\nasync function putRaw(env, txt) {\n  await env.DB.prepare(\"INSERT OR REPLACE INTO meta (k, v) VALUES ('raw', ?)\").bind(txt.length > 1000000 ? txt.slice(0, 1000000) : txt).run();\n}\nasync function getRaw(env) {\n  const r = await env.DB.prepare(\"SELECT v FROM meta WHERE k = 'raw'\").first();\n  return r ? r.v : null;\n}\nfunction monthKey(t) { const d = new Date(t); return d.getUTCFullYear() + '-' + String(d.getUTCMonth() + 1).padStart(2, '0'); }\nfunction callsThisMonth(meta, now) { return meta.month === monthKey(now) ? (meta.calls || 0) : 0; }\n\n/* ---------- lettura dei totali, qualunque sia la forma della risposta ---------- */\nfunction num(v) {\n  if (typeof v === 'number' && isFinite(v)) return v;\n  if (typeof v === 'string' && /^\\s*-?\\d+(\\.\\d+)?\\s*$/.test(v)) return Number(v);\n  if (v && typeof v === 'object' && !Array.isArray(v) && 'value' in v) return num(v.value);\n  return null;\n}\nfunction nk(k) { return String(k).toLowerCase().replace(/[^a-z]/g, ''); }\nfunction fieldsOf(o) {\n  const f = {};\n  if (!o || typeof o !== 'object' || Array.isArray(o)) return f;\n  for (const k in o) {\n    const m = KEYMAP[nk(k)];\n    if (m && f[m] === undefined) { const n = num(o[k]); if (n !== null && n >= 0) f[m] = n; }\n  }\n  const mo = o.match_outcomes || o.matchOutcomes;\n  if (mo && typeof mo === 'object') {\n    for (const k of ['wins', 'losses', 'abandons']) { if (f[k] === undefined) { const n = num(mo[k]); if (n !== null && n >= 0) f[k] = n; } }\n  }\n  return f;\n}\nfunction atPath(root, path) {\n  if (!path || path === '.') return root;\n  const parts = path.match(/\\.[^.[\\]]+|\\[\\d+\\]/g);\n  if (!parts || parts.join('') !== path) return undefined;\n  let o = root;\n  for (const p of parts) {\n    if (o === null || typeof o !== 'object') return undefined;\n    o = p[0] === '[' ? o[Number(p.slice(1, -1))] : o[p.slice(1)];\n  }\n  return o;\n}\nfunction finish(f) {\n  if (f.matches === undefined && (f.wins !== undefined || f.losses !== undefined)) f.matches = (f.wins || 0) + (f.losses || 0) + (f.abandons || 0);\n  return f;\n}\nfunction candidates(root) {\n  const out = [];\n  (function walk(o, path, ctx, depth) {\n    if (depth > 16 || o === null || typeof o !== 'object') return;\n    if (Array.isArray(o)) { o.forEach((x, i) => walk(x, path + '[' + i + ']', ctx, depth + 1)); return; }\n    let here = ctx;\n    const lab = x => { for (const k in x) { if (typeof x[k] === 'string' && LABELS.has(nk(k))) here += ' ' + x[k].toLowerCase(); } };\n    lab(o);\n    /* etichette anche nei blocchi accanto (attributes, metadata) */\n    for (const k in o) { if (o[k] && typeof o[k] === 'object' && !Array.isArray(o[k])) lab(o[k]); }\n    const f = fieldsOf(o);\n    if (f.kills !== undefined && f.deaths !== undefined) out.push({ path: path || '.', ctx: (here + ' ' + path).toLowerCase(), f });\n    for (const k in o) walk(o[k], path + '.' + k, here, depth + 1);\n  })(root, '', '', 0);\n  return out;\n}\nfunction hasWord(s, w) { return new RegExp('(^|[^a-z])' + w.replace(/[^a-z-]/g, '') + '([^a-z]|$)').test(s); }\nfunction pickStats(root, c, keepPath, keepH) {\n  const want = c.path || keepPath;\n  if (want) {\n    /* percorso gia' noto: niente giro completo della risposta */\n    const f = fieldsOf(atPath(root, want));\n    if (f.kills !== undefined && f.deaths !== undefined) {\n      let hpath = null;\n      if (f.headshots === undefined && keepH) {\n        const h = fieldsOf(atPath(root, keepH));\n        if (h.headshots !== undefined && h.kills === f.kills && h.deaths === f.deaths) { f.headshots = h.headshots; hpath = keepH; }\n      }\n      if (f.headshots !== undefined || !keepH) return { path: want, hpath, ctx: '', f: finish(f), count: 0, fast: true };\n    }\n  }\n  const all = candidates(root);\n  if (!all.length) return null;\n  let cs = all;\n  const fixed = want ? all.filter(x => x.path === want) : [];\n  if (fixed.length) cs = fixed;\n  else if (c.modes && c.modes !== 'all') {\n    const m = all.filter(x => hasWord(x.ctx, c.modes));\n    if (m.length) cs = m;\n  }\n  const score = x => x.f.kills + x.f.deaths + (x.f.matches !== undefined ? 0.5 : 0) + (x.f.headshots !== undefined ? 0.25 : 0);\n  cs = cs.slice().sort((a, b) => score(b) - score(a));\n  const best = cs[0];\n  const f = Object.assign({}, best.f);\n  let hpath = null;\n  if (f.headshots === undefined) {\n    /* colpi in testa da un altro blocco solo se i totali coincidono: mai mescolare modalita' diverse */\n    const h = all.find(x => x.f.headshots !== undefined && x.f.kills === f.kills && x.f.deaths === f.deaths);\n    if (h) { f.headshots = h.f.headshots; hpath = h.path; }\n  }\n  return { path: best.path, hpath, ctx: best.ctx.trim().slice(0, 120), f: finish(f), count: all.length };\n}\nfunction keyTree(o, depth) {\n  depth = depth || 0;\n  if (o === null || typeof o !== 'object') return typeof o;\n  if (depth > 5) return '...';\n  if (Array.isArray(o)) return o.length ? [keyTree(o[0], depth + 1), o.length + ' elementi'] : [];\n  const r = {};\n  Object.keys(o).slice(0, 40).forEach(k => { r[k] = keyTree(o[k], depth + 1); });\n  return r;\n}\n\n/* ---------- una lettura dal servizio ---------- */\nfunction short(t) { return String(t || '').replace(/\\s+/g, ' ').slice(0, 240); }\nasync function poll(env, c, meta, why) {\n  const now = Date.now();\n  const mk = monthKey(now);\n  if (meta.month !== mk) { meta.month = mk; meta.calls = 0; }\n  if ((meta.calls || 0) >= c.budget) {\n    meta.last_error = { ts: now, msg: 'Limite mensile di ' + c.budget + ' chiamate raggiunto: riprendo il mese prossimo.' };\n    await putMeta(env, meta);\n    return { ok: false, reason: 'budget' };\n  }\n  const q = new URLSearchParams({ nameOnPlatform: c.name, platformType: c.platform });\n  if (c.modes) q.set('modes', c.modes);\n  if (c.season) q.set('seasonYear', c.season);\n  const prevCall = meta.last_call || 0;\n  meta.calls = (meta.calls || 0) + 1;\n  meta.last_call = now;\n  meta.last_why = why;\n  let res, txt;\n  try {\n    res = await fetch(API_BASE + '/v2/fullstats?' + q.toString(), { headers: { 'api-key': c.key, 'accept': 'application/json' } });\n    txt = await res.text();\n  } catch (e) {\n    meta.last_error = { ts: now, msg: 'Il servizio non risponde: ' + short(e && e.message) };\n    await putMeta(env, meta);\n    return { ok: false, reason: 'network' };\n  }\n  if (!res.ok) {\n    const hint = res.status === 401 || res.status === 403 ? 'Chiave API rifiutata. ' : res.status === 404 ? 'Giocatore non trovato: controlla UBI_NAME e PLATFORM. ' : res.status === 429 ? 'Troppe richieste al servizio. ' : '';\n    meta.last_error = { ts: now, status: res.status, msg: hint + 'Risposta ' + res.status + ': ' + short(txt) };\n    await putMeta(env, meta);\n    return { ok: false, reason: 'http', status: res.status };\n  }\n  await putRaw(env, txt);\n  let j;\n  try { j = JSON.parse(txt); } catch (e) {\n    meta.last_error = { ts: now, msg: 'Risposta non leggibile: ' + short(txt) };\n    await putMeta(env, meta);\n    return { ok: false, reason: 'parse' };\n  }\n  const p = pickStats(j, c, meta.path, meta.hpath);\n  if (!p) {\n    meta.last_error = { ts: now, msg: 'Nella risposta non trovo uccisioni e morti. Controlla nome e piattaforma, poi apri la prova del collegamento.' };\n    await putMeta(env, meta);\n    return { ok: false, reason: 'nostats' };\n  }\n  meta.path = p.path;\n  meta.hpath = p.hpath;\n  if (p.ctx) meta.ctx = p.ctx;\n  meta.fields = FIELDS.filter(k => p.f[k] !== undefined);\n  meta.last_ok = now;\n  meta.last_error = null;\n  const last = await env.DB.prepare('SELECT * FROM snaps ORDER BY ts DESC LIMIT 1').first();\n  const v = k => (p.f[k] === undefined ? null : Math.round(p.f[k]));\n  const same = last && last.path === p.path && FIELDS.every(k => (last[k] === undefined ? null : last[k]) === v(k));\n  if (!same) {\n    await env.DB.prepare('INSERT OR REPLACE INTO snaps (ts, prev, path, kills, deaths, headshots, matches, wins, losses, abandons) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')\n      .bind(now, prevCall, p.path, v('kills'), v('deaths'), v('headshots'), v('matches'), v('wins'), v('losses'), v('abandons')).run();\n    if (last && last.path === p.path) {\n      const up = FIELDS.some(k => last[k] !== null && v(k) !== null && v(k) > last[k]);\n      const down = FIELDS.some(k => last[k] !== null && v(k) !== null && v(k) < last[k]);\n      if (up && !down) meta.last_change = now;\n    }\n  }\n  await putMeta(env, meta);\n  return { ok: true, changed: !same };\n}\n\n/* ---------- sessioni: differenze fra letture vicine ---------- */\nasync function sessions(env, c, since) {\n  const rows = (await env.DB.prepare('SELECT * FROM snaps WHERE ts >= ? ORDER BY ts').bind(since).all()).results || [];\n  const before = since > 0 ? await env.DB.prepare('SELECT * FROM snaps WHERE ts < ? ORDER BY ts DESC LIMIT 1').bind(since).first() : null;\n  const list = before ? [before].concat(rows) : rows;\n  const out = [];\n  let cur = null, lastChange = 0;\n  for (let i = 1; i < list.length; i++) {\n    const a = list[i - 1], b = list[i];\n    if (a.path !== b.path) continue; /* fonte cambiata: nuova base */\n    const d = {};\n    let neg = false, pos = false;\n    for (const k of FIELDS) {\n      if (a[k] === null || a[k] === undefined || b[k] === null || b[k] === undefined) { d[k] = null; continue; }\n      d[k] = b[k] - a[k];\n      if (d[k] < 0) neg = true;\n      if (d[k] > 0) pos = true;\n    }\n    if (neg || !pos) continue; /* nuova stagione o nessuna partita */\n    if (!cur || b.ts - lastChange > c.gap) {\n      cur = { id: String(b.ts), start: b.prev && b.prev > a.ts ? b.prev : a.ts, end: b.ts, kills: 0, deaths: 0, headshots: 0, matches: 0, wins: 0, losses: 0, abandons: 0 };\n      out.push(cur);\n    }\n    for (const k of FIELDS) { if (d[k] === null) cur[k] = null; else if (cur[k] !== null) cur[k] += d[k]; }\n    cur.end = b.ts;\n    lastChange = b.ts;\n  }\n  const now = Date.now();\n  out.forEach(s => { s.open = now - s.end < c.gap; });\n  return out;\n}\n\n/* ---------- controllo programmato ---------- */\nasync function tick(env) {\n  const c = cfg(env);\n  if (!c.token || missing(c).length || !env.DB) return;\n  await setup(env);\n  const meta = await getMeta(env);\n  const now = Date.now();\n  const calls = callsThisMonth(meta, now);\n  if (calls >= c.budget) return;\n  const active = meta.last_change && now - meta.last_change < 90 * MIN;\n  let every = active ? 15 : 60;\n  if (calls >= c.budget * 0.85) every = active ? 30 : 180;\n  if (meta.last_call && now - meta.last_call < (every - 2) * MIN) return;\n  await poll(env, c, meta, 'cron');\n}\n\n/* ---------- risposte HTTP ---------- */\nfunction corsHeaders(c, origin) {\n  const h = { 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Authorization, Content-Type', 'Access-Control-Max-Age': '86400' };\n  if (c.origins.includes('*')) h['Access-Control-Allow-Origin'] = '*';\n  else if (origin && c.origins.includes(origin)) { h['Access-Control-Allow-Origin'] = origin; h['Vary'] = 'Origin'; }\n  return h;\n}\nfunction json(o, status, cors) {\n  return new Response(JSON.stringify(o), { status, headers: Object.assign({ 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }, cors) });\n}\nfunction sameText(a, b) {\n  if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;\n  let r = 0;\n  for (let i = 0; i < a.length; i++) r |= a.charCodeAt(i) ^ b.charCodeAt(i);\n  return r === 0;\n}\nfunction authOk(req, token) {\n  const h = req.headers.get('Authorization') || '';\n  return sameText(h, 'Bearer ' + token);\n}\nfunction status(c, meta) {\n  const now = Date.now();\n  return {\n    v: VERSION, name: c.name, platform: c.platform, modes: c.modes,\n    lastCall: meta.last_call || null, lastOk: meta.last_ok || null, lastChange: meta.last_change || null,\n    lastError: meta.last_error || null, calls: callsThisMonth(meta, now), budget: c.budget,\n    fields: meta.fields || [], path: meta.path || null,\n    active: !!(meta.last_change && now - meta.last_change < 90 * MIN)\n  };\n}\n\nexport default {\n  async fetch(req, env, ctx) {\n    const c = cfg(env);\n    const url = new URL(req.url);\n    const cors = corsHeaders(c, req.headers.get('Origin') || '');\n    if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });\n    try {\n      if (url.pathname === '/' || url.pathname === '/health') return json({ ok: true, app: 'taratura-siege', v: VERSION }, 200, cors);\n      if (!c.token) return json({ ok: false, error: 'no_token', msg: 'Manca APP_TOKEN nelle impostazioni del Worker.' }, 500, cors);\n      if (c.token.length < 16) return json({ ok: false, error: 'weak_token', msg: 'APP_TOKEN e\\' troppo corto: usa quello generato dall\\'app.' }, 500, cors);\n      if (!authOk(req, c.token)) return json({ ok: false, error: 'auth', msg: 'Codice personale sbagliato.' }, 401, cors);\n      const miss = missing(c);\n      if (miss.length) return json({ ok: false, error: 'config', missing: miss, msg: 'Mancano nelle impostazioni del Worker: ' + miss.join(', ') }, 500, cors);\n      await setup(env);\n      const meta = await getMeta(env);\n      if (url.pathname === '/status') return json({ ok: true, status: status(c, meta) }, 200, cors);\n      if (url.pathname === '/sessions') {\n        const since = Math.max(0, Math.floor(Number(url.searchParams.get('since')) || 0));\n        return json({ ok: true, sessions: await sessions(env, c, since), status: status(c, meta) }, 200, cors);\n      }\n      if (url.pathname === '/refresh' && req.method === 'POST') {\n        if (meta.last_call && Date.now() - meta.last_call < 5 * MIN) return json({ ok: true, polled: false, reason: 'recent', status: status(c, meta) }, 200, cors);\n        const r = await poll(env, c, meta, 'manual');\n        return json({ ok: true, polled: r.ok, reason: r.reason || null, status: status(c, meta) }, 200, cors);\n      }\n      if (url.pathname === '/test') {\n        let polled = false;\n        let rawTxt = await getRaw(env);\n        if ((url.searchParams.get('fresh') === '1' || !rawTxt) && (!meta.last_call || Date.now() - meta.last_call >= MIN)) {\n          await poll(env, c, meta, 'test');\n          polled = true;\n          rawTxt = await getRaw(env);\n        }\n        let raw = null;\n        try { raw = rawTxt ? JSON.parse(rawTxt) : null; } catch (e) { raw = null; }\n        const p = raw ? pickStats(raw, c, null, null) : null;\n        return json({\n          ok: true, polled,\n          extracted: p ? { path: p.path, ctx: p.ctx, fields: p.f, count: p.count } : null,\n          candidates: raw ? candidates(raw).slice(0, 15).map(x => ({ path: x.path, ctx: x.ctx.slice(0, 100), fields: x.f })) : [],\n          keys: raw ? keyTree(raw) : null,\n          status: status(c, meta)\n        }, 200, cors);\n      }\n      return json({ ok: false, error: 'not_found' }, 404, cors);\n    } catch (e) {\n      return json({ ok: false, error: e.code || 'error', msg: e.message || String(e) }, e.status || 500, cors);\n    }\n  },\n  async scheduled(controller, env, ctx) {\n    ctx.waitUntil(tick(env).catch(() => {}));\n  }\n};\n";
+/* ---------- statistiche automatiche: collegamento al Worker ---------- */
+/* L'app chiede al tuo Worker Cloudflare le sessioni ricavate dai totali di R6 Arenyze.
+   Il Worker legge il servizio al massimo ogni 15 minuti; l'app chiede al Worker ogni 5 minuti
+   mentre è aperta (al Worker non costa niente: legge solo il suo database). */
+var LIVE_POLL=5*60000;
+var live={busy:false,err:null,st:null,last:0,timer:null,user:null,test:null,testing:false,pending:false};
+function liveCfg(){var p=state.prefs&&state.prefs.live;return p||{url:'',token:'',on:false,since:0,hidden:[]};}
+function liveSet(){
+  state.prefs=state.prefs||{};
+  if(!state.prefs.live)state.prefs.live={url:'',token:'',on:false,since:0,hidden:[]};
+  return state.prefs.live;
+}
+function liveReady(){var c=liveCfg();return !!(c.on&&c.url&&c.token);}
+function liveBase(u){u=String(u||'').trim();if(u&&!/^https?:\/\//i.test(u))u='https://'+u;return u.replace(/\/+$/,'');}
+function liveOkUrl(u){try{var x=new URL(liveBase(u));return x.protocol==='https:'&&/\./.test(x.hostname)&&!x.search&&!x.hash;}catch(e){return false;}}
+function newToken(){
+  var a=new Uint8Array(24),s='';
+  crypto.getRandomValues(a);
+  for(var i=0;i<a.length;i++)s+=String.fromCharCode(a[i]);
+  return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function liveFetch(path,opt){
+  var c=liveCfg();opt=opt||{};
+  var ctl=(typeof AbortController!=='undefined')?new AbortController():null;
+  var tm=setTimeout(function(){if(ctl)ctl.abort();},15000);
+  function fail(msg,code){var e=new Error(msg);e.code=code;return e;}
+  return fetch(liveBase(opt.url||c.url)+path,{method:opt.method||'GET',headers:{'Authorization':'Bearer '+(opt.token||c.token)},cache:'no-store',signal:ctl?ctl.signal:undefined})
+    .then(function(r){
+      return r.text().then(function(t){
+        clearTimeout(tm);
+        var j=null;try{j=JSON.parse(t);}catch(e){j=null;}
+        if(!j||typeof j!=='object')throw fail('All\'indirizzo risponde qualcosa, ma non è il Worker di Taratura: hai incollato il codice e premuto Deploy?','notours');
+        if(!r.ok||j.ok===false)throw fail(j.msg||('Il Worker risponde con errore '+r.status+'.'),j.error||('http'+r.status));
+        return j;
+      });
+    },function(e){
+      clearTimeout(tm);
+      if(e&&e.code)throw e;
+      throw fail(e&&e.name==='AbortError'?'Il Worker non risponde: tempo scaduto.':'Il Worker non si raggiunge: controlla l\'indirizzo e la connessione.','net');
+    });
+}
+function liveErrText(e){
+  if(!e)return '';
+  if(e.code==='auth')return 'Il codice personale non coincide con APP_TOKEN del Worker: copialo di nuovo dal passo 5.';
+  return e.message||String(e);
+}
+
+/* sessioni del Worker -> righe di "Le tue partite" */
+function liveMerge(S){
+  var c=liveSet(),hid=c.hidden||[],ch=false,maxId=c.since||0;
+  S.forEach(function(s){
+    var id=String(s&&s.id||'');if(!/^\d{1,16}$/.test(id))return;
+    var idn=Number(id);if(idn>maxId)maxId=idn;
+    if(hid.indexOf(id)>=0)return;
+    var k=Math.max(0,Math.round(Number(s.kills)||0)),d=Math.max(0,Math.round(Number(s.deaths)||0));
+    var h=(s.headshots===null||s.headshots===undefined||!isFinite(Number(s.headshots)))?null:Math.max(0,Math.round(Number(s.headshots)));
+    var n=Math.max(0,Math.round(Number(s.matches)||0));
+    if(n<=0&&k+d<=0)return;
+    var start=Number(s.start)||idn,day=dkey(new Date(start));
+    var ex=null;
+    for(var i=0;i<state.matches.length;i++){if(state.matches[i].id===id){ex=state.matches[i];break;}}
+    var e={ts:ex?ex.ts:start,day:ex?ex.day:day,hs:(h!==null&&k>0)?Math.round(Math.min(h,k)/k*1000)/10:null,
+      kd:d>0?Math.min(10,Math.round(k/d*100)/100):(k>0?Math.min(10,k):null),n:n>0?Math.min(300,n):null,
+      s:ex?ex.s:sensOn(day),src:'auto',id:id,open:!!s.open,k:k,d:d,h:h};
+    if(!ex){state.matches.push(e);ch=true;}
+    else if(JSON.stringify(ex)!==JSON.stringify(e)){Object.keys(e).forEach(function(q){ex[q]=e[q];});ch=true;}
+  });
+  if(maxId!==(c.since||0)){c.since=maxId;ch=true;}
+  return ch;
+}
+function liveSync(force){
+  if(!me||live.busy||!liveReady())return Promise.resolve();
+  var who=me.id,note=null;
+  live.busy=true;livePaint();
+  var first=force?liveFetch('/refresh',{method:'POST'}).then(function(j){
+    note=j.polled?'Statistiche lette adesso':j.reason==='recent'?'Le statistiche sono state lette meno di 5 minuti fa':j.reason==='budget'?'Limite mensile di letture raggiunto':null;
+  },function(e){if(e.code==='net'||e.code==='notours'||e.code==='auth')throw e;}):Promise.resolve();
+  return first.then(function(){return liveFetch('/sessions?since='+(liveCfg().since||0));})
+    .then(function(j){
+      if(!me||me.id!==who)return;
+      live.st=j.status||null;live.err=null;live.last=Date.now();
+      if(liveMerge(j.sessions||[])){state.rev+=1;saveLocal();live.dirty=true;}
+    })
+    .catch(function(e){if(me&&me.id===who){live.err=liveErrText(e);live.last=Date.now();}})
+    .then(function(){
+      live.busy=false;
+      if(note&&force)toast(note);
+      if(live.dirty){live.dirty=false;softRender();}else livePaint();
+    });
+}
+/* non ridisegnare mentre scrivi in un campo: aspetta che tu esca */
+function softRender(){
+  var a=document.activeElement,v=$('view');
+  if(a&&a!==document.body&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&v&&v.contains(a)){live.pending=true;livePaint();return;}
+  live.pending=false;render();
+}
+function liveTick(){
+  if(!me||!liveReady()||live.busy)return;
+  if(typeof document.visibilityState==='string'&&document.visibilityState!=='visible')return;
+  if(Date.now()-live.last>=LIVE_POLL-5000)liveSync(false);
+}
+function liveBoot(){
+  if(me&&live.user!==me.id){live.user=me.id;live.last=0;live.err=null;live.st=null;live.test=null;}
+  if(!live.timer){
+    live.timer=setInterval(liveTick,30000);
+    document.addEventListener('visibilitychange',liveTick);
+    document.addEventListener('focusout',function(){
+      if(!live.pending)return;
+      setTimeout(function(){
+        var a=document.activeElement;
+        if(live.pending&&!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))){live.pending=false;render();}
+      },300);
+    });
+  }
+  if(!live.last)setTimeout(liveTick,0);
+}
+
+/* ---------- pezzi di interfaccia ---------- */
+function whenTxt(t){
+  if(!t)return 'mai';
+  var d=new Date(t),hm=pad(d.getHours())+':'+pad(d.getMinutes());
+  if(dkey(d)===dkey(new Date()))return 'oggi alle '+hm;
+  var y=new Date();y.setDate(y.getDate()-1);
+  if(dkey(d)===dkey(y))return 'ieri alle '+hm;
+  return mDate(dkey(d))+' alle '+hm;
+}
+function liveBarInner(){
+  var st=live.st,cls='',msg='';
+  if(live.busy){cls='busy';msg='Controllo le statistiche…';}
+  else if(live.err){cls='err';msg=esc(live.err);}
+  else if(st&&st.lastError&&(!st.lastOk||st.lastError.ts>st.lastOk)){cls='err';msg='Il Worker segnala: '+esc(st.lastError.msg||'errore');}
+  else if(st){
+    cls=st.active?'on':'ok';
+    msg='Ultima lettura '+esc(whenTxt(st.lastCall))+(st.active?' · <b>stai giocando</b>: controllo ogni 15 minuti':'');
+    if(st.fields&&st.fields.length&&st.fields.indexOf('headshots')<0)msg+='<br><span class="lv-sub">Il servizio non dà i colpi in testa: arrivano K/D e partite.</span>';
+  }else{msg='In attesa del primo controllo…';}
+  if(live.pending)msg+='<br><span class="lv-sub">Sessioni nuove: le mostro appena finisci di scrivere.</span>';
+  var calls=st&&st.budget?'<span class="lv-sub">Letture questo mese: '+nf(st.calls,0)+' su '+nf(st.budget,0)+'</span>':'';
+  return '<span class="lv-dot '+cls+'" aria-hidden="true"></span><span class="lv-txt"><b>Automatico</b> · '+msg+(calls?'<br>'+calls:'')+'</span>'+
+    '<button class="btn ghost mini" data-act="lvsync" type="button"'+(live.busy?' disabled':'')+'>Aggiorna</button>';
+}
+function liveBar(){return '<div class="lv-bar" id="lv-bar" role="status" aria-live="polite">'+liveBarInner()+'</div>';}
+function livePaint(){var b=$('lv-bar');if(b)b.innerHTML=liveBarInner();var t=$('lv-res');if(t)t.innerHTML=liveTestHtml();}
+
+function liveTestHtml(){
+  if(live.testing)return '<p class="hint">Provo il collegamento… la prima volta il Worker legge anche il servizio, ci vuole qualche secondo.</p>';
+  var T=live.test;if(!T)return '';
+  if(T.err)return '<div class="lv-res bad"><p><b>Non va ancora.</b> '+esc(T.err)+'</p></div>';
+  var st=T.status||{},ex=T.extracted,f=ex?ex.fields:{};
+  var plat={psn:'PlayStation',xbl:'Xbox',uplay:'PC'}[st.platform]||st.platform;
+  function row(k,lbl){var ok=f&&f[k]!==undefined;return '<li class="'+(ok?'ok':'no')+'"><span aria-hidden="true">'+(ok?'✓':'✕')+'</span> '+lbl+(ok?' <span class="mono">'+esc(String(f[k]))+'</span>':'')+'</li>';}
+  var err=st.lastError&&(!st.lastOk||st.lastError.ts>st.lastOk)?'<p class="hint err">Ultimo errore del Worker: '+esc(st.lastError.msg||'')+'</p>':'';
+  if(!ex)return '<div class="lv-res bad"><p><b>Il Worker risponde, ma non trova i tuoi totali.</b></p>'+err+'<p class="hint">Controlla UBI_NAME e PLATFORM nelle impostazioni del Worker, poi riprova.</p></div>';
+  var hsOk=f.headshots!==undefined;
+  return '<div class="lv-res good"><p><b>Collegato</b> a '+esc(st.name||'')+' su '+esc(plat||'')+(st.modes&&st.modes!=='all'?', '+esc(st.modes==='ranked'?'classificate':st.modes):'')+'. Totali trovati:</p>'+
+    '<ul class="lv-f">'+row('kills','Uccisioni')+row('deaths','Morti')+row('headshots','Colpi in testa')+row('matches','Partite')+'</ul>'+
+    (hsOk?'':'<p class="hint">Senza colpi in testa arrivano solo K/D e partite; la % di colpi in testa puoi ancora scriverla a mano.</p>')+
+    (ex.count>1?'<p class="hint">Nella risposta ci sono '+ex.count+' blocchi di totali: ho preso quello delle classificate con più partite. Se i numeri non tornano con R6 Tracker, dimmelo.</p>':'')+err+
+    (liveCfg().on?'':'<button class="btn pri block" data-act="lvon" type="button">Attiva le statistiche automatiche</button>')+'</div>';
+}
+function tokOther(id){
+  return det(id,'lv-other','Hai già un codice su un altro dispositivo?',
+    '<p class="hint">Incolla qui lo stesso codice che hai messo in APP_TOKEN: così telefono e computer leggono le stesse sessioni.</p>'+
+    '<div class="lv-tok"><input type="text" class="txt-in mono" id="lv-tokin" maxlength="128" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="incolla il codice" aria-label="Codice personale già creato">'+
+    '<button class="btn ghost mini" data-act="lvtok" type="button">Usa questo</button></div>');
+}
+function liveSetupCard(P){
+  var c=liveCfg(),ubi=(state.prefs&&state.prefs.ubi)||'';
+  if(!c.token){var L=liveSet();L.token=newToken();state.rev+=1;saveLocal();c=L;}
+  var on=liveReady();
+  var steps='<ol class="lv-steps">'+
+    '<li><b>Chiave del servizio.</b> Su <a href="https://r6.arenyze.com" target="_blank" rel="noopener noreferrer">r6.arenyze.com</a> crea un account gratuito e genera la chiave API. Tienila per il passo 5: non scriverla qui.</li>'+
+    '<li><b>Worker.</b> Su <a href="https://dash.cloudflare.com/sign-up" target="_blank" rel="noopener noreferrer">Cloudflare</a> crea un account gratuito. Poi <i>Workers &amp; Pages → Create application → Start with Hello World! → Deploy</i>.</li>'+
+    '<li><b>Codice.</b> Nel Worker apri <i>Edit code</i>, cancella tutto, incolla il codice e premi <i>Deploy</i>.'+
+      '<div class="lv-acts"><button class="btn ghost" data-act="lvcopy" data-v="code" type="button">Copia il codice del Worker</button></div>'+
+      det('d-wcode','lv-code','Vedi il codice','<textarea class="txt-in mono lv-src" id="lv-src" readonly rows="8" aria-label="Codice del Worker">'+esc(WORKER_SRC)+'</textarea>')+'</li>'+
+    '<li><b>Database.</b> <i>Storage &amp; Databases → D1 SQL database → Create Database</i>, nome <span class="mono">taratura</span>. Poi nel Worker: <i>Bindings → Add binding → D1 database</i>, <i>Variable name</i> <span class="mono">DB</span>, scegli il database.</li>'+
+    '<li><b>Impostazioni.</b> Nel Worker: <i>Settings → Variables and Secrets → Add</i>:'+
+      '<ul class="lv-vars">'+
+        '<li><span class="mono">API_KEY</span> · tipo <i>Secret</i> · la chiave del passo 1</li>'+
+        '<li><span class="mono">APP_TOKEN</span> · tipo <i>Secret</i> · il tuo codice personale:'+
+          '<div class="lv-tok"><code id="lv-tok">'+esc(c.token)+'</code><button class="btn ghost mini" data-act="lvcopy" data-v="token" type="button">Copia</button></div>'+tokOther('d-lvtok1')+'</li>'+
+        '<li><span class="mono">UBI_NAME</span> · tipo <i>Text</i> · '+(ubi?'<span class="mono">'+esc(ubi)+'</span>':'il tuo nome Ubisoft')+'</li>'+
+        '<li><span class="mono">PLATFORM</span> · tipo <i>Text</i> · <span class="mono">psn</span></li>'+
+      '</ul>Poi <i>Deploy</i>.</li>'+
+    '<li><b>Orario.</b> <i>Settings → Triggers → Cron Triggers</i>: aggiungi <span class="mono">*/15 * * * *</span>. Ogni 15 minuti il Worker decide se leggere davvero: mentre giochi legge spesso, quando non giochi una volta all\'ora, così resti sotto le 2.000 letture gratuite al mese.</li>'+
+    '<li><b>Indirizzo.</b> Incolla qui l\'indirizzo del Worker (in alto nella sua pagina, finisce con <span class="mono">.workers.dev</span>) e prova.'+
+      '<label class="lv-url"><span class="lbl">Indirizzo del Worker</span><input type="url" class="txt-in" id="lv-url" value="'+esc(c.url||'')+'" placeholder="https://taratura.tuonome.workers.dev" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="url"></label>'+
+      '<button class="btn pri block" data-act="lvtest" type="button"'+(live.testing?' disabled':'')+'>Prova il collegamento</button></li>'+
+    '</ol>';
+  var res='<div id="lv-res">'+liveTestHtml()+'</div>';
+  if(on){
+    var manage='<div class="lv-acts">'+
+      '<button class="btn ghost" data-act="lvtest" type="button">Prova di nuovo</button>'+
+      '<button class="btn ghost" data-act="lvoff" type="button">Metti in pausa</button>'+
+      ((c.hidden&&c.hidden.length)?'<button class="btn ghost" data-act="lvunhide" type="button">Rimetti le sessioni tolte ('+c.hidden.length+')</button>':'')+
+      '</div>'+
+      '<label class="lv-url"><span class="lbl">Indirizzo del Worker</span><input type="url" class="txt-in" id="lv-url" value="'+esc(c.url||'')+'" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="url"></label>'+
+      '<span class="lbl">Codice personale (APP_TOKEN)</span>'+
+      '<div class="lv-tok"><code id="lv-tok">'+esc(c.token)+'</code><button class="btn ghost mini" data-act="lvcopy" data-v="token" type="button">Copia</button></div>'+tokOther('d-lvtok2')+
+      '<p class="hint">Per cambiare indirizzo scrivi quello nuovo e premi "Prova di nuovo". Se cambi telefono o browser, usa lo stesso indirizzo e lo stesso codice: le sessioni tornano tutte.</p>';
+    return '<section class="card" id="lv-card"><h2>Statistiche automatiche</h2>'+
+      '<p class="note">Attive. Le tue sessioni di classificate arrivano da sole in "Le tue partite".</p>'+res+
+      det('d-lvset','lv-set','Impostazioni del collegamento',manage)+
+      det('d-lvsteps','lv-set','Come è impostato il Worker',steps)+'</section>';
+  }
+  var paused=!!(c.paused&&!c.on&&c.url&&c.token);
+  if(paused)return '<section class="card" id="lv-card"><h2>Statistiche automatiche</h2>'+
+    '<p class="note">In pausa: le sessioni nuove non arrivano finché non lo riattivi. Il Worker intanto continua a leggere, quindi non perdi niente.</p>'+
+    '<button class="btn pri block" data-act="lvon" type="button">Riattiva</button>'+
+    det('d-lvsteps','lv-set','Come è impostato il Worker',steps)+'</section>';
+  return '<section class="card" id="lv-card"><h2>Statistiche automatiche</h2>'+
+    '<p class="note">Le partite possono arrivare da sole: un piccolo programma gratuito su Cloudflare legge i tuoi totali da R6 Arenyze e l\'app li trasforma in sessioni. Non servono l\'account PlayStation né la password Ubisoft: basta il tuo nome Ubisoft. Ci vogliono una decina di minuti, una volta sola.</p>'+
+    det('d-lvsteps','lv-set','Imposta il collegamento',steps+res)+'</section>';
+}
+function copyText(t){
+  function legacy(){
+    var ta=document.createElement('textarea');ta.value=t;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+    var ok=false;try{ok=document.execCommand('copy');}catch(e){ok=false;}
+    document.body.removeChild(ta);return ok;
+  }
+  if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t).then(function(){return true;},function(){return legacy();});
+  return Promise.resolve(legacy());
+}
+function liveTest(){
+  var inp=$('lv-url'),u=inp?inp.value:liveCfg().url;
+  if(!liveOkUrl(u)){live.test={err:'Scrivi l\'indirizzo completo del Worker, per esempio https://taratura.tuonome.workers.dev'};livePaint();return;}
+  var L=liveSet();L.url=liveBase(u);state.rev+=1;saveLocal();
+  live.testing=true;live.test=null;livePaint();
+  liveFetch('/test').then(function(j){live.test=j;if(j.status)live.st=j.status;},function(e){live.test={err:liveErrText(e)};})
+    .then(function(){live.testing=false;softRender();});
+}
+function liveAct(a,el){
+  if(a==='lvsync'){liveSync(true);return true;}
+  if(a==='lvtest'){liveTest();return true;}
+  if(a==='lvon'){var L=liveSet();if(!L.url||!L.token){toast('Prima prova il collegamento');return true;}L.on=true;L.paused=false;live.last=0;commit();liveSync(false);toast('Statistiche automatiche attive');return true;}
+  if(a==='lvoff'){var LO=liveSet();LO.on=false;LO.paused=true;commit();toast('Collegamento in pausa');return true;}
+  if(a==='lvunhide'){var H=liveSet();H.hidden=[];H.since=0;live.last=0;commit();liveSync(false);return true;}
+  if(a==='lvtok'){
+    var ti=$('lv-tokin'),tv=ti?String(ti.value||'').trim():'';
+    if(!/^[A-Za-z0-9_-]{16,128}$/.test(tv)){toast('Il codice non sembra giusto: copialo di nuovo per intero');return true;}
+    var LT=liveSet();LT.token=tv;live.test=null;live.last=0;openD['d-lvtok1']=false;openD['d-lvtok2']=false;commit();
+    if(LT.on)liveSync(false);
+    toast('Codice aggiornato');
+    return true;
+  }
+  if(a==='lvcopy'){
+    var what=el.dataset.v,t=what==='code'?WORKER_SRC:liveCfg().token;
+    copyText(t).then(function(ok){
+      if(ok){toast(what==='code'?'Codice del Worker copiato':'Codice personale copiato');return;}
+      toast('Non riesco a copiare: selezionalo e copialo a mano');
+      if(what==='code'){openD['d-wcode']=true;render();var s=$('lv-src');if(s){s.focus();s.select();}}
+    });
+    return true;
+  }
+  if(a==='mmet'){mMet=el.dataset.v;render();return true;}
+  return false;
+}
+
 /* ---------- disegno ---------- */
 function render(){
   var nav=$('nav');
   if(!me){
     if(nav)nav.hidden=true;
     $('view').innerHTML=renderAuth();
+    renderOv(null);
     renderAcct();
     var mf=$('au-mail');
     if(mf&&!mf.value)try{mf.focus();}catch(e){}
@@ -2163,9 +3578,11 @@ function render(){
   if(tab==='progressi')html=renderProg(P);
   else if(tab==='consigli')html=renderAdv(P);
   else if(tab==='cappette')html=renderCaps(P);
+  else if(tab==='test')html=renderTest(P);
   else if(tab==='guida')html=renderGuide(P);
   else html=renderToday(P);
   $('view').innerHTML=html;
+  renderOv(P);
   var bs=document.querySelectorAll('#nav button');
   for(var i=0;i<bs.length;i++){
     if(bs[i].dataset.t===tab)bs[i].setAttribute('aria-current','page');else bs[i].removeAttribute('aria-current');
@@ -2174,6 +3591,25 @@ function render(){
   tRender();
   applyDemo();
   if(tab==='consigli'&&anTrend)trendAt(anTrendI);
+  liveBoot();
+}
+function renderOv(P){
+  var ov=$('ov');if(!ov)return;
+  var h='';
+  if(me&&P){if(shot)h=shotHtml();else if(sess)h=renderSession(P);}
+  ov.innerHTML=h;ov.hidden=!h;
+  try{document.body.classList.toggle('ov-on',!!h);}catch(e){}
+}
+function matchAdd(){
+  function num(id){var e=$(id);return e?parseFloat(String(e.value||'').replace(',','.')):NaN;}
+  var hs=num('m-hs'),kd=num('m-kd'),n=num('m-n'),day=($('m-day')||{}).value||'';
+  if(!isFinite(hs)||hs<0||hs>100){toast('Scrivi la % di colpi in testa, da 0 a 100');return;}
+  var today=dkey(new Date());
+  if(!okDay(day))day=today;
+  if(day>today){toast('Il giorno non può essere nel futuro');return;}
+  state.matches.push({ts:Date.now(),day:day,hs:Math.round(hs*10)/10,
+    kd:(isFinite(kd)&&kd>=0&&kd<=10)?Math.round(kd*100)/100:null,n:(isFinite(n)&&n>=1)?Math.min(300,Math.round(n)):null,s:sensOn(day)});
+  commit();toast(day===today?'Sessione di oggi salvata':'Sessione del '+mDate(day)+' salvata');
 }
 function toast(m){
   var t=$('toast');t.textContent=m;t.hidden=false;
@@ -2226,6 +3662,8 @@ document.addEventListener('pointermove',trendEvt);
 document.addEventListener('click',trendEvt);
 document.addEventListener('focusin',function(e){if(e.target&&e.target.classList&&e.target.classList.contains('hit-all'))trendAt(anTrendI);});
 document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'&&shot){shotClose();return;}
+  if(e.key==='Escape'&&sess){sessClose();return;}
   var t=e.target;
   if(!t||!t.classList||!t.classList.contains('hit-all'))return;
   if(e.key==='ArrowLeft'){trendAt(anTrendI-1);e.preventDefault();}
@@ -2235,6 +3673,12 @@ document.addEventListener('toggle',function(e){
   if(e.target&&e.target.tagName==='DETAILS'&&e.target.id)openD[e.target.id]=e.target.open;
 },true);
 document.addEventListener('input',function(e){
+  if(e.target&&e.target.id==='m-ubi'){
+    var nm=ubiName(e.target.value);state.prefs=state.prefs||{};
+    if(nm!==(state.prefs.ubi||'')){state.prefs.ubi=nm;state.rev+=1;saveLocal();}
+    var lk=$('m-trk');if(lk){lk.hidden=!nm;lk.href=nm?trkUrl(nm):'#';}
+    return;
+  }
   var el=e.target.closest?e.target.closest('input[data-act="kit"]'):null;
   if(!el)return;
   ensureDraft();
@@ -2242,6 +3686,8 @@ document.addEventListener('input',function(e){
   saveDraft();
 });
 document.addEventListener('change',function(e){
+  if(e.target&&e.target.id==='shot-in'){var f=e.target.files&&e.target.files[0];if(f)shotOpen(f);return;}
+  if(e.target&&e.target.id==='m-day'){var sv=$('m-sv');if(sv)sv.textContent=comboKey(sensOn(e.target.value));return;}
   var di=e.target.closest?e.target.closest('input[data-act="and"]'):null;
   if(di){if(di.dataset.k==='from')anFrom=di.value;else anTo=di.value;render();return;}
   var ks=e.target.closest?e.target.closest('select[data-act="kitop"],select[data-act="kitwep"]'):null;
@@ -2295,7 +3741,45 @@ document.addEventListener('click',function(e){
   if(a==='authmode'){authMode=(authMode==='signup')?'login':'signup';authErr='';render();return;}
   if(a==='logout'){logout();toast('Sei uscito');return;}
   if(!me)return;
-  if(a==='tab'){tab=el.dataset.t;render();toTop();return;}
+  if(a==='tab'){if(voice.on)voiceStop();if(gpad.test)gpad.test=null;tab=el.dataset.t;render();toTop();return;}
+  if(a==='tally'){tallyAdd(el.dataset.k,el.dataset.v);render();return;}
+  if(a==='tallyundo'){tallyUndo(el.dataset.k);render();return;}
+  if(a==='voice'){if(voice.on&&voice.kind===el.dataset.k)voiceStop();else voiceStart(el.dataset.k);render();return;}
+  if(a==='dist'){ensureDraft();draft.dist=el.dataset.v;saveDraft();render();return;}
+  if(a==='sessopen'){sessOpen();return;}
+  if(a==='sessexit'){sessClose();return;}
+  if(a==='sessgo'){if(sess)sessGo(el.dataset.s);return;}
+  if(a==='sgo'){if(T[0].running)tPause(0);else tStart(0);return;}
+  if(a==='sreset'){tReset(0);trkPhase=null;return;}
+  if(a==='tts'){state.prefs=state.prefs||{};state.prefs.tts=(el.dataset.v==='1');commit();return;}
+  if(a==='abk'){abSetup=abDefaults(computePlan(),el.dataset.s);render();return;}
+  if(a==='abv'){if(abSetup){abSetup[el.dataset.k]=clampV(abSetup[el.dataset.k]+Number(el.dataset.d));}render();return;}
+  if(a==='abdist'){if(abSetup)abSetup.dist=el.dataset.v;render();return;}
+  if(a==='abstart'){abStart();return;}
+  if(a==='abready'){abReady();return;}
+  if(a==='abtap'){abTap(el.dataset.v);return;}
+  if(a==='abundo'){abUndo();return;}
+  if(a==='abredo'){abRedo();return;}
+  if(a==='absave'){abSaveRun();return;}
+  if(a==='abfrom'){var kk=el.dataset.k;abSetup={k:kk,A:clampInt(el.dataset.a,1,100),B:clampInt(el.dataset.b,1,100),dist:DIST_DEF[kk]};tab='test';render();toTop();return;}
+  if(a==='shotpick'){var fi=$('shot-in');if(fi){fi.value='';fi.click();}return;}
+  if(a==='shottap'){shotTap(e,el);return;}
+  if(a==='shotundo'){shotUndo();return;}
+  if(a==='shotdone'){shotDone();return;}
+  if(a==='shotclose'){shotClose();return;}
+  if(a==='patw'){patW=el.dataset.v;render();return;}
+  if(a==='pad'){padStart(el.dataset.v);return;}
+  if(a==='padstop'){padStop();return;}
+  if(a==='padsave'){var nw=new Date();state.ctest.push({ts:nw.getTime(),day:dkey(nw),drift:gpad.res.drift||null,range:gpad.res.range||null,prec:gpad.res.prec||null});gpad.res={};commit();toast('Test salvato');return;}
+  if(liveAct(a,el))return;
+  if(a==='madd'){matchAdd();return;}
+  if(a==='mdel'){
+    var mts=Number(el.dataset.v);
+    if(mtArm!==mts){mtArm=mts;render();setTimeout(function(){if(mtArm===mts){mtArm=null;render();}},4000);return;}
+    mtArm=null;
+    state.matches.forEach(function(x){if(x.ts===mts&&x.src==='auto'){var LH=liveSet();if(LH.hidden.indexOf(x.id)<0)LH.hidden.push(x.id);}});
+    state.matches=state.matches.filter(function(x){return x.ts!==mts;});commit();toast('Sessione tolta');return;
+  }
   if(a==='start'){state.seen=1;commit();return;}
   if(a==='dstep'){dstep=clampInt(el.dataset.i,0,ND-1);render();return;}
   if(a==='tgo'){if(T[dstep].running)tPause(dstep);else tStart(dstep);return;}
@@ -2309,13 +3793,14 @@ document.addEventListener('click',function(e){
     ensureDraft();
     k=el.dataset.k;
     var d=Number(el.dataset.d);
-    if(k==='swi'){draft.swi=clampInt((draft.swi===null?0:draft.swi)+d,0,10);}
+    if(k==='swi'){draft.swiSeq=null;draft.swi=clampInt((draft.swi===null?0:draft.swi)+d,0,10);}
     else if(k==='mag'){
       draft.mag=clampInt(draft.mag+d,1,120);
       if(draft.rec!==null)draft.rec=Math.min(draft.rec,draft.mag);
     }
     else if(k==='rec'){draft.rec=clampInt((draft.rec===null?0:draft.rec)+d,0,draft.mag);}
     else{
+      draft.shots=null;
       if(draft.a===null)draft.a=0;
       if(draft.b===null)draft.b=0;
       var o2=(k==='a')?'b':'a';
@@ -2345,21 +3830,24 @@ document.addEventListener('click',function(e){
     P=computePlan();
     ensureDraft();
     if(draft.trk===null||draft.a===null||draft.b===null||draft.swi===null||draft.rec===null)return;
+    if(DRILLS.some(function(X){return !drillDone(X);}))return;
     var maint=P.finished,idx=P.cur,def=maint?null:P.stages[P.cur].def;
     var used=usedSens(P),setup=Object.assign({},state.gear);
     SENS_KEYS.forEach(function(q){setup[q]=used[q];});
     var now=new Date();
     var round={stage:maint?'free':def.id,value:null,a:draft.a,b:draft.b,trk:draft.trk,pre:null,swi:draft.swi,rec:draft.rec,recN:draft.mag,
-      ring:draft.ring,drift:draft.drift,
+      ring:draft.ring,drift:draft.drift,dist:null,shots:draft.shots||null,swiSeq:draft.swiSeq||null,holes:draft.holes||null,
       op:canonOp(draft.op),wep:txt(draft.wep),at:fmtD(now),day:dkey(now),ts:now.getTime(),setup:normSetup(setup),focus:null};
     if(maint)round.focus=curFocus();
     else if(def.kind==='cap')round.value=state.gear.rcap;
     else{round.value=used[def.id];round.focus=def.id;}
+    round.dist=distKey(maint?defFor(round.focus):def);
     state.rounds.push(round);
     state.kit={op:round.op,wep:round.wep,mag:draft.mag};
     state.seen=1;
     var keepF=maint?round.focus:null;
     draft=blankDraft();draft.focus=keepF;saveDraft();dstep=0;tResetAll();
+    if(sess){voiceStop();sess=null;}
     commit();
     var msg='Round salvato';
     if(!maint){
@@ -2463,5 +3951,6 @@ render();
 initStore();
 })();
 </script>
+<script>if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
 </body>
 </html>
