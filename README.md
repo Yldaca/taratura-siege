@@ -8,6 +8,14 @@ Pagina unica. I dati di ogni account stanno sul server dell'app (un Worker Cloud
 
 Apri il link di GitHub Pages del repository, crea il tuo utente con email e password e segui la scheda **Oggi**. Dal telefono puoi installarla come app: in Safari "Condividi → Aggiungi alla schermata Home", in Chrome "menu ⋮ → Installa app".
 
+## Novità della versione 8.4: sicurezza
+
+- Limiti di tentativi per indirizzo (accessi, iscrizioni, collegamenti del nome in gioco) oltre al blocco di ogni account dopo 8 password sbagliate.
+- Per cambiare la password serve quella attuale; le nuove password hanno almeno 8 caratteri.
+- Il server risponde solo al sito dell'app, accetta solo email con caratteri normali e non mostra dettagli interni negli errori.
+- La pagina ha una Content Security Policy: solo i suoi script possono girare e i dati possono andare solo al server dell'app.
+- Tolta dal server la parte «password dimenticata».
+
 ## Novità della versione 8.3
 
 - Si tara solo l'**1.0x**, poi la cappetta. 2.5x, 3.5x e 8.0x seguono l'1.0x: una regola per lo zoom all'inizio, poi il tuo rapporto dai round di mantenimento con quei mirini e dalle partite.
@@ -42,6 +50,7 @@ Apri il link di GitHub Pages del repository, crea il tuo utente con email e pass
    - `API_KEY` (Secret): chiave di R6 Arenyze, per le statistiche automatiche (il piano Free dà 2.000 letture al mese, il Worker ne usa al massimo 1.800).
    - Facoltativo `INVITE_CODE` (Secret): se c'è, serve per creare un account.
 3. L'indirizzo del Worker va scritto nell'app al momento della build: `CLOUD_URL=https://… npm run build`.
+4. Se il sito cambia indirizzo, aggiorna `APP_URL` nel Worker: il server accetta richieste solo da quel sito.
 
 ## File
 
