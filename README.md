@@ -8,6 +8,13 @@ Pagina unica. I dati di ogni account stanno sul server dell'app (un Worker Cloud
 
 Apri il link di GitHub Pages del repository, crea il tuo utente con email e password e segui la scheda **Oggi**. Dal telefono puoi installarla come app: in Safari "Condividi → Aggiungi alla schermata Home", in Chrome "menu ⋮ → Installa app".
 
+## Novità della versione 8.3
+
+- Si tara solo l'**1.0x**, poi la cappetta. 2.5x, 3.5x e 8.0x seguono l'1.0x: una regola per lo zoom all'inizio, poi il tuo rapporto dai round di mantenimento con quei mirini e dalle partite.
+- In **Oggi** un riquadro spiega come collegare il tuo ID PlayStation dal profilo.
+- Tolta l'analisi della foto che caricavi nel rinculo; restano le animazioni di esempio, senza il link «Video veri».
+- **Transizioni** adattate al poligono di Siege: un solo manichino e due punti sul muro, dal punto alla testa alternando i lati.
+
 ## Novità della versione 8
 
 - **Il tuo profilo**: icona in alto a destra. Account, nome in gioco per le statistiche automatiche, link a R6 Tracker (con il nome PlayStation), password, uscita.
