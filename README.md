@@ -12,6 +12,7 @@ Apri il link di GitHub Pages del repository, crea il tuo utente con email e pass
 
 - **Rumore del punteggio** misurato davvero: deviazione standard fra round fatti con gli stessi numeri e lo stesso analogico (con un valore di partenza di 8 punti finché i round sono pochi). Ogni confronto fra due medie usa 1,64 × rumore × √(1/n1 + 1/n2), cioè il 90%. Prima la soglia era più bassa del dovuto e dichiarava differenze che non c'erano.
 - **«Cappetta» diventa «analogico»** in tutta l'app.
+- **Rinculo**: i colpi del caricatore si mettono da soli in base all'arma scelta (anche scritta a mano); restano − e + per il colpo in canna o un caricatore diverso.
 - **Ho solo questo analogico**: una spunta (nella fase dell'analogico, in Oggi → Analogici, curve e deadzone, e in Progressi → Analogici) per chi non può cambiarlo. Il percorso salta il test e l'app non consiglia mai di cambiarlo.
 - **Test dell'analogico** nuovo: 4 round alternati (il tuo, Convesso alto, Convesso alto, il tuo), così riscaldamento e stanchezza pesano uguale. I test già chiusi restano com'erano; in Progressi → Analogici c'è «Rifai il test dell'analogico».
 - **Scegliere il migliore fra più numeri** (allenamento, partite, analogici, operatori) alza la soglia (Bonferroni): con 3 numeri 1,96, con 4 2,13.
