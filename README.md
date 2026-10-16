@@ -8,6 +8,14 @@ Pagina unica. I dati di ogni account stanno sul server dell'app (un Worker Cloud
 
 Apri il link di GitHub Pages del repository, crea il tuo utente con email e password e segui la scheda **Oggi**. Dal telefono puoi installarla come app: in Safari "Condividi → Aggiungi alla schermata Home", in Chrome "menu ⋮ → Installa app".
 
+## Novità della versione 8.5
+
+- Nuova scheda **Partite**: totali per sessione, grafico sempre visibile con sotto il mirino 1.0x usato, e ogni serata con una riga per partita (esito, uccisioni, morti, colpi in testa). Le cappette passano in **Progressi**.
+- I numeri scritti nella home («I numeri che hai nel gioco») restano salvati sul tuo account, valgono ovunque (niente più 11 di partenza nei Consigli) e ogni partita prende quelli che avevi quando l'hai giocata. Si possono anche scrivere a mano.
+- **Consigli**: una riga semplice per ogni mirino, il perché si apre a richiesta, e la tabella «Allenamento e partite a confronto», numero per numero. Con sole partite (senza round) il consiglio parte dal numero che usi.
+- Guida riscritta: come funziona, cosa trovi in ogni scheda, le parole dell'app.
+- Server (versione 7): una riga per ogni lettura, letture ogni 15 minuti mentre giochi (variabili facoltative `ACTIVE_MIN`, `WARM_MIN`, `IDLE_MIN`).
+
 ## Novità della versione 8.4: sicurezza
 
 - Limiti di tentativi per indirizzo (accessi, iscrizioni, collegamenti del nome in gioco) oltre al blocco di ogni account dopo 8 password sbagliate.
