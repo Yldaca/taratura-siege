@@ -8,9 +8,20 @@ Pagina unica. I dati di ogni account stanno sul server dell'app (un Worker Cloud
 
 Apri il link di GitHub Pages del repository, crea il tuo utente con email e password e segui la scheda **Oggi**. Dal telefono puoi installarla come app: in Safari "Condividi → Aggiungi alla schermata Home", in Chrome "menu ⋮ → Installa app".
 
+## Novità della versione 8.6: calcoli rivisti
+
+- **Rumore del punteggio** misurato davvero: deviazione standard fra round fatti con gli stessi numeri e lo stesso analogico (con un valore di partenza di 8 punti finché i round sono pochi). Ogni confronto fra due medie usa 1,64 × rumore × √(1/n1 + 1/n2), cioè il 90%. Prima la soglia era più bassa del dovuto e dichiarava differenze che non c'erano.
+- **«Cappetta» diventa «analogico»** in tutta l'app.
+- **Ho solo questo analogico**: una spunta (nella fase dell'analogico, in Oggi → Analogici, curve e deadzone, e in Progressi → Analogici) per chi non può cambiarlo. Il percorso salta il test e l'app non consiglia mai di cambiarlo.
+- **Test dell'analogico** nuovo: 4 round alternati (il tuo, Convesso alto, Convesso alto, il tuo), così riscaldamento e stanchezza pesano uguale. I test già chiusi restano com'erano; in Progressi → Analogici c'è «Rifai il test dell'analogico».
+- **Scegliere il migliore fra più numeri** (allenamento, partite, analogici, operatori) alza la soglia (Bonferroni): con 3 numeri 1,96, con 4 2,13.
+- **Partite**: se due numeri li hai usati in periodi separati, il consiglio si sposta la metà (una parte può essere il periodo). Il «prima e dopo» un cambio non dice più «il cambio funziona», ma suggerisce come verificarlo.
+- **Margine all'80%** del flick solo da 6 round in su; la fiducia «alta» dipende da quanto è stretto il margine.
+- **Tendenze** (allenamento, settimane) e **avviso sui due lati del flick** solo quando la differenza supera il rumore.
+
 ## Novità della versione 8.5
 
-- Nuova scheda **Partite**: totali per sessione, grafico sempre visibile con sotto il mirino 1.0x usato, e ogni serata con una riga per partita (esito, uccisioni, morti, colpi in testa). Le cappette passano in **Progressi**.
+- Nuova scheda **Partite**: totali per sessione, grafico sempre visibile con sotto il mirino 1.0x usato, e ogni serata con una riga per partita (esito, uccisioni, morti, colpi in testa). Gli analogici passano in **Progressi**.
 - I numeri scritti nella home («I numeri che hai nel gioco») restano salvati sul tuo account, valgono ovunque (niente più 11 di partenza nei Consigli) e ogni partita prende quelli che avevi quando l'hai giocata. Si possono anche scrivere a mano.
 - **Consigli**: una riga semplice per ogni mirino, il perché si apre a richiesta, e la tabella «Allenamento e partite a confronto», numero per numero. Con sole partite (senza round) il consiglio parte dal numero che usi.
 - Guida riscritta: come funziona, cosa trovi in ogni scheda, le parole dell'app.
@@ -26,7 +37,7 @@ Apri il link di GitHub Pages del repository, crea il tuo utente con email e pass
 
 ## Novità della versione 8.3
 
-- Si tara solo l'**1.0x**, poi la cappetta. 2.5x, 3.5x e 8.0x seguono l'1.0x: una regola per lo zoom all'inizio, poi il tuo rapporto dai round di mantenimento con quei mirini e dalle partite.
+- Si tara solo l'**1.0x**, poi l'analogico. 2.5x, 3.5x e 8.0x seguono l'1.0x: una regola per lo zoom all'inizio, poi il tuo rapporto dai round di mantenimento con quei mirini e dalle partite.
 - In **Oggi** un riquadro spiega come collegare il tuo ID PlayStation dal profilo.
 - Tolta l'analisi della foto che caricavi nel rinculo; restano le animazioni di esempio, senza il link «Video veri».
 - **Transizioni** adattate al poligono di Siege: un solo manichino e due punti sul muro, dal punto alla testa alternando i lati.
