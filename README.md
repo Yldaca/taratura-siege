@@ -8,6 +8,11 @@ Pagina unica. I dati di ogni account stanno sul server dell'app (un Worker Cloud
 
 Apri il link di GitHub Pages del repository, crea il tuo utente con email e password e segui la scheda **Oggi**. Dal telefono puoi installarla come app: in Safari "Condividi → Aggiungi alla schermata Home", in Chrome "menu ⋮ → Installa app".
 
+## Novità della versione 8.7
+
+- **Si parte dal tuo 1.0x**: se scrivi l'1.0x che hai nel gioco prima del primo round, il percorso parte da quel numero e non più da 11. La sessione guidata mostra lo stesso numero della home (anche quello scritto da te a metà percorso), con sotto la riga che dice da dove viene.
+- **Rifai la fase dell'1.0x** riparte dal numero che hai nel gioco; se togli l'unico round dell'1.0x si riparte dal numero con cui l'avevi fatto.
+
 ## Novità della versione 8.6: calcoli rivisti
 
 - **Rumore del punteggio** misurato davvero: deviazione standard fra round fatti con gli stessi numeri e lo stesso analogico (con un valore di partenza di 8 punti finché i round sono pochi). Ogni confronto fra due medie usa 1,64 × rumore × √(1/n1 + 1/n2), cioè il 90%. Prima la soglia era più bassa del dovuto e dichiarava differenze che non c'erano.
