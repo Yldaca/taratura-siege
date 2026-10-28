@@ -1,5 +1,5 @@
 /* Funziona anche senza rete: la pagina si scarica nuova quando c'è connessione, altrimenti si usa la copia salvata. */
-var C='taratura-v8.9';
+var C='taratura-v8.10';
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(C).then(function(c){return c.addAll(['./','manifest.webmanifest','icon-192.png','icon-512.png']);}).then(function(){return self.skipWaiting();}));
 });
